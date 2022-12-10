@@ -1,0 +1,8 @@
+baseURL = 'https://yue-jenny.github.io'
+languageCode = 'en-us'
+title = 'Jenny blog'
+theme = 'hugo-theme-stack'
+publishDir = "docs"
+
+[Params]
+	likerID = "yuemachi"
