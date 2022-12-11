@@ -6,3 +6,8 @@ publishDir = "docs"
 
 [Params]
 	likerID = "yuemachi"
+
+[sitemap]
+  changefreq = 'daily'
+  filename = 'sitemap.xml'
+  priority = 0.8
