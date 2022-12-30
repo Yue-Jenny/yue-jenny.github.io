@@ -160,7 +160,13 @@ Github Workflow 的基本設定 Github Workflow 中進行 CI 登入登出 AWS EC
         <li><a href="#permissions-設定">permissions 設定</a></li>
       </ul>
     </li>
-    <li><a href="#自動化測試-ci">自動化測試 CI</a></li>
+    <li><a href="#自動化測試-ci">自動化測試 CI</a>
+      <ul>
+        <li><a href="#checkout-repository">checkout repository</a></li>
+        <li><a href="#執行-npm-install">執行 npm install</a></li>
+        <li><a href="#執行-npm-test">執行 npm test</a></li>
+      </ul>
+    </li>
     <li><a href="#build-multi-platform-images-並上傳至-aws-ecr">Build multi-platform images 並上傳至 AWS ECR</a>
       <ul>
         <li><a href="#前言-1">前言</a></li>
@@ -309,21 +315,21 @@ Github Workflow 的基本設定 Github Workflow 中進行 CI 登入登出 AWS EC
   contents: read # This is required for actions/checkout
 </code></pre><!-- raw HTML omitted -->
 <h2 id="自動化測試-ci">自動化測試 CI</h2>
+<h3 id="checkout-repository">checkout repository</h3>
 <ul>
-<li>使用 <code>actions/checkout@v3</code> 進行 checkout repository
+<li>
+<p>使用 <code>actions/checkout@v3</code> 進行</p>
 <pre tabindex="0"><code>- name: Checkout repository
   uses: actions/checkout@v3
 </code></pre></li>
-<li>執行 npm install
+</ul>
+<h3 id="執行-npm-install">執行 npm install</h3>
 <pre tabindex="0"><code>- name: Install dependencies
   run: npm install
-</code></pre></li>
-<li>執行 npm test
+</code></pre><h3 id="執行-npm-test">執行 npm test</h3>
 <pre tabindex="0"><code>- name: Run tests
   run: npm run test
-</code></pre></li>
-</ul>
-<!-- raw HTML omitted -->
+</code></pre><!-- raw HTML omitted -->
 <h2 id="build-multi-platform-images-並上傳至-aws-ecr">Build multi-platform images 並上傳至 AWS ECR</h2>
 <h3 id="前言-1">前言</h3>
 <p>這部分需要先設定 AWS Credential 才能使用 AWS ECR，<br>

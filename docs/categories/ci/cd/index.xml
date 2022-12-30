@@ -53,21 +53,21 @@
   contents: read # This is required for actions/checkout
 &lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
 &lt;h2 id=&#34;自動化測試-ci&#34;&gt;自動化測試 CI&lt;/h2&gt;
+&lt;h3 id=&#34;checkout-repository&#34;&gt;checkout repository&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;使用 &lt;code&gt;actions/checkout@v3&lt;/code&gt; 進行 checkout repository
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;actions/checkout@v3&lt;/code&gt; 進行&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Checkout repository
   uses: actions/checkout@v3
 &lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;執行 npm install
+&lt;/ul&gt;
+&lt;h3 id=&#34;執行-npm-install&#34;&gt;執行 npm install&lt;/h3&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Install dependencies
   run: npm install
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;li&gt;執行 npm test
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;執行-npm-test&#34;&gt;執行 npm test&lt;/h3&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Run tests
   run: npm run test
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;!-- raw HTML omitted --&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
 &lt;h2 id=&#34;build-multi-platform-images-並上傳至-aws-ecr&#34;&gt;Build multi-platform images 並上傳至 AWS ECR&lt;/h2&gt;
 &lt;h3 id=&#34;前言-1&#34;&gt;前言&lt;/h3&gt;
 &lt;p&gt;這部分需要先設定 AWS Credential 才能使用 AWS ECR，&lt;br&gt;
