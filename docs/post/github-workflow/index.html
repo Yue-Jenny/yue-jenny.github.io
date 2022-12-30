@@ -183,7 +183,8 @@ Github Workflow 的基本設定 Github Workflow 中進行 CI 登入登出 AWS EC
     <li><a href="#若要將-docker-image-上傳至-github-container-registry-該怎麼做">若要將 docker image 上傳至 github container registry 該怎麼做?</a>
       <ul>
         <li><a href="#1-登入與登出-github-container-registry">1. 登入與登出 github container registry</a></li>
-        <li><a href="#2-build-and-push-docker-image">2. Build and push docker image</a></li>
+        <li><a href="#2-extract-metadata">2. Extract metadata</a></li>
+        <li><a href="#3-build-and-push-docker-image">3. Build and push docker image</a></li>
       </ul>
     </li>
     <li><a href="#參考資料">參考資料</a></li>
@@ -589,7 +590,16 @@ When you ask the Linux kernel to run some executable file, it needs to know, how
       password: ${{ secrets.GITHUB_TOKEN }}
 </code></pre></li>
 </ul>
-<h3 id="2-build-and-push-docker-image">2. Build and push docker image</h3>
+<h3 id="2-extract-metadata">2. Extract metadata</h3>
+<pre tabindex="0"><code>      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+</code></pre><h3 id="3-build-and-push-docker-image">3. Build and push docker image</h3>
+<ul>
+<li>labels 的值可以從步驟二取出 outputs labels 來使用</li>
+</ul>
 <pre tabindex="0"><code>      - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
