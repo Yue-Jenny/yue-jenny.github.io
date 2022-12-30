@@ -2,13 +2,48 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://yue-jenny.github.io/tags/aws/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/aws/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/github-workflows/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2022-12-10T18:33:05+08:00</lastmod>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/oidc/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/post/</loc>
-    <lastmod>2022-12-10T18:33:05+08:00</lastmod>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/post/how-to-use-oidc-to-auth-aws-services/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
@@ -17,19 +52,11 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/categories/</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
     <loc>https://yue-jenny.github.io/tags/ci/cd/</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/categories/ci/cd/</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>

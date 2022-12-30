@@ -5,7 +5,16 @@
         <link>https://yue-jenny.github.io/categories/</link>
         <description>Recent content in Categories on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>en-us</language><atom:link href="https://yue-jenny.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 29 Dec 2022 14:32:24 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>AWS</title>
+        <link>https://yue-jenny.github.io/categories/aws/</link>
+        <pubDate>Thu, 29 Dec 2022 14:32:24 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/categories/aws/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>CI/CD</title>
         <link>https://yue-jenny.github.io/categories/ci/cd/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
