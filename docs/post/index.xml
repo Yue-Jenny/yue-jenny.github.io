@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Jenny blog</title>
-        <link>https://yue-jenny.github.io/</link>
-        <description>Recent content on Jenny blog</description>
+        <title>Posts on Jenny blog</title>
+        <link>https://yue-jenny.github.io/post/</link>
+        <description>Recent content in Posts on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 10 Dec 2022 18:33:05 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 10 Dec 2022 18:33:05 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>如何使用 Github Workflow 完成 CI/CD</title>
         <link>https://yue-jenny.github.io/post/github-workflow/</link>
         <pubDate>Sat, 10 Dec 2022 18:33:05 +0800</pubDate>

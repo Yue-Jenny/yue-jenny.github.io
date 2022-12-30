@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Github Workflow 介紹 前言 為了利用 Github Workflow 完成 CI/CD，分成幾個部分來寫，分別是
+Github Workflow 的基本設定 Github Workflow 中進行 CI 登入登出 AWS ECR 與 github container registry build &amp;amp; upload image 更新 helm value 中的 image tag，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬 基本設定 action 為 push 的時候，所有 branch 都會進行 github workflow action 為 pull_request 的時候，只有 main branch 會進行 github workflow types paths on: push: branches: [&amp;#34;*&amp;#34;] pull_request: branches: [&amp;#34;main&amp;#34;] types: - opened paths: - &amp;#34;**.'>
+<title>如何使用 Github Workflow 完成 CI/CD</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/post/github-workflow/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='如何使用 Github Workflow 完成 CI/CD'>
+<meta property='og:description' content='Github Workflow 介紹 前言 為了利用 Github Workflow 完成 CI/CD，分成幾個部分來寫，分別是
+Github Workflow 的基本設定 Github Workflow 中進行 CI 登入登出 AWS ECR 與 github container registry build &amp;amp; upload image 更新 helm value 中的 image tag，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬 基本設定 action 為 push 的時候，所有 branch 都會進行 github workflow action 為 pull_request 的時候，只有 main branch 會進行 github workflow types paths on: push: branches: [&amp;#34;*&amp;#34;] pull_request: branches: [&amp;#34;main&amp;#34;] types: - opened paths: - &amp;#34;**.'>
+<meta property='og:url' content='https://yue-jenny.github.io/post/github-workflow/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='CI/CD' /><meta property='article:published_time' content='2022-12-10T18:33:05&#43;08:00'/><meta property='article:modified_time' content='2022-12-10T18:33:05&#43;08:00'/>
+<meta name="twitter:title" content="如何使用 Github Workflow 完成 CI/CD">
+<meta name="twitter:description" content="Github Workflow 介紹 前言 為了利用 Github Workflow 完成 CI/CD，分成幾個部分來寫，分別是
+Github Workflow 的基本設定 Github Workflow 中進行 CI 登入登出 AWS ECR 與 github container registry build &amp;amp; upload image 更新 helm value 中的 image tag，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬 基本設定 action 為 push 的時候，所有 branch 都會進行 github workflow action 為 pull_request 的時候，只有 main branch 會進行 github workflow types paths on: push: branches: [&amp;#34;*&amp;#34;] pull_request: branches: [&amp;#34;main&amp;#34;] types: - opened paths: - &amp;#34;**.">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">記錄學程式的歷程</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#github-workflow-介紹">Github Workflow 介紹</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#基本設定">基本設定</a></li>
+        <li><a href="#env-設定">env 設定</a></li>
+        <li><a href="#permissions-設定">permissions 設定</a></li>
+      </ul>
+    </li>
+    <li><a href="#自動化測試-ci">自動化測試 CI</a></li>
+    <li><a href="#build-multi-platform-images-並上傳至-aws-ecr">Build multi-platform images 並上傳至 AWS ECR</a>
+      <ul>
+        <li><a href="#前言-1">前言</a></li>
+        <li><a href="#1-設定-aws-credential">1. 設定 AWS Credential</a></li>
+        <li><a href="#2-登入-aws-private-ecr">2. 登入 AWS private ECR</a></li>
+        <li><a href="#3-登入-aws-public-ecr">3. 登入 AWS public ECR</a></li>
+        <li><a href="#4-登出-aws-ecr">4. 登出 AWS ECR</a></li>
+        <li><a href="#5-設定-short-sha-為-image-tag">5. 設定 short sha 為 image tag</a></li>
+        <li><a href="#6-build-multi-platform-images-並上傳-images-到-aws-ecr">6. Build multi-platform images 並上傳 images 到 AWS ECR</a></li>
+      </ul>
+    </li>
+    <li><a href="#更新-helm-value-的-image-tag">更新 helm value 的 image tag</a>
+      <ul>
+        <li><a href="#前言-2">前言</a></li>
+        <li><a href="#1-先-checkout-私有存放-helm-value-的-repository">1. 先 checkout 私有存放 helm value 的 repository</a></li>
+        <li><a href="#2-設定-image-tag">2. 設定 image tag</a></li>
+        <li><a href="#3-更新-image-tag">3. 更新 image tag</a></li>
+      </ul>
+    </li>
+    <li><a href="#若要將-docker-image-上傳至-github-container-registry-該怎麼做">若要將 docker image 上傳至 github container registry 該怎麼做?</a>
+      <ul>
+        <li><a href="#1-登入與登出-github-container-registry">1. 登入與登出 github container registry</a></li>
+        <li><a href="#2-build-and-push-docker-image">2. Build and push docker image</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ci/cd/" >
+                CI/CD
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/github-workflow/">如何使用 Github Workflow 完成 CI/CD</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 10, 2022</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="github-workflow-介紹">Github Workflow 介紹</h2>
+<h3 id="前言">前言</h3>
+<p>為了利用 Github Workflow 完成 CI/CD，分成幾個部分來寫，分別是</p>
+<ol>
+<li>Github Workflow 的基本設定</li>
+<li>Github Workflow 中進行 CI</li>
+<li>登入登出 AWS ECR 與 github container registry</li>
+<li>build &amp; upload image</li>
+<li>更新 helm value 中的 image tag，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬</li>
+</ol>
+<h3 id="基本設定">基本設定</h3>
+<ul>
+<li>action 為 <code>push</code> 的時候，<code>所有 branch</code> 都會進行 github workflow</li>
+<li>action 為 <code>pull_request</code> 的時候，只有 <code>main branch</code> 會進行 github workflow</li>
+<li>types</li>
+<li>paths</li>
+</ul>
+<pre tabindex="0"><code>on:
+  push:
+    branches: [&#34;*&#34;]
+  pull_request:
+    branches: [&#34;main&#34;]
+    types:
+      - opened
+    paths:
+      - &#34;**.js&#34;
+</code></pre><h3 id="env-設定">env 設定</h3>
+<ul>
+<li>設定方式如下，可以依照自身需求進行設定</li>
+</ul>
+<pre tabindex="0"><code>env:
+  AWS_DEFAULT_REGION: ap-southeast-1
+  GIT_USER_NAME: jennyc
+</code></pre><h3 id="permissions-設定">permissions 設定</h3>
+<ul>
+<li>設定方式如下，可以依照自身需求進行設定</li>
+</ul>
+<pre tabindex="0"><code>permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+</code></pre><!-- raw HTML omitted -->
+<h2 id="自動化測試-ci">自動化測試 CI</h2>
+<ul>
+<li>使用 <code>actions/checkout@v3</code> 進行 checkout repository
+<pre tabindex="0"><code>- name: Checkout repository
+  uses: actions/checkout@v3
+</code></pre></li>
+<li>執行 npm install
+<pre tabindex="0"><code>- name: Install dependencies
+  run: npm install
+</code></pre></li>
+<li>執行 npm test
+<pre tabindex="0"><code>- name: Run tests
+  run: npm run test
+</code></pre></li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="build-multi-platform-images-並上傳至-aws-ecr">Build multi-platform images 並上傳至 AWS ECR</h2>
+<h3 id="前言-1">前言</h3>
+<p>這部分需要先設定 AWS Credential 才能使用 AWS ECR，<br>
+接著 build multi-platform image 並且上傳至 AWS ECR。</p>
+<h3 id="1-設定-aws-credential">1. 設定 AWS Credential</h3>
+<ul>
+<li>
+<p>設定 AWS Credential</p>
+<ul>
+<li>
+<p>使用 GitHub&rsquo;s OIDC provider 方式取得 short-lived credentials</p>
+<ul>
+<li>OpenID Connect (OIDC) 設定方式可以<a class="link" href="https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services"  target="_blank" rel="noopener"
+    >參考官方文件</a></li>
+<li>也可以參考這篇<a class="link" href="../how-to-use-oidc-to-auth-aws-services/" >文章</a></li>
+</ul>
+</li>
+<li>
+<p>workflow 要怎麼寫?</p>
+<ul>
+<li><code>env.AWS_DEFAULT_REGION</code> 需要特別設定，與 AWS ECR 相同的 region</li>
+<li><code>role-to-assume</code> 填入 AWS role</li>
+<li><code>role-session-name</code> 預設是 GitHubActions，可以自行調整名稱</li>
+</ul>
+<pre tabindex="0"><code>  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+        role-to-assume: arn:aws:iam::1234567890:role/example-role
+        role-session-name: GitHubActionsWithAwsEcrUsingOIDCSession 
+        aws-region: ${{env.AWS_DEFAULT_REGION}}
+</code></pre></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-登入-aws-private-ecr">2. 登入 AWS private ECR</h3>
+<ul>
+<li>有兩種方式
+<ul>
+<li>
+<p>Using <code>access key id</code> and <code>secret access key</code> to login</p>
+<pre tabindex="0"><code>  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-region: ap-southeast-1
+</code></pre></li>
+<li>
+<p>Using <code>OpenID Connect (OIDC)</code> to login</p>
+<ul>
+<li>官方推薦使用此方式</li>
+</ul>
+<pre tabindex="0"><code>  - name: Login to Amazon ECR
+    id: login-ecr
+    uses: aws-actions/amazon-ecr-login@v1
+</code></pre></li>
+</ul>
+</li>
+</ul>
+<h3 id="3-登入-aws-public-ecr">3. 登入 AWS public ECR</h3>
+<ul>
+<li>可參考<a class="link" href="https://github.com/aws-actions/amazon-ecr-login#login-to-amazon-ecr-public-then-package-and-push-a-helm-chart"  target="_blank" rel="noopener"
+    >官方說明</a></li>
+</ul>
+<h3 id="4-登出-aws-ecr">4. 登出 AWS ECR</h3>
+<pre tabindex="0"><code>- name: Logout of Amazon ECR
+  if: always()
+  run: docker logout ${{ steps.login-ecr.outputs.registry }}
+</code></pre><h3 id="5-設定-short-sha-為-image-tag">5. 設定 short sha 為 image tag</h3>
+<ul>
+<li>設定以 7 digits 長度的 short sha 作為 image tag，原因可以參考:
+<ul>
+<li>7 digits are the Git default for a short SHA</li>
+<li>附上其他參考文件 <a class="link" href="http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1"  target="_blank" rel="noopener"
+    >Chapter 7 of the Pro Git book</a></li>
+</ul>
+</li>
+<li>將 output 出去的參數命名為 <code>sha_short</code></li>
+</ul>
+<pre tabindex="0"><code>      - name: Set short sha outputs
+        id: vars
+        run: echo &#34;sha_short=$(git rev-parse --short HEAD)&#34; &gt;&gt; $GITHUB_OUTPUT
+</code></pre><h3 id="6-build-multi-platform-images-並上傳-images-到-aws-ecr">6. Build multi-platform images 並上傳 images 到 AWS ECR</h3>
+<ul>
+<li>建立多平台 docker images 的<a class="link" href="https://docs.docker.com/build/building/multi-platform/"  target="_blank" rel="noopener"
+    >官方文件</a></li>
+<li><code>IMAGE_TAG</code> 會從<a class="link" href="./#5-%e8%a8%ad%e5%ae%9a-short-sha-%e7%82%ba-image-tag" >步驟 5</a> 取得 output 的變數 <code>sha_short</code></li>
+<li><code>--platform</code> 可接上需要的 platform 參考，例如 linux/amd64, linux/arm64</li>
+</ul>
+<pre tabindex="0"><code>  - name: Build, tag, and push docker image to Amazon ECR
+    env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: pet-app
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+    run: |
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        ( 官方建議: docker run --privileged --rm tonistiigi/binfmt --install all )
+        docker buildx create --name mybuilder --driver docker-container --bootstrap
+        docker buildx use mybuilder
+        docker buildx inspect
+        docker buildx build --platform linux/amd64,linux/arm64 -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --push .
+</code></pre><ul>
+<li>
+<p><strong>為什麼需要 <code>docker run --rm --privileged multiarch/qemu-user-static --reset -p yes</code></strong> ?</p>
+<ul>
+<li>因為遇到 <code>Error: while loading /usr/local/sbin/node: No such file or directory</code> 問題
+<ul>
+<li>先使用方式一 : <a class="link" href="https://blog.csdn.net/wmg13178599398/article/details/127605036"  target="_blank" rel="noopener"
+    >連接方式</a>，結果還是有相同問題
+<pre tabindex="0"><code>  ln -s /usr/bin/node /usr/local/sbin/node
+</code></pre></li>
+<li>後來使用<a class="link" href="https://stackoverflow.com/questions/72167570/docker-buildx-nodejs-fail"  target="_blank" rel="noopener"
+    >方式二</a>
+<ul>
+<li>
+<p>使用 docker buildx 指令前<strong>先執行以下命令</strong></p>
+<pre tabindex="0"><code>  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+</code></pre></li>
+<li>
+<p><a class="link" href="https://stackoverflow.com/questions/57178788/docker-build-fails-for-arm-images/57183566#57183566"  target="_blank" rel="noopener"
+    >詳細原因的 Stack Overflow 原始文章在這邊，以下是節錄部分</a></p>
+<p>`
+When you ask the Linux kernel to run some executable file, it needs to know, how to load this specific file, and whether this file is compatible with current machine, or not. By default, the ELF binary compiled for, say, arm64v8 is rejected by the kernel, running on amd64 hardware.</p>
+<p>However, the binfmt_misc feature of the kernel allows you to tell it, how to handle the executables it cannot usually handle on its own - this includes the cases when the kernel does not know the binary format or considers it incompatible with current machine.<br>
+`</p>
+</li>
+<li>
+<p><a class="link" href="https://github.com/docker/buildx/issues/495"  target="_blank" rel="noopener"
+    >github issue</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>官方建議使用以下命令解決 QEMU binaries 問題，<a class="link" href="https://docs.docker.com/build/building/multi-platform/"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+<pre tabindex="0"><code>  docker run --privileged --rm tonistiigi/binfmt --install all
+</code></pre></li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="更新-helm-value-的-image-tag">更新 helm value 的 image tag</h2>
+<h3 id="前言-2">前言</h3>
+<p>應用是以 terraform 方式部屬，並搭配使用 helm charts。而 docker image 的 tag 是寫在 helm values 內。<br>
+目標是更新 helm values 的 docker image tag 值，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬。</p>
+<p>需做到兩件事情:</p>
+<ol>
+<li>checkout 私有 repository</li>
+<li>設定與更新 image tag</li>
+</ol>
+<h3 id="1-先-checkout-私有存放-helm-value-的-repository">1. 先 checkout 私有存放 helm value 的 repository</h3>
+<p>需要先設定 credential 才能 fetch private repository，有兩種設定的方式</p>
+<ul>
+<li>
+<p>設定 deploy key</p>
+<ul>
+<li>
+<p>步驟如下，可參考<a class="link" href="https://stackoverflow.com/questions/60222741/github-actions-and-git-clone-issue"  target="_blank" rel="noopener"
+    >這篇</a></p>
+<ol>
+<li><a class="link" href="https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key"  target="_blank" rel="noopener"
+    >Create a new SSH key pair</a> for your repository. Do not set a passphrase.</li>
+<li>Copy the contents of the public key (.pub file) to a new repository <a class="link" href="https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys"  target="_blank" rel="noopener"
+    >deploy key</a> and check the box to &ldquo;Allow write access.&rdquo;</li>
+<li>Add a secret to the repository containing the entire contents of the private key.</li>
+<li>As shown in the example below, configure <code>actions/checkout</code> to use the deploy key you have created.</li>
+</ol>
+</li>
+<li>
+<p>workflow 要怎麼寫?</p>
+<ul>
+<li>ssh-key 填入 private key 的 secrets 名稱</li>
+<li>path 設定 checkout 的 repo 會存在哪一個資料夾內</li>
+</ul>
+<pre tabindex="0"><code>  - name: Checkout ${{env.TERRAFORM_REPOSITORY_NAME}} repo and push file to ${{env.TERRAFORM_REPOSITORY_NAME}}
+    uses: actions/checkout@v3
+    with:
+      repository: ${{env.TERRAFORM_REPOSITORY_OWNER_NAME}}/${{env.TERRAFORM_REPOSITORY_NAME}}
+      ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      path: ${{env.TERRAFORM_REPOSITORY_NAME}}
+</code></pre></li>
+</ul>
+</li>
+<li>
+<p>設定 Personal access token (PAT)</p>
+<ul>
+<li>
+<p>建立 PAT 的方式，<a class="link" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+</li>
+<li>
+<p>將建立完成的 PAT 設定到 repository 的 secrets 中，設定的 secrets 名稱為 GH_PAT，<a class="link" href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+</li>
+<li>
+<p>workflow 要怎麼寫?</p>
+<ul>
+<li>repository 設定為 <code>owner/repository_name</code></li>
+<li>token 填入 PAT 的 secrets 名稱，這邊是將 secrets 名稱為 GH_PAT 的內容設定為 PAT</li>
+</ul>
+<pre tabindex="0"><code>- name: Checkout ${{env.TERRAFORM_REPOSITORY_NAME}} repo and push file to ${{env.TERRAFORM_REPOSITORY_NAME}}
+    uses: actions/checkout@v3
+    with:
+        repository: ${{env.TERRAFORM_REPOSITORY_OWNER_NAME}}/${{env.TERRAFORM_REPOSITORY_NAME}}
+        token: ${{ secrets.GH_PAT }}
+</code></pre></li>
+</ul>
+</li>
+</ul>
+<h3 id="2-設定-image-tag">2. 設定 image tag</h3>
+<ul>
+<li>設定以 7 digits 長度的 short sha 作為 image tag
+<ul>
+<li>7 digits are the Git default for a short SHA</li>
+<li>附上其他參考文件 <a class="link" href="http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1"  target="_blank" rel="noopener"
+    >Chapter 7 of the Pro Git book</a></li>
+</ul>
+</li>
+</ul>
+<pre tabindex="0"><code>      - name: Set short sha outputs
+        id: vars
+        run: echo &#34;sha_short=$(git rev-parse --short HEAD)&#34; &gt;&gt; $GITHUB_OUTPUT
+</code></pre><h3 id="3-更新-image-tag">3. 更新 image tag</h3>
+<ul>
+<li>以 yq 的 github action 工具修改 yaml 檔內的 image tag 值
+<ul>
+<li><a class="link" href="https://mikefarah.gitbook.io/yq/v/v3.x/"  target="_blank" rel="noopener"
+    >yq 的官方文件</a></li>
+<li><a class="link" href="https://github.com/mikefarah/yq"  target="_blank" rel="noopener"
+    >yq 的 github</a></li>
+</ul>
+</li>
+<li>進行 git 操作，設定 user name, user email、commit 以及 push</li>
+<li>tag 取上一個步驟 output 的參數 <code>sha_short</code></li>
+</ul>
+<pre tabindex="0"><code>      - name: Update image tag
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i &#39;.pet_app_dashboard_site.image.tag = &#34;${{ steps.vars.outputs.sha_short }}&#34;&#39; ./${{env.TERRAFORM_REPOSITORY_NAME}}/${{env.HELM_FILE_NAME}}
+      - run: |
+          cd ${{env.TERRAFORM_REPOSITORY_NAME}}
+          git config user.name ${{env.GIT_USER_NAME}}
+          git config user.email ${{env.GIT_USER_EMAIL}}
+          git add ${{env.HELM_FILE_NAME}}
+          git commit -m &#34;update image tag to ${{ steps.vars.outputs.sha_short }}&#34;
+          git push origin main
+</code></pre><!-- raw HTML omitted -->
+<h2 id="若要將-docker-image-上傳至-github-container-registry-該怎麼做">若要將 docker image 上傳至 github container registry 該怎麼做?</h2>
+<h3 id="1-登入與登出-github-container-registry">1. 登入與登出 github container registry</h3>
+<ul>
+<li>
+<p>需要設定 env.REGISTRY 為 ghcr.io</p>
+</li>
+<li>
+<p>不需要另外設定 github.actor 與 <a class="link" href="https://docs.github.com/en/actions/security-guides/automatic-token-authentication"  target="_blank" rel="noopener"
+    >GITHUB_TOKEN</a></p>
+<pre tabindex="0"><code>    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+      registry: ${{ env.REGISTRY }}
+      username: ${{ github.actor }}
+      password: ${{ secrets.GITHUB_TOKEN }}
+</code></pre></li>
+</ul>
+<h3 id="2-build-and-push-docker-image">2. Build and push docker image</h3>
+<pre tabindex="0"><code>      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ steps.vars.outputs.sha_short }}
+          labels: ${{ steps.meta.outputs.labels }}
+</code></pre><h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a class="link" href="https://github.com/actions/checkout"  target="_blank" rel="noopener"
+    >actions/checkout</a></li>
+<li><a class="link" href="https://github.com/aws-actions/amazon-ecr-login"  target="_blank" rel="noopener"
+    >amazon-ecr-login</a></li>
+<li><a class="link" href="https://github.com/docker/login-action"  target="_blank" rel="noopener"
+    >docker/login-action</a></li>
+<li><a class="link" href="https://stackoverflow.com/questions/57178788/docker-build-fails-for-arm-images/57183566#57183566"  target="_blank" rel="noopener"
+    >docker-build-fails-for-arm-images</a></li>
+<li><a class="link" href="https://mikefarah.gitbook.io/yq/v/v3.x/"  target="_blank" rel="noopener"
+    >yq 的官方文件</a></li>
+<li><a class="link" href="https://github.com/mikefarah/yq"  target="_blank" rel="noopener"
+    >yq 的 github</a></li>
+<li><a class="link" href="http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1"  target="_blank" rel="noopener"
+    >Chapter 7 of the Pro Git book</a></li>
+<li><a class="link" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"  target="_blank" rel="noopener"
+    >creating-a-personal-access-token</a></li>
+<li><a class="link" href="https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets"  target="_blank" rel="noopener"
+    >creating-and-using-encrypted-secrets</a></li>
+</ul>
+<p><strong>最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/ci/cd/">CI/CD</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fpost%2fgithub-workflow%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2022 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
