@@ -6,7 +6,78 @@
         <description>Recent content in github pages on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 10 Dec 2022 18:22:43 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/github-pages/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 10 Dec 2022 18:25:43 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/github-pages/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>如何用 github pages host 靜態檔案?</title>
+        <link>https://yue-jenny.github.io/post/host-static-file-on-github-pages/</link>
+        <pubDate>Sat, 10 Dec 2022 18:25:43 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/post/host-static-file-on-github-pages/</guid>
+        <description>&lt;h2 id=&#34;如何用-github-pages-host-靜態檔案&#34;&gt;如何用 github pages host 靜態檔案?&lt;/h2&gt;
+&lt;h3 id=&#34;讓我們一步一步開始吧-&#34;&gt;讓我們一步一步開始吧! 💪&lt;/h3&gt;
+&lt;h4 id=&#34;1-create-a-repository&#34;&gt;1. Create a repository&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/new-repo.jpg&#34;
+	width=&#34;314&#34;
+	height=&#34;270&#34;
+	srcset=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/host-static-file-on-github-pages/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Create a repository&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;116&#34;
+		data-flex-basis=&#34;279px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;2-naming-repository-name&#34;&gt;2. Naming repository name&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;將 repository 依據模板 &lt;code&gt;username.github.io&lt;/code&gt; 命名
+&lt;ul&gt;
+&lt;li&gt;⚠️ username 是帳戶名稱&lt;/li&gt;
+&lt;li&gt;查看自己的 URL 可以查出 username，依據模板 &lt;code&gt;https://github.com/YOUR_USERNAME&lt;/code&gt; 呈現&lt;/li&gt;
+&lt;li&gt;我帳戶名稱是 Yue-Jenny，username 需設定為 yue-jenny&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-上傳你的靜態檔案到-github&#34;&gt;3. 上傳你的靜態檔案到 github&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;參考&amp;quot;&lt;a class=&#34;link&#34; href=&#34;../build-with-hugo/&#34; &gt;為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?&lt;/a&gt;&amp;quot;，用 hugo 建立你的部落格系統，並將 publishing directory 的靜態檔案上傳到 github repository&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-設定&#34;&gt;4. 設定&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;到 repository 的 &lt;code&gt;Settings&lt;/code&gt; 頁籤&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Code and automation&amp;rdquo; 區塊中點選 &lt;code&gt;Pages&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Source&amp;rdquo; 選 &lt;code&gt;Deploy from a branch&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Branch&amp;rdquo; 選 publishing 的來源
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;../build-with-hugo/&#34; &gt;為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?&lt;/a&gt;&amp;rdquo; 設定 publishing directory 為 &lt;code&gt;docs&lt;/code&gt;，所以選 &lt;code&gt;docs&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;拜訪你的新網站 &lt;code&gt;username.github.io&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/github-pages-settings.jpg&#34;
+	width=&#34;1408&#34;
+	height=&#34;718&#34;
+	srcset=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/host-static-file-on-github-pages/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;github pages settings&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;196&#34;
+		data-flex-basis=&#34;470px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/pages/quickstart&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;github pages quickstart&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?</title>
         <link>https://yue-jenny.github.io/post/build-with-hugo/</link>
         <pubDate>Sat, 10 Dec 2022 18:22:43 +0800</pubDate>
@@ -151,7 +222,7 @@
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;9. host on github page&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;設定 github page&lt;/li&gt;
+&lt;li&gt;設定 github pages，請參考 &lt;a class=&#34;link&#34; href=&#34;../host-static-file-on-github-pages&#34; &gt;如何用 github pages host 靜態檔案&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;基本客製化功能&#34;&gt;基本客製化功能&lt;/h3&gt;
 &lt;p&gt;hugo 提供一些客製化功能，來看看應該怎麼做?&lt;/p&gt;

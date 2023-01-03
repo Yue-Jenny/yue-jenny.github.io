@@ -53,7 +53,17 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/tags/github-pages/</loc>
-    <lastmod>2022-12-10T18:22:43+08:00</lastmod>
+    <lastmod>2022-12-10T18:25:43+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/github-pages/</loc>
+    <lastmod>2022-12-10T18:25:43+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/post/host-static-file-on-github-pages/</loc>
+    <lastmod>2022-12-10T18:25:43+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
