@@ -590,8 +590,8 @@ When you ask the Linux kernel to run some executable file, it needs to know, how
         
         <guid>https://yue-jenny.github.io/post/host-static-file-on-github-pages/</guid>
         <description>&lt;h2 id=&#34;如何用-github-pages-host-靜態檔案&#34;&gt;如何用 github pages host 靜態檔案?&lt;/h2&gt;
-&lt;h3 id=&#34;讓我們一步一步開始吧-&#34;&gt;讓我們一步一步開始吧! 💪&lt;/h3&gt;
-&lt;h4 id=&#34;1-create-a-repository&#34;&gt;1. Create a repository&lt;/h4&gt;
+&lt;p&gt;讓我們一步一步開始吧! 💪&lt;/p&gt;
+&lt;h3 id=&#34;1-create-a-repository&#34;&gt;1. Create a repository&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/new-repo.jpg&#34;
 	width=&#34;314&#34;
 	height=&#34;270&#34;
@@ -606,7 +606,7 @@ When you ask the Linux kernel to run some executable file, it needs to know, how
 		data-flex-basis=&#34;279px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h4 id=&#34;2-naming-repository-name&#34;&gt;2. Naming repository name&lt;/h4&gt;
+&lt;h3 id=&#34;2-naming-repository-name&#34;&gt;2. Naming repository name&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;將 repository 依據模板 &lt;code&gt;username.github.io&lt;/code&gt; 命名
 &lt;ul&gt;
@@ -616,21 +616,25 @@ When you ask the Linux kernel to run some executable file, it needs to know, how
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;3-上傳你的靜態檔案到-github&#34;&gt;3. 上傳你的靜態檔案到 github&lt;/h4&gt;
+&lt;h3 id=&#34;3-上傳你的靜態檔案到-github&#34;&gt;3. 上傳你的靜態檔案到 github&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;參考&amp;quot;&lt;a class=&#34;link&#34; href=&#34;../build-with-hugo/&#34; &gt;為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?&lt;/a&gt;&amp;quot;，用 hugo 建立你的部落格系統，並將 publishing directory 的靜態檔案上傳到 github repository&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;4-設定&#34;&gt;4. 設定&lt;/h4&gt;
+&lt;h3 id=&#34;4-設定&#34;&gt;4. 設定&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;到 repository 的 &lt;code&gt;Settings&lt;/code&gt; 頁籤&lt;/li&gt;
-&lt;li&gt;&amp;ldquo;Code and automation&amp;rdquo; 區塊中點選 &lt;code&gt;Pages&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&amp;ldquo;Source&amp;rdquo; 選 &lt;code&gt;Deploy from a branch&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&amp;ldquo;Branch&amp;rdquo; 選 publishing 的來源
+&lt;li&gt;
+&lt;p&gt;到 repository 的 &lt;code&gt;Settings&lt;/code&gt; 頁籤&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ldquo;Code and automation&amp;rdquo; 區塊中點選 &lt;code&gt;Pages&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ldquo;Source&amp;rdquo; 選 &lt;code&gt;Deploy from a branch&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ldquo;Branch&amp;rdquo; 選 publishing 的來源&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;../build-with-hugo/&#34; &gt;為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?&lt;/a&gt;&amp;rdquo; 設定 publishing directory 為 &lt;code&gt;docs&lt;/code&gt;，所以選 &lt;code&gt;docs&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;拜訪你的新網站 &lt;code&gt;username.github.io&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/github-pages-settings.jpg&#34;
 	width=&#34;1408&#34;
@@ -646,6 +650,28 @@ When you ask the Linux kernel to run some executable file, it needs to know, how
 		data-flex-basis=&#34;470px&#34;
 	
 &gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-拜訪你的新網站-&#34;&gt;5. 拜訪你的新網站 🔥&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;瀏覽器輸入 URL &lt;code&gt;username.github.io&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/my-blogger.jpg&#34;
+	width=&#34;652&#34;
+	height=&#34;401&#34;
+	srcset=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/host-static-file-on-github-pages/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;my-blogger&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;162&#34;
+		data-flex-basis=&#34;390px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/pages/quickstart&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
