@@ -3,6 +3,7 @@ languageCode = 'en-us'
 title = 'Jenny blog'
 theme = 'hugo-theme-stack'
 publishDir = "docs"
+enableEmoji  = "true"
 
 [Params]
 	likerID = "yuemachi"

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>github pages on Jenny blog</title>
+        <link>https://yue-jenny.github.io/tags/github-pages/</link>
+        <description>Recent content in github pages on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 10 Dec 2022 18:22:43 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/github-pages/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?</title>
+        <link>https://yue-jenny.github.io/post/build-with-hugo/</link>
+        <pubDate>Sat, 10 Dec 2022 18:22:43 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/post/build-with-hugo/</guid>
+        <description>&lt;h2 id=&#34;為什麼我決定使用-hugo--github-pages-建立一個-blog-系統&#34;&gt;為什麼我決定使用 Hugo &amp;amp; Github pages 建立一個 blog 系統?&lt;/h2&gt;
+&lt;h3 id=&#34;1-內容保存與控管&#34;&gt;1. 內容保存與控管&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;✅ 文章內容以 &lt;a class=&#34;link&#34; href=&#34;https://markdown.tw/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;markdown&lt;/a&gt; 語法撰寫與保存，熟悉 markdown 語法後，會發現很方便 👍
+&lt;ul&gt;
+&lt;li&gt;推薦使用 &lt;a class=&#34;link&#34; href=&#34;https://code.visualstudio.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;vscode&lt;/a&gt; 作為編輯器
+&lt;ul&gt;
+&lt;li&gt;☝️ 加入 extension 可確認 markdown 內容呈現&lt;/li&gt;
+&lt;li&gt;✌️ 直接執行指令運行網站&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;✅ 內容可定期放上雲端保存備份，&lt;strong&gt;不用擔心若部落格系統下線後，文章也跟著消失或者該如何備份&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;✅ 修改內容時，不怕線上部落格系統出現問題，&lt;strong&gt;輸入到一半的內容直接消失&lt;/strong&gt; ( 曾經有類似的經驗，全部重來 😓)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-可高度客製化&#34;&gt;2. 可高度客製化&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;✅ 客製字體大小顏色、主題套件等 UI 的部分&lt;/li&gt;
+&lt;li&gt;✅ 自由決定要加入哪些功能，建立擁有自我風格的部落格系統 💪
+&lt;ul&gt;
+&lt;li&gt;評論區(支援不同多種軟體)&lt;/li&gt;
+&lt;li&gt;LikeCoin button&lt;/li&gt;
+&lt;li&gt;Table of contents&lt;/li&gt;
+&lt;li&gt;頁首與頁尾設計&lt;/li&gt;
+&lt;li&gt;&amp;hellip; etc&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;hugo--github-pages-基本知識&#34;&gt;Hugo &amp;amp; Github pages 基本知識&lt;/h2&gt;
+&lt;h3 id=&#34;1-hugo-介紹&#34;&gt;1. Hugo 介紹&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;引用自官方文件說明
+&lt;blockquote&gt;
+&lt;p&gt;Hugo is a fast and modern static site generator written in Go, and designed to make website creation fun again.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-github-pages-介紹&#34;&gt;2. Github pages 介紹&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;引用自官方文件說明
+&lt;blockquote&gt;
+&lt;p&gt;You can use GitHub Pages to showcase some open source projects, host a blog, or even share your résumé. This guide will help get you started on creating your next website.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;getting-start讓我們進入正題吧&#34;&gt;Getting start，讓我們進入正題吧!&lt;/h2&gt;
+&lt;h3 id=&#34;基本功能&#34;&gt;基本功能&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;1. Prerequisites&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/installation/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Install Hugo&lt;/a&gt;，安裝能夠 compile go language 的工具，不同 OS 安裝不同的檔案&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://git-scm.com/book/en/v2/Getting-Started-Installing-Git&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Install Git&lt;/a&gt;，後續下載 theme 使用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. Create a site&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-SHELL&#34; data-lang=&#34;SHELL&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  hugo new site quickstart
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;3. 到 quickstart 目錄，並執行 initial git repository&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-SHELL&#34; data-lang=&#34;SHELL&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  cd quickstart
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  git init
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;4. clone ananke theme，並以 git submodule 方式存在&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;若想了解 git submodule，可參考&lt;a class=&#34;link&#34; href=&#34;https://git-scm.com/book/en/v2/Git-Tools-Submodules&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-SHELL&#34; data-lang=&#34;SHELL&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  git submodule add https://github.com/theNewDynamic/gohugo-theme-ananke themes/ananke
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;5. 設定 site configuration file&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在 &lt;code&gt;config.toml&lt;/code&gt; 加入這行&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-TOML&#34; data-lang=&#34;TOML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;theme&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ananke&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;6. 本地啟動 hugo 專案&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;本地啟動 hugo 專案，&lt;code&gt;-p&lt;/code&gt; 是指定 port 為 8080&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;想知道更多 hugo 命令行&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/commands/hugo/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;可以點這邊&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-SHELL&#34; data-lang=&#34;SHELL&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  hugo server -p &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;瀏覽器輸入 &lt;code&gt;https://localhost:8080&lt;/code&gt;，可確認頁面已出現 (這時還沒有文章內容)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;7. 開始寫文章&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建立一個 markdown 檔案，markdown 檔案內的設定的意義&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;title - 文章標題&lt;/li&gt;
+&lt;li&gt;date - 建立此文章的時間，文章會跟著時間排序&lt;/li&gt;
+&lt;li&gt;draft - 是否為草稿，production 環境建議只顯示非草稿的文章，寫完文章可改為 false，再執行 build 指令，讓 markdown 變成 html 等靜態檔案。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-SHELL&#34; data-lang=&#34;SHELL&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  hugo new content/post/oidc-aws/index.md
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;8. 運行網站&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;寫完文章內容後 ✏️，設定 markdown 檔案內的 &lt;strong&gt;draft 為 false&lt;/strong&gt;，表示&lt;code&gt;非 draft 模式&lt;/code&gt;，重刷頁面可看到文章&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;若需要在 &lt;code&gt;draft 模式&lt;/code&gt;下顯示文章，需調整啟動 server 的命令行&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-D&lt;/code&gt;表示 &lt;code&gt;--buildDrafts&lt;/code&gt;，會包含註記為 draft 的內容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-SHELL&#34; data-lang=&#34;SHELL&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  hugo server -D -p &lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;成功 🚀 🚀 🚀
+&lt;img src=&#34;https://yue-jenny.github.io/post/build-with-hugo/localhost_8080.jpg&#34;
+	width=&#34;845&#34;
+	height=&#34;412&#34;
+	srcset=&#34;https://yue-jenny.github.io/post/build-with-hugo/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/build-with-hugo/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;本地啟動 hugo 專案&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;492px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;9. host on github page&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;設定 github page&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;基本客製化功能&#34;&gt;基本客製化功能&lt;/h3&gt;
+&lt;p&gt;hugo 提供一些客製化功能，來看看應該怎麼做?&lt;/p&gt;
+&lt;h4 id=&#34;如何設定-publish-資料夾&#34;&gt;如何設定 publish 資料夾?&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在 &lt;code&gt;config.toml&lt;/code&gt; 中加入以下設定，能將 publish 資料夾設定為 &lt;code&gt;docs&lt;/code&gt;，而 Github pages 能 host docs 資料夾內的靜態檔案&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-TOML&#34; data-lang=&#34;TOML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;publishDir&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;docs&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;如何替換成不同-theme&#34;&gt;如何替換成不同 theme?&lt;/h4&gt;
+&lt;p&gt;我使用的主題是 &lt;code&gt;hugo-theme-stack&lt;/code&gt; ( &lt;a class=&#34;link&#34; href=&#34;https://stack.jimmycai.com/guide/getting-started&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt; )，該如何調整?&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;clone hugo-theme-stack theme&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-SHELL&#34; data-lang=&#34;SHELL&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  git submodule add https://github.com/CaiJimmy/hugo-theme-stack themes/hugo-theme-stack
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;調整 &lt;code&gt;config.toml&lt;/code&gt; 的設定值 &lt;code&gt;theme&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-TOML&#34; data-lang=&#34;TOML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;theme&lt;/span&gt; = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;hugo-theme-stack&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;如何客製化文章中的-font-family&#34;&gt;如何客製化文章中的 font family?&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;調整 &lt;code&gt;themes\hugo-theme-stack\layouts\partials\head\custom.html&lt;/code&gt; ，內容如下&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;以 google fonts 作為字體來源、以 &lt;a class=&#34;link&#34; href=&#34;https://developers.google.com/fonts/docs/css2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;css2&lt;/a&gt; 作為樣式來源&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-HTML&#34; data-lang=&#34;HTML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;style&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      :&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          --article-font-family: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Literata&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;var&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;base&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;font&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;family);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;style&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      (&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; () {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;customFont&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; document.&lt;span style=&#34;color:#a6e22e&#34;&gt;createElement&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;link&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          &lt;span style=&#34;color:#a6e22e&#34;&gt;customFont&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;href&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://fonts.googleapis.com/css2?family=Literata:wght@400;700&amp;amp;display=swap&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          &lt;span style=&#34;color:#a6e22e&#34;&gt;customFont&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;text/css&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          &lt;span style=&#34;color:#a6e22e&#34;&gt;customFont&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;rel&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;stylesheet&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          document.&lt;span style=&#34;color:#a6e22e&#34;&gt;head&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;appendChild&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;customFont&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      }());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;參考&lt;a class=&#34;link&#34; href=&#34;https://stack.jimmycai.com/config/header-footer#example-custom-font-family-for-article-content&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;如何客製化建立-indexmd-的模板&#34;&gt;如何客製化建立 index.md 的模板?&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;調整 &lt;code&gt;archetypes\default.md&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;有其他更進階的用法，請參考&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/content-management/archetypes/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;進階客製化--如何在-hugo-的文章中加入-likecoin-button&#34;&gt;進階客製化 ☝️ 如何在 Hugo 的文章中加入 LikeCoin button?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.like.co/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;LikeCoin&lt;/a&gt; 是強調&lt;strong&gt;內容有價&lt;/strong&gt;的而出現的虛擬貨幣，可給作者支持與鼓勵&lt;/li&gt;
+&lt;li&gt;實作方式:
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;註冊 &lt;a class=&#34;link&#34; href=&#34;https://docs.like.co/v/zh/user-guide/liker-id&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Liker ID&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立 &lt;code&gt;themes\hugo-theme-stack\layouts\partials\likecoin.html&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-HTML&#34; data-lang=&#34;HTML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;iframe&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LikeCoin&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;height&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;235&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;src&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://button.like.co/in/embed/{{ .Site.Params.likerID }}/button?referrer={{ .Permalink }}&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;width&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;100%&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;frameborder&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;0&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;iframe&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 config.toml 中加入以下程式碼，並將 [LikerID] 更改為你的 Liker ID&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Params]
+likerID = &amp;#34;YOUR_LIKERID&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在文章的模板中加入 LikeCoin button&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;將以下的程式碼填入 &lt;code&gt;themes\hugo-theme-stack\layouts\partials\article\article.html&lt;/code&gt; 中&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;{{ partial &amp;#34;likecoin.html&amp;#34; . }}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.like.co/v/zh/user-guide/creator/self-host/hugo&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;進階客製化--如何使用-google-console-search-偵測網站的收錄情況&#34;&gt;進階客製化 ✌️ 如何使用 Google Console Search 偵測網站的收錄情況?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;藉由了解網站成效，並針對弱點進行優化，可增加網站的曝光率 🌟&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;進階客製化--seo-搜尋引擎優化&#34;&gt;進階客製化 👌 SEO 搜尋引擎優化&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;google 會依據網頁網址建立 index，搜尋結果會先呈現有建立 index 的網頁&lt;/li&gt;
+&lt;li&gt;因此為了強化網頁的 SEO，將你建立 &lt;code&gt;sitemap&lt;/code&gt; 交給 google ，讓 google 搜尋可快速找到你的網頁&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;注意事項&#34;&gt;注意事項&lt;/h2&gt;
+&lt;p&gt;⚠️ 執行完 build 指令後，建議習慣檢查 docs 資料夾 ( 或你的 publish 資料夾 ) 內的 html 變化是否符合預期&lt;/p&gt;
+&lt;h2 id=&#34;心得&#34;&gt;心得&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;這應該是第二次使用 framework 方式建立靜態文件系統，第一次是使用 vuepress 協助公司建立內部文件系統，這次是使用 hugo。前者是以 javascript 為當作開發語言，後者是以 go 為開發語言。兩者都蠻推薦。&lt;/li&gt;
+&lt;li&gt;最重要的是了解該&lt;strong&gt;框架是如何運行的&lt;/strong&gt;，在高度客製化功能或者修改問題的時侯才不會瞎子摸象般的亂試。&lt;/li&gt;
+&lt;li&gt;hugo 有 &lt;code&gt;64.5k&lt;/code&gt; 🌟 (截止至 20230103)，很多人持續貢獻與維護 🙏 ，因此軟體工程師從頭到尾依靠官方文件與 google 完成基本建立不難。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/pages/quickstart&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;github pages quickstart&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/documentation/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;hugo documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.like.co/v/zh/user-guide/creator/self-host/hugo&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;self host likecoin button&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://developers.google.com/fonts/docs/css2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;css2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://cloudcannon.com/blog/fifty-of-the-most-popular-hugo-themes/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;fifty of the most popular hugo themes / hugo 熱門主題大公開&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Build and submit a sitemap to google&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
