@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://yue-jenny.github.io/tags/argo-cd/</loc>
+    <lastmod>2023-01-04T04:39:13+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/argo-cd/</loc>
+    <lastmod>2023-01-04T04:39:13+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/</loc>
+    <lastmod>2023-01-04T04:39:13+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/</loc>
+    <lastmod>2023-01-04T04:39:13+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/post/</loc>
+    <lastmod>2023-01-04T04:39:13+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-01-04T04:39:13+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/post/argocd-on-docker-desktop/</loc>
+    <lastmod>2023-01-04T04:39:13+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/tags/aws/</loc>
     <lastmod>2022-12-29T14:32:24+08:00</lastmod>
     <changefreq>daily</changefreq>
@@ -12,32 +47,12 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/categories/</loc>
-    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
     <loc>https://yue-jenny.github.io/tags/github-workflows/</loc>
     <lastmod>2022-12-29T14:32:24+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
     <loc>https://yue-jenny.github.io/tags/oidc/</loc>
-    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/post/</loc>
-    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2022-12-29T14:32:24+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
