@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Prerequisites 開始前，需要先確保有以下的先備知識
+kubernetes Argo CD 介紹 以 GitOps 為宗旨的 kubernetes 持續部屬 (continuous delivery) 工具 關於 GitOps 可以參考文章 GitOps Getting Started with Argo CD on Docker Desktop 讓我們一步一步開始吧! 💪
+建立 namespace kubectl create namespace argocd 安裝 Argo CD 的 kubernetes resources 需要安裝的 resources 都寫在 install.yaml 內，利用 kubectl apply 指令進行安裝
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml 確認 Argo CD 的 pod 的運行狀態為 running -n 表示指定 namespace 為 argocd，沒設定就是 default namespace
+kubectl get pod -n argocd pod 運行狀態'>
+<title>使用 Docker Desktop 運行 Argo CD</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/post/2023/01/argocd-on-docker-desktop/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='使用 Docker Desktop 運行 Argo CD'>
+<meta property='og:description' content='Prerequisites 開始前，需要先確保有以下的先備知識
+kubernetes Argo CD 介紹 以 GitOps 為宗旨的 kubernetes 持續部屬 (continuous delivery) 工具 關於 GitOps 可以參考文章 GitOps Getting Started with Argo CD on Docker Desktop 讓我們一步一步開始吧! 💪
+建立 namespace kubectl create namespace argocd 安裝 Argo CD 的 kubernetes resources 需要安裝的 resources 都寫在 install.yaml 內，利用 kubectl apply 指令進行安裝
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml 確認 Argo CD 的 pod 的運行狀態為 running -n 表示指定 namespace 為 argocd，沒設定就是 default namespace
+kubectl get pod -n argocd pod 運行狀態'>
+<meta property='og:url' content='https://yue-jenny.github.io/post/2023/01/argocd-on-docker-desktop/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='CI/CD' /><meta property='article:tag' content='Argo CD' /><meta property='article:published_time' content='2023-01-04T04:39:13&#43;00:00'/><meta property='article:modified_time' content='2023-01-04T04:39:13&#43;00:00'/>
+<meta name="twitter:title" content="使用 Docker Desktop 運行 Argo CD">
+<meta name="twitter:description" content="Prerequisites 開始前，需要先確保有以下的先備知識
+kubernetes Argo CD 介紹 以 GitOps 為宗旨的 kubernetes 持續部屬 (continuous delivery) 工具 關於 GitOps 可以參考文章 GitOps Getting Started with Argo CD on Docker Desktop 讓我們一步一步開始吧! 💪
+建立 namespace kubectl create namespace argocd 安裝 Argo CD 的 kubernetes resources 需要安裝的 resources 都寫在 install.yaml 內，利用 kubectl apply 指令進行安裝
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml 確認 Argo CD 的 pod 的運行狀態為 running -n 表示指定 namespace 為 argocd，沒設定就是 default namespace
+kubectl get pod -n argocd pod 運行狀態">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#argo-cd-介紹">Argo CD 介紹</a></li>
+    <li><a href="#getting-started-with-argo-cd-on-docker-desktop">Getting Started with Argo CD on Docker Desktop</a>
+      <ul>
+        <li><a href="#建立-namespace">建立 namespace</a></li>
+        <li><a href="#安裝-argo-cd-的-kubernetes-resources">安裝 Argo CD 的 kubernetes resources</a></li>
+        <li><a href="#確認-argo-cd-的-pod-的運行狀態為-running">確認 Argo CD 的 pod 的運行狀態為 running</a></li>
+        <li><a href="#取得-argo-cd-初始-admin-的密碼">取得 Argo CD 初始 admin 的密碼</a></li>
+        <li><a href="#將-service-argocd-server-port-forward-到本地">將 service argocd-server port forward 到本地</a></li>
+        <li><a href="#登入-argo-cd-dashboard">登入 Argo CD dashboard</a></li>
+        <li><a href="#針對-public-git-repository-建立一組-application">針對 public git repository 建立一組 application</a></li>
+        <li><a href="#針對-private-git-repository-建立一組-application">針對 private git repository 建立一組 application</a></li>
+        <li><a href="#解除安裝-application">解除安裝 application</a></li>
+        <li><a href="#解除安裝-argo-cd">解除安裝 Argo CD</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ci/cd/" >
+                CI/CD
+            </a>
+        
+            <a href="/categories/argo-cd/" >
+                Argo CD
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/2023/01/argocd-on-docker-desktop/">使用 Docker Desktop 運行 Argo CD</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 04, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="prerequisites">Prerequisites</h2>
+<p>開始前，需要先確保有以下的先備知識</p>
+<ul>
+<li><a class="link" href="https://kubernetes.io/"  target="_blank" rel="noopener"
+    >kubernetes</a></li>
+</ul>
+<h2 id="argo-cd-介紹">Argo CD 介紹</h2>
+<ul>
+<li>以 GitOps 為宗旨的 kubernetes 持續部屬 (continuous delivery) 工具
+<ul>
+<li>關於 GitOps 可以參考文章 <a class="link" href="../what-is-gitops/" >GitOps</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="getting-started-with-argo-cd-on-docker-desktop">Getting Started with Argo CD on Docker Desktop</h2>
+<p>讓我們一步一步開始吧! 💪</p>
+<h3 id="建立-namespace">建立 namespace</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>kubectl create namespace argocd
+</span></span></code></pre></div><h3 id="安裝-argo-cd-的-kubernetes-resources">安裝 Argo CD 的 kubernetes resources</h3>
+<ul>
+<li>
+<p>需要安裝的 resources 都寫在 install.yaml 內，利用 <code>kubectl apply</code> 指令進行安裝</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="確認-argo-cd-的-pod-的運行狀態為-running">確認 Argo CD 的 pod 的運行狀態為 running</h3>
+<ul>
+<li>
+<p><code>-n</code> 表示指定 namespace 為 argocd，沒設定就是 default namespace</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>kubectl get pod -n argocd
+</span></span></code></pre></div></li>
+<li>
+<p>pod 運行狀態</p>
+<p><img src="/post/2023/01/argocd-on-docker-desktop/get-pod-n-argocd.jpg"
+	width="850"
+	height="189"
+	srcset="/post/2023/01/argocd-on-docker-desktop/get-pod-n-argocd_hue72648a3aa0105e4010abdc11108abb9_48197_480x0_resize_q75_box.jpg 480w, /post/2023/01/argocd-on-docker-desktop/get-pod-n-argocd_hue72648a3aa0105e4010abdc11108abb9_48197_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+		alt="argocd 相關的 pod 都已是 running 狀態"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="449"
+		data-flex-basis="1079px"
+	
+></p>
+</li>
+</ul>
+<h3 id="取得-argo-cd-初始-admin-的密碼">取得 Argo CD 初始 admin 的密碼</h3>
+<ul>
+<li>
+<p>登入 dashboard 使用</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{.data.password}&#34;</span> | base64 -d; echo
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="將-service-argocd-server-port-forward-到本地">將 service argocd-server port forward 到本地</h3>
+<ul>
+<li>
+<p>將 service argocd-server 的 port 443 導至<strong>本地 port 8000</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>kubectl port-forward svc/argocd-server -n argocd 8000:443
+</span></span></code></pre></div></li>
+<li>
+<p>port forward 成功</p>
+<p><img src="/post/2023/01/argocd-on-docker-desktop/port-forward.jpg"
+	width="748"
+	height="339"
+	srcset="/post/2023/01/argocd-on-docker-desktop/port-forward_huabd24b4c8f56be51fa0779e4ac514db3_51986_480x0_resize_q75_box.jpg 480w, /post/2023/01/argocd-on-docker-desktop/port-forward_huabd24b4c8f56be51fa0779e4ac514db3_51986_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+		alt="port forward 成功"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="220"
+		data-flex-basis="529px"
+	
+></p>
+</li>
+</ul>
+<h3 id="登入-argo-cd-dashboard">登入 Argo CD dashboard</h3>
+<ul>
+<li>
+<p>網址輸入 <a class="link" href="https://localhost:8000"  target="_blank" rel="noopener"
+    ><code>https://localhost:8000</code></a></p>
+</li>
+<li>
+<p>成功登入 Argo CD dashboard</p>
+<p><img src="/post/2023/01/argocd-on-docker-desktop/argocd-dashboard-clean.png"
+	width="1071"
+	height="638"
+	srcset="/post/2023/01/argocd-on-docker-desktop/argocd-dashboard-clean_hubf35350a067953686ac0ffaa070558e3_60462_480x0_resize_box_3.png 480w, /post/2023/01/argocd-on-docker-desktop/argocd-dashboard-clean_hubf35350a067953686ac0ffaa070558e3_60462_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="成功登入 Argo CD dashboard"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="167"
+		data-flex-basis="402px"
+	
+></p>
+</li>
+</ul>
+<h3 id="針對-public-git-repository-建立一組-application">針對 public git repository 建立一組 application</h3>
+<ul>
+<li>
+<p>先 fork <a class="link" href="https://github.com/argoproj/argocd-example-apps"  target="_blank" rel="noopener"
+    >範例 repository - argocd-example-apps</a></p>
+</li>
+<li>
+<p>依照<a class="link" href="https://argo-cd.readthedocs.io/en/stable/getting_started/#creating-apps-via-ui"  target="_blank" rel="noopener"
+    >官方文件指示步驟</a>進行新增 application</p>
+<ul>
+<li>
+<p>Step 1
+<img src="/post/2023/01/argocd-on-docker-desktop/new-app.png"
+	width="638"
+	height="158"
+	srcset="/post/2023/01/argocd-on-docker-desktop/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_480x0_resize_box_3.png 480w, /post/2023/01/argocd-on-docker-desktop/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="NEW APP"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="403"
+		data-flex-basis="969px"
+	
+></p>
+</li>
+<li>
+<p>Step 2，填完資訊，按下 <code>CREATE</code>，能在 dashboard 看到 application</p>
+<ul>
+<li>app name: guestbook</li>
+<li>project: default</li>
+<li>sync policy: Manual</li>
+<li>Repository URL</li>
+<li>Revision: HEAD</li>
+<li>Path: guestbook</li>
+<li>Destination/Cluster: <code>https://kubernetes.default.svc</code></li>
+<li>Namespace: default</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="針對-private-git-repository-建立一組-application">針對 private git repository 建立一組 application</h3>
+<ul>
+<li>
+<p>選一組 private repo</p>
+</li>
+<li>
+<p>到 <code>Settings/Repositories</code></p>
+<p><img src="/post/2023/01/argocd-on-docker-desktop/setting-private-repo.png"
+	width="814"
+	height="353"
+	srcset="/post/2023/01/argocd-on-docker-desktop/setting-private-repo_hu78a555d7bb85e8a49707de97e637f012_33877_480x0_resize_box_3.png 480w, /post/2023/01/argocd-on-docker-desktop/setting-private-repo_hu78a555d7bb85e8a49707de97e637f012_33877_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Settings/Repositories"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="230"
+		data-flex-basis="553px"
+	
+></p>
+</li>
+<li>
+<p>以 <code>ssh-key</code> 方式認證，也能選擇以 <code>Https</code> 的方式驗證</p>
+<ul>
+<li>可參考<a class="link" href="https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/"  target="_blank" rel="noopener"
+    >Argo CD Private Repositories Credential 設定</a></li>
+</ul>
+</li>
+<li>
+<p>設定完成會顯示 <code>Successful</code>
+<img src="/post/2023/01/argocd-on-docker-desktop/ssh-key-auth.png"
+	width="1060"
+	height="210"
+	srcset="/post/2023/01/argocd-on-docker-desktop/ssh-key-auth_huabe8ed2476538e932deefecd450f8e3f_14786_480x0_resize_box_3.png 480w, /post/2023/01/argocd-on-docker-desktop/ssh-key-auth_huabe8ed2476538e932deefecd450f8e3f_14786_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="以 ssh-key 方式認證"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="504"
+		data-flex-basis="1211px"
+	
+></p>
+</li>
+<li>
+<p>建立 application</p>
+<ul>
+<li>
+<p>Step 1
+<img src="/post/2023/01/argocd-on-docker-desktop/new-app.png"
+	width="638"
+	height="158"
+	srcset="/post/2023/01/argocd-on-docker-desktop/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_480x0_resize_box_3.png 480w, /post/2023/01/argocd-on-docker-desktop/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="NEW APP"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="403"
+		data-flex-basis="969px"
+	
+></p>
+</li>
+<li>
+<p>Step 2</p>
+<ul>
+<li>依照<a class="link" href="https://argo-cd.readthedocs.io/en/stable/getting_started/#creating-apps-via-ui"  target="_blank" rel="noopener"
+    >官方文件指示步驟</a>填入資料
+<img src="/post/2023/01/argocd-on-docker-desktop/add-info-and-create.png"
+	width="1021"
+	height="815"
+	srcset="/post/2023/01/argocd-on-docker-desktop/add-info-and-create_hu338b5f90a6ef44a979a415c69ad0440f_40531_480x0_resize_box_3.png 480w, /post/2023/01/argocd-on-docker-desktop/add-info-and-create_hu338b5f90a6ef44a979a415c69ad0440f_40531_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="填入資料並 CREATE"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="125"
+		data-flex-basis="300px"
+	
+></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>成功建立一組 private application 🚀</p>
+<p><img src="/post/2023/01/argocd-on-docker-desktop/enter-argocd-dshaboard-successfully.jpg"
+	width="1023"
+	height="581"
+	srcset="/post/2023/01/argocd-on-docker-desktop/enter-argocd-dshaboard-successfully_hu2f9e0fec8e3eb44dc7df0f48b6ca8d80_56232_480x0_resize_q75_box.jpg 480w, /post/2023/01/argocd-on-docker-desktop/enter-argocd-dshaboard-successfully_hu2f9e0fec8e3eb44dc7df0f48b6ca8d80_56232_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+		alt="成功建立一組 application"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="422px"
+	
+></p>
+</li>
+</ul>
+<h3 id="解除安裝-application">解除安裝 application</h3>
+<ul>
+<li>
+<p>執行 <code>DELETE</code> 按鈕</p>
+<p><img src="/post/2023/01/argocd-on-docker-desktop/delete-app.png"
+	width="531"
+	height="328"
+	srcset="/post/2023/01/argocd-on-docker-desktop/delete-app_hu66f4bb314802a66182a28a7e0c029fae_30154_480x0_resize_box_3.png 480w, /post/2023/01/argocd-on-docker-desktop/delete-app_hu66f4bb314802a66182a28a7e0c029fae_30154_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="DELETE 按鈕"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="161"
+		data-flex-basis="388px"
+	
+></p>
+</li>
+</ul>
+<h3 id="解除安裝-argo-cd">解除安裝 Argo CD</h3>
+<ul>
+<li>
+<p>⚠️ 解除安裝 Argo CD 前<strong>一定要先解除安裝 application</strong></p>
+<pre tabindex="0"><code>kubectl -n argocd delete -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+</code></pre></li>
+</ul>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/"  target="_blank" rel="noopener"
+    >Argo CD</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/getting_started/"  target="_blank" rel="noopener"
+    >Argo CD getting started</a></li>
+<li><a class="link" href="https://collabnix.com/getting-started-with-argocd-on-docker-desktop/"  target="_blank" rel="noopener"
+    >參考文件</a></li>
+<li><a class="link" href="https://kubernetes.io/"  target="_blank" rel="noopener"
+    >kubernetes</a></li>
+<li><a class="link" href="https://kubernetes.io/zh-cn/docs/tasks/access-application-cluster/port-forward-access-application-cluster/"  target="_blank" rel="noopener"
+    >kubectl port-forward</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/"  target="_blank" rel="noopener"
+    >Argo CD Private Repositories Credential 設定</a></li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/ci/cd/">CI/CD</a>
+        
+            <a href="/tags/argo-cd/">Argo CD</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fpost%2f2023%2f01%2fargocd-on-docker-desktop%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/github-workflow/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">如何使用 Github Workflow 完成 CI/CD</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
