@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Pages on Jenny blog</title>
+        <link>https://yue-jenny.github.io/page/</link>
+        <description>Recent content in Pages on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 05 Jan 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://yue-jenny.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>About</title>
+        <link>https://yue-jenny.github.io/page/about/</link>
+        <pubDate>Thu, 05 Jan 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://yue-jenny.github.io/page/about/</guid>
+        <description>&lt;h3 id=&#34;為什麼想開始寫文章&#34;&gt;為什麼想開始寫文章?&lt;/h3&gt;
+&lt;p&gt;因為想過一個&lt;strong&gt;有意識地&lt;/strong&gt;將學習知識紀錄下來的生活。&lt;/p&gt;
+&lt;p&gt;用撰寫文章來梳理生活。&lt;/p&gt;
+&lt;p&gt;除此之外，說不定以後這些文章能直接派上用場。😎&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Archives</title>
+        <link>https://yue-jenny.github.io/page/archives/</link>
+        <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+        
+        <guid>https://yue-jenny.github.io/page/archives/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Search</title>
+        <link>https://yue-jenny.github.io/page/search/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://yue-jenny.github.io/page/search/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>
