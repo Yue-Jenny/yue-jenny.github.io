@@ -8,17 +8,17 @@
         <language>en-us</language>
         <lastBuildDate>Sat, 10 Dec 2022 18:25:43 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/github-pages/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>如何用 github pages host 靜態檔案?</title>
-        <link>https://yue-jenny.github.io/post/host-static-file-on-github-pages/</link>
+        <link>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/</link>
         <pubDate>Sat, 10 Dec 2022 18:25:43 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/post/host-static-file-on-github-pages/</guid>
+        <guid>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/</guid>
         <description>&lt;h2 id=&#34;如何用-github-pages-host-靜態檔案&#34;&gt;如何用 github pages host 靜態檔案?&lt;/h2&gt;
 &lt;p&gt;讓我們一步一步開始吧! 💪&lt;/p&gt;
 &lt;h3 id=&#34;1-create-a-repository&#34;&gt;1. Create a repository&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/new-repo.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/new-repo.jpg&#34;
 	width=&#34;314&#34;
 	height=&#34;270&#34;
-	srcset=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/host-static-file-on-github-pages/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Create a repository&#34;
@@ -59,10 +59,10 @@
 &lt;ul&gt;
 &lt;li&gt;&amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;../build-with-hugo/&#34; &gt;為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?&lt;/a&gt;&amp;rdquo; 設定 publishing directory 為 &lt;code&gt;docs&lt;/code&gt;，所以選 &lt;code&gt;docs&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/github-pages-settings.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/github-pages-settings.jpg&#34;
 	width=&#34;1408&#34;
 	height=&#34;718&#34;
-	srcset=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/host-static-file-on-github-pages/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;github pages settings&#34;
@@ -79,10 +79,10 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;瀏覽器輸入 URL &lt;code&gt;username.github.io&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/my-blogger.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/my-blogger.jpg&#34;
 	width=&#34;652&#34;
 	height=&#34;401&#34;
-	srcset=&#34;https://yue-jenny.github.io/post/host-static-file-on-github-pages/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/host-static-file-on-github-pages/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;my-blogger&#34;

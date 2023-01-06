@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='為什麼我決定使用 Hugo &amp;amp; Github pages 建立一個 blog 系統? 1. 內容保存與控管 ✅ 文章內容以 markdown 語法撰寫與保存，熟悉 markdown 語法後，會發現很方便 👍 推薦使用 vscode 作為編輯器 ☝️ 加入 extension 可確認 markdown 內容呈現 ✌️ 直接執行指令運行網站 ✅ 內容可定期放上雲端保存備份，不用擔心若部落格系統下線後，文章也跟著消失或者該如何備份 ✅ 修改內容時，不怕線上部落格系統出現問題，輸入到一半的內容直接消失 ( 曾經有類似的經驗，全部重來 😓) 2. 可高度客製化 ✅ 客製字體大小顏色、主題套件等 UI 的部分 ✅ 自由決定要加入哪些功能，建立擁有自我風格的部落格系統 💪 評論區(支援不同多種軟體) LikeCoin button Table of contents 頁首與頁尾設計 &amp;hellip; etc Hugo &amp;amp; Github pages 基本知識 1. Hugo 介紹 引用自官方文件說明 Hugo is a fast and modern static site generator written in Go, and designed to make website creation fun again.'>
+<title>為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?'>
+<meta property='og:description' content='為什麼我決定使用 Hugo &amp;amp; Github pages 建立一個 blog 系統? 1. 內容保存與控管 ✅ 文章內容以 markdown 語法撰寫與保存，熟悉 markdown 語法後，會發現很方便 👍 推薦使用 vscode 作為編輯器 ☝️ 加入 extension 可確認 markdown 內容呈現 ✌️ 直接執行指令運行網站 ✅ 內容可定期放上雲端保存備份，不用擔心若部落格系統下線後，文章也跟著消失或者該如何備份 ✅ 修改內容時，不怕線上部落格系統出現問題，輸入到一半的內容直接消失 ( 曾經有類似的經驗，全部重來 😓) 2. 可高度客製化 ✅ 客製字體大小顏色、主題套件等 UI 的部分 ✅ 自由決定要加入哪些功能，建立擁有自我風格的部落格系統 💪 評論區(支援不同多種軟體) LikeCoin button Table of contents 頁首與頁尾設計 &amp;hellip; etc Hugo &amp;amp; Github pages 基本知識 1. Hugo 介紹 引用自官方文件說明 Hugo is a fast and modern static site generator written in Go, and designed to make website creation fun again.'>
+<meta property='og:url' content='https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='website' /><meta property='article:tag' content='hugo' /><meta property='article:tag' content='github pages' /><meta property='article:tag' content='likecoin' /><meta property='article:published_time' content='2022-12-10T18:22:43&#43;08:00'/><meta property='article:modified_time' content='2022-12-10T18:22:43&#43;08:00'/>
+<meta name="twitter:title" content="為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?">
+<meta name="twitter:description" content="為什麼我決定使用 Hugo &amp;amp; Github pages 建立一個 blog 系統? 1. 內容保存與控管 ✅ 文章內容以 markdown 語法撰寫與保存，熟悉 markdown 語法後，會發現很方便 👍 推薦使用 vscode 作為編輯器 ☝️ 加入 extension 可確認 markdown 內容呈現 ✌️ 直接執行指令運行網站 ✅ 內容可定期放上雲端保存備份，不用擔心若部落格系統下線後，文章也跟著消失或者該如何備份 ✅ 修改內容時，不怕線上部落格系統出現問題，輸入到一半的內容直接消失 ( 曾經有類似的經驗，全部重來 😓) 2. 可高度客製化 ✅ 客製字體大小顏色、主題套件等 UI 的部分 ✅ 自由決定要加入哪些功能，建立擁有自我風格的部落格系統 💪 評論區(支援不同多種軟體) LikeCoin button Table of contents 頁首與頁尾設計 &amp;hellip; etc Hugo &amp;amp; Github pages 基本知識 1. Hugo 介紹 引用自官方文件說明 Hugo is a fast and modern static site generator written in Go, and designed to make website creation fun again.">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#為什麼我決定使用-hugo--github-pages-建立一個-blog-系統">為什麼我決定使用 Hugo &amp; Github pages 建立一個 blog 系統?</a>
+      <ul>
+        <li><a href="#1-內容保存與控管">1. 內容保存與控管</a></li>
+        <li><a href="#2-可高度客製化">2. 可高度客製化</a></li>
+      </ul>
+    </li>
+    <li><a href="#hugo--github-pages-基本知識">Hugo &amp; Github pages 基本知識</a>
+      <ul>
+        <li><a href="#1-hugo-介紹">1. Hugo 介紹</a></li>
+        <li><a href="#2-github-pages-介紹">2. Github pages 介紹</a></li>
+      </ul>
+    </li>
+    <li><a href="#getting-start讓我們進入正題吧">Getting start，讓我們進入正題吧!</a>
+      <ul>
+        <li><a href="#基本功能">基本功能</a></li>
+        <li><a href="#基本客製化功能">基本客製化功能</a></li>
+        <li><a href="#進階客製化--如何在-hugo-的文章中加入-likecoin-button">進階客製化 ☝️ 如何在 Hugo 的文章中加入 LikeCoin button?</a></li>
+        <li><a href="#進階客製化--如何使用-google-console-search-偵測網站的收錄情況">進階客製化 ✌️ 如何使用 Google Console Search 偵測網站的收錄情況?</a></li>
+        <li><a href="#進階客製化--seo-搜尋引擎優化">進階客製化 👌 SEO 搜尋引擎優化</a></li>
+      </ul>
+    </li>
+    <li><a href="#注意事項">注意事項</a></li>
+    <li><a href="#心得">心得</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/website/" >
+                website
+            </a>
+        
+            <a href="/categories/hugo/" >
+                hugo
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/">為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 10, 2022</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    3 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="為什麼我決定使用-hugo--github-pages-建立一個-blog-系統">為什麼我決定使用 Hugo &amp; Github pages 建立一個 blog 系統?</h2>
+<h3 id="1-內容保存與控管">1. 內容保存與控管</h3>
+<ul>
+<li>✅ 文章內容以 <a class="link" href="https://markdown.tw/"  target="_blank" rel="noopener"
+    >markdown</a> 語法撰寫與保存，熟悉 markdown 語法後，會發現很方便 👍
+<ul>
+<li>推薦使用 <a class="link" href="https://code.visualstudio.com/"  target="_blank" rel="noopener"
+    >vscode</a> 作為編輯器
+<ul>
+<li>☝️ 加入 extension 可確認 markdown 內容呈現</li>
+<li>✌️ 直接執行指令運行網站</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>✅ 內容可定期放上雲端保存備份，<strong>不用擔心若部落格系統下線後，文章也跟著消失或者該如何備份</strong></li>
+<li>✅ 修改內容時，不怕線上部落格系統出現問題，<strong>輸入到一半的內容直接消失</strong> ( 曾經有類似的經驗，全部重來 😓)</li>
+</ul>
+<h3 id="2-可高度客製化">2. 可高度客製化</h3>
+<ul>
+<li>✅ 客製字體大小顏色、主題套件等 UI 的部分</li>
+<li>✅ 自由決定要加入哪些功能，建立擁有自我風格的部落格系統 💪
+<ul>
+<li>評論區(支援不同多種軟體)</li>
+<li>LikeCoin button</li>
+<li>Table of contents</li>
+<li>頁首與頁尾設計</li>
+<li>&hellip; etc</li>
+</ul>
+</li>
+</ul>
+<h2 id="hugo--github-pages-基本知識">Hugo &amp; Github pages 基本知識</h2>
+<h3 id="1-hugo-介紹">1. Hugo 介紹</h3>
+<ul>
+<li>引用自官方文件說明
+<blockquote>
+<p>Hugo is a fast and modern static site generator written in Go, and designed to make website creation fun again.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="2-github-pages-介紹">2. Github pages 介紹</h3>
+<ul>
+<li>引用自官方文件說明
+<blockquote>
+<p>You can use GitHub Pages to showcase some open source projects, host a blog, or even share your résumé. This guide will help get you started on creating your next website.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="getting-start讓我們進入正題吧">Getting start，讓我們進入正題吧!</h2>
+<h3 id="基本功能">基本功能</h3>
+<p><strong>1. Prerequisites</strong></p>
+<ul>
+<li><a class="link" href="https://gohugo.io/installation/"  target="_blank" rel="noopener"
+    >Install Hugo</a>，安裝能夠 compile go language 的工具，不同 OS 安裝不同的檔案</li>
+<li><a class="link" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git"  target="_blank" rel="noopener"
+    >Install Git</a>，後續下載 theme 使用</li>
+</ul>
+<p><strong>2. Create a site</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>  hugo new site quickstart
+</span></span></code></pre></div><p><strong>3. 到 quickstart 目錄，並執行 initial git repository</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>  cd quickstart
+</span></span><span style="display:flex;"><span>  git init
+</span></span></code></pre></div><p><strong>4. clone ananke theme，並以 git submodule 方式存在</strong></p>
+<ul>
+<li>
+<p>若想了解 git submodule，可參考<a class="link" href="https://git-scm.com/book/en/v2/Git-Tools-Submodules"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>  git submodule add https://github.com/theNewDynamic/gohugo-theme-ananke themes/ananke
+</span></span></code></pre></div></li>
+</ul>
+<p><strong>5. 設定 site configuration file</strong></p>
+<ul>
+<li>
+<p>在 <code>config.toml</code> 加入這行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-TOML" data-lang="TOML"><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span> = <span style="color:#e6db74">&#39;ananke&#39;</span>
+</span></span></code></pre></div></li>
+</ul>
+<p><strong>6. 本地啟動 hugo 專案</strong></p>
+<ul>
+<li>
+<p>本地啟動 hugo 專案，<code>-p</code> 是指定 port 為 8080</p>
+<ul>
+<li>
+<p>想知道更多 hugo 命令行<a class="link" href="https://gohugo.io/commands/hugo/"  target="_blank" rel="noopener"
+    >可以點這邊</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>  hugo server -p <span style="color:#ae81ff">8080</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>瀏覽器輸入 <code>https://localhost:8080</code>，可確認頁面已出現 (這時還沒有文章內容)</p>
+</li>
+</ul>
+<p><strong>7. 開始寫文章</strong></p>
+<ul>
+<li>
+<p>建立一個 markdown 檔案，markdown 檔案內的設定的意義</p>
+<ul>
+<li>title - 文章標題</li>
+<li>date - 建立此文章的時間，文章會跟著時間排序</li>
+<li>draft - 是否為草稿，production 環境建議只顯示非草稿的文章，寫完文章可改為 false，再執行 build 指令，讓 markdown 變成 html 等靜態檔案。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>  hugo new content/post/oidc-aws/index.md
+</span></span></code></pre></div></li>
+</ul>
+<p><strong>8. 運行網站</strong></p>
+<ul>
+<li>
+<p>寫完文章內容後 ✏️，設定 markdown 檔案內的 <strong>draft 為 false</strong>，表示<code>非 draft 模式</code>，重刷頁面可看到文章</p>
+<ul>
+<li>
+<p>若需要在 <code>draft 模式</code>下顯示文章，需調整啟動 server 的命令行</p>
+<ul>
+<li><code>-D</code>表示 <code>--buildDrafts</code>，會包含註記為 draft 的內容</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>  hugo server -D -p <span style="color:#ae81ff">8080</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>成功 🚀 🚀 🚀
+<img src="/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/localhost_8080.jpg"
+	width="845"
+	height="412"
+	srcset="/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_480x0_resize_q75_box.jpg 480w, /2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+		alt="本地啟動 hugo 專案"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="205"
+		data-flex-basis="492px"
+	
+></p>
+</li>
+</ul>
+<p><strong>9. host on github page</strong></p>
+<ul>
+<li>設定 github pages，請參考 <a class="link" href="../host-static-file-on-github-pages" >如何用 github pages host 靜態檔案</a></li>
+</ul>
+<h3 id="基本客製化功能">基本客製化功能</h3>
+<p>hugo 提供一些客製化功能，來看看應該怎麼做?</p>
+<h4 id="如何設定-publish-資料夾">如何設定 publish 資料夾?</h4>
+<ul>
+<li>
+<p>在 <code>config.toml</code> 中加入以下設定，能將 publish 資料夾設定為 <code>docs</code>，而 Github pages 能 host docs 資料夾內的靜態檔案</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-TOML" data-lang="TOML"><span style="display:flex;"><span>  <span style="color:#a6e22e">publishDir</span> = <span style="color:#e6db74">&#34;docs&#34;</span>
+</span></span></code></pre></div></li>
+</ul>
+<h4 id="如何替換成不同-theme">如何替換成不同 theme?</h4>
+<p>我使用的主題是 <code>hugo-theme-stack</code> ( <a class="link" href="https://stack.jimmycai.com/guide/getting-started"  target="_blank" rel="noopener"
+    >官方文件</a> )，該如何調整?</p>
+<ol>
+<li>clone hugo-theme-stack theme</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SHELL" data-lang="SHELL"><span style="display:flex;"><span>  git submodule add https://github.com/CaiJimmy/hugo-theme-stack themes/hugo-theme-stack
+</span></span></code></pre></div><ol start="2">
+<li>調整 <code>config.toml</code> 的設定值 <code>theme</code></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-TOML" data-lang="TOML"><span style="display:flex;"><span>  <span style="color:#a6e22e">theme</span> = <span style="color:#e6db74">&#39;hugo-theme-stack&#39;</span>
+</span></span></code></pre></div><h4 id="如何客製化文章中的-font-family">如何客製化文章中的 font family?</h4>
+<ul>
+<li>
+<p>調整 <code>themes\hugo-theme-stack\layouts\partials\head\custom.html</code> ，內容如下</p>
+<ul>
+<li>以 google fonts 作為字體來源、以 <a class="link" href="https://developers.google.com/fonts/docs/css2"  target="_blank" rel="noopener"
+    >css2</a> 作為樣式來源</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>  &lt;<span style="color:#f92672">style</span>&gt;
+</span></span><span style="display:flex;"><span>      :<span style="color:#a6e22e">root</span> {
+</span></span><span style="display:flex;"><span>          --article-font-family: <span style="color:#e6db74">&#34;Literata&#34;</span>, <span style="color:#a6e22e">var</span>(<span style="color:#f92672">--</span>base<span style="color:#f92672">-</span>font<span style="color:#f92672">-</span>family);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">style</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>      (<span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">customFont</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#39;link&#39;</span>);
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">customFont</span>.<span style="color:#a6e22e">href</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://fonts.googleapis.com/css2?family=Literata:wght@400;700&amp;display=swap&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">customFont</span>.<span style="color:#a6e22e">type</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;text/css&#34;</span>;
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">customFont</span>.<span style="color:#a6e22e">rel</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;stylesheet&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          document.<span style="color:#a6e22e">head</span>.<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">customFont</span>);
+</span></span><span style="display:flex;"><span>      }());
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div></li>
+<li>
+<p>參考<a class="link" href="https://stack.jimmycai.com/config/header-footer#example-custom-font-family-for-article-content"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+</li>
+</ul>
+<h4 id="如何客製化建立-indexmd-的模板">如何客製化建立 index.md 的模板?</h4>
+<ul>
+<li>調整 <code>archetypes\default.md</code></li>
+<li>有其他更進階的用法，請參考<a class="link" href="https://gohugo.io/content-management/archetypes/"  target="_blank" rel="noopener"
+    >官方文件</a></li>
+</ul>
+<h3 id="進階客製化--如何在-hugo-的文章中加入-likecoin-button">進階客製化 ☝️ 如何在 Hugo 的文章中加入 LikeCoin button?</h3>
+<ul>
+<li><a class="link" href="https://docs.like.co/"  target="_blank" rel="noopener"
+    >LikeCoin</a> 是強調<strong>內容有價</strong>的而出現的虛擬貨幣，可給作者支持與鼓勵</li>
+<li>實作方式:
+<ul>
+<li>
+<p>註冊 <a class="link" href="https://docs.like.co/v/zh/user-guide/liker-id"  target="_blank" rel="noopener"
+    >Liker ID</a></p>
+</li>
+<li>
+<p>建立 <code>themes\hugo-theme-stack\layouts\partials\likecoin.html</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>  &lt;<span style="color:#f92672">iframe</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;LikeCoin&#34;</span> <span style="color:#a6e22e">height</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;235&#34;</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://button.like.co/in/embed/{{ .Site.Params.likerID }}/button?referrer={{ .Permalink }}&#34;</span> <span style="color:#a6e22e">width</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;100%&#34;</span> <span style="color:#a6e22e">frameborder</span><span style="color:#f92672">=</span><span style="color:#e6db74">0</span>&gt;&lt;/<span style="color:#f92672">iframe</span>&gt;
+</span></span></code></pre></div></li>
+<li>
+<p>在 config.toml 中加入以下程式碼，並將 [LikerID] 更改為你的 Liker ID</p>
+<pre tabindex="0"><code>[Params]
+likerID = &#34;YOUR_LIKERID&#34;
+</code></pre></li>
+<li>
+<p>在文章的模板中加入 LikeCoin button</p>
+<ul>
+<li>
+<p>將以下的程式碼填入 <code>themes\hugo-theme-stack\layouts\partials\article\article.html</code> 中</p>
+<pre tabindex="0"><code>{{ partial &#34;likecoin.html&#34; . }}
+</code></pre></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="link" href="https://docs.like.co/v/zh/user-guide/creator/self-host/hugo"  target="_blank" rel="noopener"
+    >官方文件</a></li>
+</ul>
+<h3 id="進階客製化--如何使用-google-console-search-偵測網站的收錄情況">進階客製化 ✌️ 如何使用 Google Console Search 偵測網站的收錄情況?</h3>
+<ul>
+<li>藉由了解網站成效，並針對弱點進行優化，可增加網站的曝光率 🌟</li>
+</ul>
+<h3 id="進階客製化--seo-搜尋引擎優化">進階客製化 👌 SEO 搜尋引擎優化</h3>
+<ul>
+<li>google 會依據網頁網址建立 index，搜尋結果會先呈現有建立 index 的網頁</li>
+<li>因此為了強化網頁的 SEO，將你建立 <code>sitemap</code> 交給 google ，讓 google 搜尋可快速找到你的網頁</li>
+</ul>
+<h2 id="注意事項">注意事項</h2>
+<p>⚠️ 執行完 build 指令後，建議習慣檢查 docs 資料夾 ( 或你的 publish 資料夾 ) 內的 html 變化是否符合預期</p>
+<h2 id="心得">心得</h2>
+<ul>
+<li>這應該是第二次使用 framework 方式建立靜態文件系統，第一次是使用 vuepress 協助公司建立內部文件系統，這次是使用 hugo。前者是以 javascript 為當作開發語言，後者是以 go 為開發語言。兩者都蠻推薦。</li>
+<li>最重要的是了解該<strong>框架是如何運行的</strong>，在高度客製化功能或者修改問題的時侯才不會瞎子摸象般的亂試。</li>
+<li>hugo 有 <code>64.5k</code> 🌟 (截止至 20230103)，很多人持續貢獻與維護 🙏 ，因此軟體工程師從頭到尾依靠官方文件與 google 完成基本建立不難。</li>
+</ul>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a class="link" href="https://docs.github.com/en/pages/quickstart"  target="_blank" rel="noopener"
+    >github pages quickstart</a></li>
+<li><a class="link" href="https://gohugo.io/documentation/"  target="_blank" rel="noopener"
+    >hugo documentation</a></li>
+<li><a class="link" href="https://docs.like.co/v/zh/user-guide/creator/self-host/hugo"  target="_blank" rel="noopener"
+    >self host likecoin button</a></li>
+<li><a class="link" href="https://developers.google.com/fonts/docs/css2"  target="_blank" rel="noopener"
+    >css2</a></li>
+<li><a class="link" href="https://cloudcannon.com/blog/fifty-of-the-most-popular-hugo-themes/"  target="_blank" rel="noopener"
+    >fifty of the most popular hugo themes / hugo 熱門主題大公開</a></li>
+<li><a class="link" href="https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap"  target="_blank" rel="noopener"
+    >Build and submit a sitemap to google</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/website/">website</a>
+        
+            <a href="/tags/hugo/">hugo</a>
+        
+            <a href="/tags/github-pages/">github pages</a>
+        
+            <a href="/tags/likecoin/">likecoin</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2022%2f12%2f%25E7%2582%25BA%25E4%25BB%2580%25E9%25BA%25BC%25E6%2588%2591%25E6%25B1%25BA%25E5%25AE%259A%25E4%25BD%25BF%25E7%2594%25A8-hugo-%25E5%25BB%25BA%25E7%25AB%258B%25E4%25B8%2580%25E5%2580%258B-blog-%25E7%25B3%25BB%25E7%25B5%25B1-%25E4%25BB%25A5%25E5%258F%258A%25E6%2588%2591%25E8%25A9%25B2%25E5%25A6%2582%25E4%25BD%2595%25E5%25BB%25BA%25E7%25AB%258B%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "https:\/\/yue-jenny.github.io\/",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

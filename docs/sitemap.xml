@@ -12,7 +12,7 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/post/2023/01/what-is-argocd/</loc>
+    <loc>https://yue-jenny.github.io/2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/</loc>
     <lastmod>2023-01-06T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -47,7 +47,7 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/post/2023/01/argocd-on-docker-desktop/</loc>
+    <loc>https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/</loc>
     <lastmod>2023-01-04T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -72,12 +72,12 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/post/how-to-use-oidc-to-auth-aws-services/</loc>
+    <loc>https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/</loc>
     <lastmod>2022-12-29T14:32:24+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/post/github-workflow/</loc>
+    <loc>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-github-workflow-%E5%AE%8C%E6%88%90-ci/cd/</loc>
     <lastmod>2022-12-10T18:33:05+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -92,7 +92,7 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/post/host-static-file-on-github-pages/</loc>
+    <loc>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/</loc>
     <lastmod>2022-12-10T18:25:43+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -122,7 +122,7 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/post/build-with-hugo/</loc>
+    <loc>https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/</loc>
     <lastmod>2022-12-10T18:22:43+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

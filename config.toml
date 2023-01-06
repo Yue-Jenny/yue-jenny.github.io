@@ -5,6 +5,9 @@ theme = 'hugo-theme-stack'
 publishDir = "docs"
 enableEmoji  = "true"
 
+[permalinks]
+  post = '/:year/:month/:title/'
+
 [Params]
 	likerID = "yuemachi"
 

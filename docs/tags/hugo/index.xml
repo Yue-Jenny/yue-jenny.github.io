@@ -8,10 +8,10 @@
         <language>en-us</language>
         <lastBuildDate>Sat, 10 Dec 2022 18:22:43 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/hugo/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?</title>
-        <link>https://yue-jenny.github.io/post/build-with-hugo/</link>
+        <link>https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/</link>
         <pubDate>Sat, 10 Dec 2022 18:22:43 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/post/build-with-hugo/</guid>
+        <guid>https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/</guid>
         <description>&lt;h2 id=&#34;為什麼我決定使用-hugo--github-pages-建立一個-blog-系統&#34;&gt;為什麼我決定使用 Hugo &amp;amp; Github pages 建立一個 blog 系統?&lt;/h2&gt;
 &lt;h3 id=&#34;1-內容保存與控管&#34;&gt;1. 內容保存與控管&lt;/h3&gt;
 &lt;ul&gt;
@@ -133,10 +133,10 @@
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;成功 🚀 🚀 🚀
-&lt;img src=&#34;https://yue-jenny.github.io/post/build-with-hugo/localhost_8080.jpg&#34;
+&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/localhost_8080.jpg&#34;
 	width=&#34;845&#34;
 	height=&#34;412&#34;
-	srcset=&#34;https://yue-jenny.github.io/post/build-with-hugo/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/post/build-with-hugo/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/localhost_8080_hu4690c4b8f12d015a9ed77cdf42c461de_38376_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;本地啟動 hugo 專案&#34;
