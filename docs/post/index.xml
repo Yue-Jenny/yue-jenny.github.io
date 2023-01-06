@@ -6,7 +6,162 @@
         <description>Recent content in Posts on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 04 Jan 2023 04:39:13 +0000</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 05 Jan 2023 10:56:11 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Argo CD 是什麼?</title>
+        <link>https://yue-jenny.github.io/post/2023/01/what-is-argocd/</link>
+        <pubDate>Thu, 05 Jan 2023 10:56:11 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/post/2023/01/what-is-argocd/</guid>
+        <description>&lt;h2 id=&#34;argo-cd-是什麼&#34;&gt;Argo CD 是什麼?&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;這部分會分享 Argo CD 的&lt;code&gt;中心思想&lt;/code&gt;、&lt;code&gt;架構&lt;/code&gt;與&lt;code&gt;功能&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/getting_started/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;getting started guide&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/user-guide/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;user oriented documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/developer-guide/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Developer oriented documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/overview/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;the upgrade guide&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;how-it-works-&#34;&gt;How it works? 🔩&lt;/h3&gt;
+&lt;h4 id=&#34;gitops-pattern&#34;&gt;GitOps pattern&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Argo CD 遵循 GitOps 模式，即&lt;strong&gt;以 Git repositories 作為唯一識別 application 狀態的來源&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;kubernetes-controller&#34;&gt;kubernetes controller&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較&lt;code&gt;現在狀態&lt;/code&gt;與&lt;code&gt;目標狀態&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Argo CD 的 kubernetes manifest 可用以下幾種方式建立:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://kustomize.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;kustomize&lt;/a&gt; applications&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://helm.sh/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;helm&lt;/a&gt; charts&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://jsonnet.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;jsonnet&lt;/a&gt; files&lt;/li&gt;
+&lt;li&gt;Plain directory of YAML/json manifests&lt;/li&gt;
+&lt;li&gt;Any custom config management tool configured as a config management plugin&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;architecture&#34;&gt;architecture&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Argo CD architecture
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;架構圖
+&lt;img src=&#34;https://yue-jenny.github.io/post/2023/01/what-is-argocd/argocd_architecture.webp&#34;
+	width=&#34;743&#34;
+	height=&#34;708&#34;
+	srcset=&#34;https://yue-jenny.github.io/post/2023/01/what-is-argocd/argocd_architecture_hu7301e8d492990cc775fb267fdb3a75d6_47024_480x0_resize_q75_h2_box_2.webp 480w, https://yue-jenny.github.io/post/2023/01/what-is-argocd/argocd_architecture_hu7301e8d492990cc775fb267fdb3a75d6_47024_1024x0_resize_q75_h2_box_2.webp 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;argocd architecture, ref: https://argo-cd.readthedocs.io/en/stable/&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;104&#34;
+		data-flex-basis=&#34;251px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/operator-manual/architecture/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Components&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;API Server&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可以被 Web UI, CLI, 以及 CI/CD systems 介接的 gRPC/REST server&lt;/li&gt;
+&lt;li&gt;它有幾項責任
+&lt;ul&gt;
+&lt;li&gt;應用管理與&lt;code&gt;狀態回報&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;處理 &lt;code&gt;application 的操作&lt;/code&gt;，如 sync, rollback, 其他使用者定義的動作&lt;/li&gt;
+&lt;li&gt;管理 &lt;code&gt;credential&lt;/code&gt;，如 K8s secrets&lt;/li&gt;
+&lt;li&gt;管理驗證與權限&lt;/li&gt;
+&lt;li&gt;執行 &lt;code&gt;RBAC&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Git webhook 事件&lt;/code&gt;的傾聽者/傳送者&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Repository Server&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;管理本地 Git repository 的&lt;code&gt;快取 (Cache)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;當有新增以下參數，需建立 Kubernetes manifests
+&lt;ul&gt;
+&lt;li&gt;repository URL&lt;/li&gt;
+&lt;li&gt;revision (commit, tag, branch)&lt;/li&gt;
+&lt;li&gt;application path&lt;/li&gt;
+&lt;li&gt;template specific settings: parameters, helm values.yaml&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Application Controller&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;屬於 &lt;code&gt;Kubernetes controller&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;👉 更多關於 &lt;a class=&#34;link&#34; href=&#34;https://kubernetes.io/docs/concepts/architecture/controller/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Kubernetes controller&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;持續偵測運行中的 application，並比較&lt;code&gt;現在狀態&lt;/code&gt;與&lt;code&gt;目標狀態&lt;/code&gt;，若偵測到 &lt;code&gt;OutOfSync&lt;/code&gt; 則會選擇性採取正確動作&lt;/li&gt;
+&lt;li&gt;此元件負責為生命週期事件(PreSync, Sync, PostSync)去調用使用者定義的 hooks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;features&#34;&gt;Features&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;支援的功能繁多，列出一部分。每一版或者會有些不同，建議可參考 🔔 &lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/#features&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt; 🔔
+&lt;ul&gt;
+&lt;li&gt;自動部屬到特性目標環境&lt;/li&gt;
+&lt;li&gt;支援多種 templating 工具  (Kustomize, Helm, Jsonnet, plain-YAML)&lt;/li&gt;
+&lt;li&gt;能管理多種 clusters&lt;/li&gt;
+&lt;li&gt;SSO 整合 (OIDC, OAuth2, LDAP, SAML 2.0, GitHub, GitLab, Microsoft, LinkedIn)&lt;/li&gt;
+&lt;li&gt;多租戶與 RBAC 政策&lt;/li&gt;
+&lt;li&gt;&amp;hellip;等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;心得-&#34;&gt;心得 💭&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Argo CD 在 March 26, 2020 被 CNCF 列入，CNCF 的專案們整合程度越來越高，相信未來的多數公司的 CICD、監控、Log、角色權限控管、資料庫等會以 CNCF 專案為主。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;若想知道如何在 docker desktop 建立 Argo CD，請參考文章 👉 &lt;a class=&#34;link&#34; href=&#34;../argocd-on-docker-desktop/&#34; &gt;使用 Docker Desktop 運行 Argo CD&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Argo CD&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/operator-manual/architecture/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Argo CD Components&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://kubernetes.io/docs/concepts/architecture/controller/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Kubernetes Controllers&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>使用 Docker Desktop 運行 Argo CD</title>
         <link>https://yue-jenny.github.io/post/2023/01/argocd-on-docker-desktop/</link>
         <pubDate>Wed, 04 Jan 2023 04:39:13 +0000</pubDate>
@@ -20,9 +175,9 @@
 &lt;/ul&gt;
 &lt;h2 id=&#34;argo-cd-介紹&#34;&gt;Argo CD 介紹&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;以 GitOps 為宗旨的 kubernetes 持續部屬 (continuous delivery) 工具
+&lt;li&gt;以 GitOps 模式為宗旨的持續部屬 (continuous delivery) 工具
 &lt;ul&gt;
-&lt;li&gt;關於 GitOps 可以參考文章 &lt;a class=&#34;link&#34; href=&#34;../what-is-gitops/&#34; &gt;GitOps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;關於 GitOps 可以參考文章 &lt;a class=&#34;link&#34; href=&#34;../what-is-gitops-pattern/&#34; &gt;GitOps&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -293,6 +448,7 @@
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kubectl -n argocd delete -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 &lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;h3 id=&#34;遇過的問題&#34;&gt;遇過的問題&lt;/h3&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;

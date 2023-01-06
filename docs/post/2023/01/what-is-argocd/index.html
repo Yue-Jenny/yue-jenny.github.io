@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Argo CD 是什麼? 前言 這部分會分享 Argo CD 的中心思想、架構與功能。
+Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考
+getting started guide user oriented documentation Developer oriented documentation the upgrade guide How it works? 🔩 GitOps pattern Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.
+Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態
+Argo CD 的 kubernetes manifest 可用以下幾種方式建立:'>
+<title>Argo CD 是什麼?</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/post/2023/01/what-is-argocd/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='Argo CD 是什麼?'>
+<meta property='og:description' content='Argo CD 是什麼? 前言 這部分會分享 Argo CD 的中心思想、架構與功能。
+Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考
+getting started guide user oriented documentation Developer oriented documentation the upgrade guide How it works? 🔩 GitOps pattern Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.
+Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態
+Argo CD 的 kubernetes manifest 可用以下幾種方式建立:'>
+<meta property='og:url' content='https://yue-jenny.github.io/post/2023/01/what-is-argocd/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='CI/CD' /><meta property='article:tag' content='Argo CD' /><meta property='article:published_time' content='2023-01-05T10:56:11&#43;08:00'/><meta property='article:modified_time' content='2023-01-06T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="Argo CD 是什麼?">
+<meta name="twitter:description" content="Argo CD 是什麼? 前言 這部分會分享 Argo CD 的中心思想、架構與功能。
+Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考
+getting started guide user oriented documentation Developer oriented documentation the upgrade guide How it works? 🔩 GitOps pattern Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.
+Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態
+Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#argo-cd-是什麼">Argo CD 是什麼?</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#how-it-works-">How it works? 🔩</a></li>
+      </ul>
+    </li>
+    <li><a href="#心得-">心得 💭</a></li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ci/cd/" >
+                CI/CD
+            </a>
+        
+            <a href="/categories/argo-cd/" >
+                Argo CD
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/2023/01/what-is-argocd/">Argo CD 是什麼?</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 05, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="argo-cd-是什麼">Argo CD 是什麼?</h2>
+<h3 id="前言">前言</h3>
+<p>這部分會分享 Argo CD 的<code>中心思想</code>、<code>架構</code>與<code>功能</code>。</p>
+<p>Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考</p>
+<ul>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/getting_started/"  target="_blank" rel="noopener"
+    >getting started guide</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/user-guide/"  target="_blank" rel="noopener"
+    >user oriented documentation</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/developer-guide/"  target="_blank" rel="noopener"
+    >Developer oriented documentation</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/overview/"  target="_blank" rel="noopener"
+    >the upgrade guide</a></li>
+</ul>
+<h3 id="how-it-works-">How it works? 🔩</h3>
+<h4 id="gitops-pattern">GitOps pattern</h4>
+<blockquote>
+<p>Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.</p>
+</blockquote>
+<ul>
+<li>Argo CD 遵循 GitOps 模式，即<strong>以 Git repositories 作為唯一識別 application 狀態的來源</strong></li>
+</ul>
+<h4 id="kubernetes-controller">kubernetes controller</h4>
+<ul>
+<li>
+<p>Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較<code>現在狀態</code>與<code>目標狀態</code></p>
+</li>
+<li>
+<p>Argo CD 的 kubernetes manifest 可用以下幾種方式建立:</p>
+<ul>
+<li><a class="link" href="https://kustomize.io/"  target="_blank" rel="noopener"
+    >kustomize</a> applications</li>
+<li><a class="link" href="https://helm.sh/"  target="_blank" rel="noopener"
+    >helm</a> charts</li>
+<li><a class="link" href="https://jsonnet.org/"  target="_blank" rel="noopener"
+    >jsonnet</a> files</li>
+<li>Plain directory of YAML/json manifests</li>
+<li>Any custom config management tool configured as a config management plugin</li>
+</ul>
+</li>
+</ul>
+<h4 id="architecture">architecture</h4>
+<ul>
+<li>Argo CD architecture
+<ul>
+<li>
+<p>架構圖
+<img src="/post/2023/01/what-is-argocd/argocd_architecture.webp"
+	width="743"
+	height="708"
+	srcset="/post/2023/01/what-is-argocd/argocd_architecture_hu7301e8d492990cc775fb267fdb3a75d6_47024_480x0_resize_q75_h2_box_2.webp 480w, /post/2023/01/what-is-argocd/argocd_architecture_hu7301e8d492990cc775fb267fdb3a75d6_47024_1024x0_resize_q75_h2_box_2.webp 1024w"
+	loading="lazy"
+	
+		alt="argocd architecture, ref: https://argo-cd.readthedocs.io/en/stable/"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="104"
+		data-flex-basis="251px"
+	
+></p>
+</li>
+<li>
+<p><a class="link" href="https://argo-cd.readthedocs.io/en/stable/operator-manual/architecture/"  target="_blank" rel="noopener"
+    >Components</a></p>
+<ul>
+<li>
+<p>API Server</p>
+<ul>
+<li>可以被 Web UI, CLI, 以及 CI/CD systems 介接的 gRPC/REST server</li>
+<li>它有幾項責任
+<ul>
+<li>應用管理與<code>狀態回報</code></li>
+<li>處理 <code>application 的操作</code>，如 sync, rollback, 其他使用者定義的動作</li>
+<li>管理 <code>credential</code>，如 K8s secrets</li>
+<li>管理驗證與權限</li>
+<li>執行 <code>RBAC</code></li>
+<li><code>Git webhook 事件</code>的傾聽者/傳送者</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Repository Server</p>
+<ul>
+<li>管理本地 Git repository 的<code>快取 (Cache)</code></li>
+<li>當有新增以下參數，需建立 Kubernetes manifests
+<ul>
+<li>repository URL</li>
+<li>revision (commit, tag, branch)</li>
+<li>application path</li>
+<li>template specific settings: parameters, helm values.yaml</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Application Controller</p>
+<ul>
+<li>屬於 <code>Kubernetes controller</code>
+<ul>
+<li>👉 更多關於 <a class="link" href="https://kubernetes.io/docs/concepts/architecture/controller/"  target="_blank" rel="noopener"
+    >Kubernetes controller</a></li>
+</ul>
+</li>
+<li>持續偵測運行中的 application，並比較<code>現在狀態</code>與<code>目標狀態</code>，若偵測到 <code>OutOfSync</code> 則會選擇性採取正確動作</li>
+<li>此元件負責為生命週期事件(PreSync, Sync, PostSync)去調用使用者定義的 hooks</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="features">Features</h4>
+<ul>
+<li>支援的功能繁多，列出一部分。每一版或者會有些不同，建議可參考 🔔 <a class="link" href="https://argo-cd.readthedocs.io/en/stable/#features"  target="_blank" rel="noopener"
+    >官方文件</a> 🔔
+<ul>
+<li>自動部屬到特性目標環境</li>
+<li>支援多種 templating 工具  (Kustomize, Helm, Jsonnet, plain-YAML)</li>
+<li>能管理多種 clusters</li>
+<li>SSO 整合 (OIDC, OAuth2, LDAP, SAML 2.0, GitHub, GitLab, Microsoft, LinkedIn)</li>
+<li>多租戶與 RBAC 政策</li>
+<li>&hellip;等</li>
+</ul>
+</li>
+</ul>
+<h2 id="心得-">心得 💭</h2>
+<ul>
+<li>
+<p>Argo CD 在 March 26, 2020 被 CNCF 列入，CNCF 的專案們整合程度越來越高，相信未來的多數公司的 CICD、監控、Log、角色權限控管、資料庫等會以 CNCF 專案為主。</p>
+</li>
+<li>
+<p>若想知道如何在 docker desktop 建立 Argo CD，請參考文章 👉 <a class="link" href="../argocd-on-docker-desktop/" >使用 Docker Desktop 運行 Argo CD</a></p>
+</li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/"  target="_blank" rel="noopener"
+    >Argo CD</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/operator-manual/architecture/"  target="_blank" rel="noopener"
+    >Argo CD Components</a></li>
+<li><a class="link" href="https://kubernetes.io/docs/concepts/architecture/controller/"  target="_blank" rel="noopener"
+    >Kubernetes Controllers</a></li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/ci/cd/">CI/CD</a>
+        
+            <a href="/tags/argo-cd/">Argo CD</a>
+        
+    </section>
+
+
+    <section class="article-lastmod">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <span>
+            Last updated on Jan 06, 2023 00:00 UTC
+        </span>
+    </section></footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fpost%2f2023%2f01%2fwhat-is-argocd%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/2023/01/argocd-on-docker-desktop/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">使用 Docker Desktop 運行 Argo CD</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/github-workflow/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">如何使用 Github Workflow 完成 CI/CD</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
