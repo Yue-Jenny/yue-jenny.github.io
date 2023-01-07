@@ -62,6 +62,11 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
+    <loc>https://yue-jenny.github.io/categories/cloud/</loc>
+    <lastmod>2022-12-29T14:32:24+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/tags/github-workflows/</loc>
     <lastmod>2022-12-29T14:32:24+08:00</lastmod>
     <changefreq>daily</changefreq>
@@ -77,8 +82,23 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
+    <loc>https://yue-jenny.github.io/tags/github-workflow/</loc>
+    <lastmod>2022-12-10T18:33:05+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/github-workflow/</loc>
+    <lastmod>2022-12-10T18:33:05+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-github-workflow-%E5%AE%8C%E6%88%90-ci/cd/</loc>
     <lastmod>2022-12-10T18:33:05+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/frontend/</loc>
+    <lastmod>2022-12-10T18:25:43+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
@@ -108,16 +128,6 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/tags/likecoin/</loc>
-    <lastmod>2022-12-10T18:22:43+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/website/</loc>
-    <lastmod>2022-12-10T18:22:43+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/categories/website/</loc>
     <lastmod>2022-12-10T18:22:43+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

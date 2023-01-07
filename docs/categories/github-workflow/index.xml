@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Github Workflow on Jenny blog</title>
+        <link>https://yue-jenny.github.io/categories/github-workflow/</link>
+        <description>Recent content in Github Workflow on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 10 Dec 2022 18:33:05 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/github-workflow/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>如何使用 Github Workflow 完成 CI/CD</title>
+        <link>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-github-workflow-%E5%AE%8C%E6%88%90-ci/cd/</link>
+        <pubDate>Sat, 10 Dec 2022 18:33:05 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-github-workflow-%E5%AE%8C%E6%88%90-ci/cd/</guid>
+        <description>&lt;h2 id=&#34;github-workflow-介紹&#34;&gt;Github Workflow 介紹&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;為了利用 Github Workflow 完成 CI/CD，分成幾個部分來寫，分別是&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Github Workflow 的基本設定&lt;/li&gt;
+&lt;li&gt;Github Workflow 中進行 CI&lt;/li&gt;
+&lt;li&gt;登入登出 AWS ECR 與 github container registry&lt;/li&gt;
+&lt;li&gt;build &amp;amp; upload image&lt;/li&gt;
+&lt;li&gt;更新 helm value 中的 image tag，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;基本設定&#34;&gt;基本設定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;action 為 &lt;code&gt;push&lt;/code&gt; 的時候，&lt;code&gt;所有 branch&lt;/code&gt; 都會進行 github workflow&lt;/li&gt;
+&lt;li&gt;action 為 &lt;code&gt;pull_request&lt;/code&gt; 的時候，只有 &lt;code&gt;main branch&lt;/code&gt; 會進行 github workflow&lt;/li&gt;
+&lt;li&gt;types&lt;/li&gt;
+&lt;li&gt;paths&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;on:
+  push:
+    branches: [&amp;#34;*&amp;#34;]
+  pull_request:
+    branches: [&amp;#34;main&amp;#34;]
+    types:
+      - opened
+    paths:
+      - &amp;#34;**.js&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;env-設定&#34;&gt;env 設定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定方式如下，可以依照自身需求進行設定&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;env:
+  AWS_DEFAULT_REGION: ap-southeast-1
+  GIT_USER_NAME: jennyc
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;permissions-設定&#34;&gt;permissions 設定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定方式如下，可以依照自身需求進行設定&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;自動化測試-ci&#34;&gt;自動化測試 CI&lt;/h2&gt;
+&lt;h3 id=&#34;checkout-repository&#34;&gt;checkout repository&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;actions/checkout@v3&lt;/code&gt; 進行&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Checkout repository
+  uses: actions/checkout@v3
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;執行-npm-install&#34;&gt;執行 npm install&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Install dependencies
+  run: npm install
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;執行-npm-test&#34;&gt;執行 npm test&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Run tests
+  run: npm run test
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;build-multi-platform-images-並上傳至-aws-ecr&#34;&gt;Build multi-platform images 並上傳至 AWS ECR&lt;/h2&gt;
+&lt;h3 id=&#34;前言-1&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;這部分需要先設定 AWS Credential 才能使用 AWS ECR，&lt;br&gt;
+接著 build multi-platform image 並且上傳至 AWS ECR。&lt;/p&gt;
+&lt;h3 id=&#34;1-設定-aws-credential&#34;&gt;1. 設定 AWS Credential&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;設定 AWS Credential&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用 GitHub&amp;rsquo;s OIDC provider 方式取得 short-lived credentials&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;OpenID Connect (OIDC) 設定方式可以&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;參考官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;也可以參考這篇&lt;a class=&#34;link&#34; href=&#34;../how-to-use-oidc-to-auth-aws-services/&#34; &gt;文章&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;workflow 要怎麼寫?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;env.AWS_DEFAULT_REGION&lt;/code&gt; 需要特別設定，與 AWS ECR 相同的 region&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;role-to-assume&lt;/code&gt; 填入 AWS role&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;role-session-name&lt;/code&gt; 預設是 GitHubActions，可以自行調整名稱&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+        role-to-assume: arn:aws:iam::1234567890:role/example-role
+        role-session-name: GitHubActionsWithAwsEcrUsingOIDCSession 
+        aws-region: ${{env.AWS_DEFAULT_REGION}}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-登入-aws-private-ecr&#34;&gt;2. 登入 AWS private ECR&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;有兩種方式
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Using &lt;code&gt;access key id&lt;/code&gt; and &lt;code&gt;secret access key&lt;/code&gt; to login&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-region: ap-southeast-1
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Using &lt;code&gt;OpenID Connect (OIDC)&lt;/code&gt; to login&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;官方推薦使用此方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Login to Amazon ECR
+    id: login-ecr
+    uses: aws-actions/amazon-ecr-login@v1
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-登入-aws-public-ecr&#34;&gt;3. 登入 AWS public ECR&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;可參考&lt;a class=&#34;link&#34; href=&#34;https://github.com/aws-actions/amazon-ecr-login#login-to-amazon-ecr-public-then-package-and-push-a-helm-chart&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方說明&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-登出-aws-ecr&#34;&gt;4. 登出 AWS ECR&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Logout of Amazon ECR
+  if: always()
+  run: docker logout ${{ steps.login-ecr.outputs.registry }}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;5-設定-short-sha-為-image-tag&#34;&gt;5. 設定 short sha 為 image tag&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定以 7 digits 長度的 short sha 作為 image tag，原因可以參考:
+&lt;ul&gt;
+&lt;li&gt;7 digits are the Git default for a short SHA&lt;/li&gt;
+&lt;li&gt;附上其他參考文件 &lt;a class=&#34;link&#34; href=&#34;http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Chapter 7 of the Pro Git book&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;將 output 出去的參數命名為 &lt;code&gt;sha_short&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Set short sha outputs
+        id: vars
+        run: echo &amp;#34;sha_short=$(git rev-parse --short HEAD)&amp;#34; &amp;gt;&amp;gt; $GITHUB_OUTPUT
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;6-build-multi-platform-images-並上傳-images-到-aws-ecr&#34;&gt;6. Build multi-platform images 並上傳 images 到 AWS ECR&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;建立多平台 docker images 的&lt;a class=&#34;link&#34; href=&#34;https://docs.docker.com/build/building/multi-platform/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IMAGE_TAG&lt;/code&gt; 會從&lt;a class=&#34;link&#34; href=&#34;./#5-%e8%a8%ad%e5%ae%9a-short-sha-%e7%82%ba-image-tag&#34; &gt;步驟 5&lt;/a&gt; 取得 output 的變數 &lt;code&gt;sha_short&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--platform&lt;/code&gt; 可接上需要的 platform 參考，例如 linux/amd64, linux/arm64&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Build, tag, and push docker image to Amazon ECR
+    env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: pet-app
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+    run: |
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        ( 官方建議: docker run --privileged --rm tonistiigi/binfmt --install all )
+        docker buildx create --name mybuilder --driver docker-container --bootstrap
+        docker buildx use mybuilder
+        docker buildx inspect
+        docker buildx build --platform linux/amd64,linux/arm64 -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --push .
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;為什麼需要 &lt;code&gt;docker run --rm --privileged multiarch/qemu-user-static --reset -p yes&lt;/code&gt;&lt;/strong&gt; ?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;因為遇到 &lt;code&gt;Error: while loading /usr/local/sbin/node: No such file or directory&lt;/code&gt; 問題
+&lt;ul&gt;
+&lt;li&gt;先使用方式一 : &lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/wmg13178599398/article/details/127605036&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;連接方式&lt;/a&gt;，結果還是有相同問題
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  ln -s /usr/bin/node /usr/local/sbin/node
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;後來使用&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/72167570/docker-buildx-nodejs-fail&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;方式二&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用 docker buildx 指令前&lt;strong&gt;先執行以下命令&lt;/strong&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/57178788/docker-build-fails-for-arm-images/57183566#57183566&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;詳細原因的 Stack Overflow 原始文章在這邊，以下是節錄部分&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;`
+When you ask the Linux kernel to run some executable file, it needs to know, how to load this specific file, and whether this file is compatible with current machine, or not. By default, the ELF binary compiled for, say, arm64v8 is rejected by the kernel, running on amd64 hardware.&lt;/p&gt;
+&lt;p&gt;However, the binfmt_misc feature of the kernel allows you to tell it, how to handle the executables it cannot usually handle on its own - this includes the cases when the kernel does not know the binary format or considers it incompatible with current machine.&lt;br&gt;
+`&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/docker/buildx/issues/495&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;github issue&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;官方建議使用以下命令解決 QEMU binaries 問題，&lt;a class=&#34;link&#34; href=&#34;https://docs.docker.com/build/building/multi-platform/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  docker run --privileged --rm tonistiigi/binfmt --install all
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;更新-helm-value-的-image-tag&#34;&gt;更新 helm value 的 image tag&lt;/h2&gt;
+&lt;h3 id=&#34;前言-2&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;應用是以 terraform 方式部屬，並搭配使用 helm charts。而 docker image 的 tag 是寫在 helm values 內。&lt;br&gt;
+目標是更新 helm values 的 docker image tag 值，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬。&lt;/p&gt;
+&lt;p&gt;需做到兩件事情:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;checkout 私有 repository&lt;/li&gt;
+&lt;li&gt;設定與更新 image tag&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;1-先-checkout-私有存放-helm-value-的-repository&#34;&gt;1. 先 checkout 私有存放 helm value 的 repository&lt;/h3&gt;
+&lt;p&gt;需要先設定 credential 才能 fetch private repository，有兩種設定的方式&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;設定 deploy key&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;步驟如下，可參考&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/60222741/github-actions-and-git-clone-issue&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;這篇&lt;/a&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Create a new SSH key pair&lt;/a&gt; for your repository. Do not set a passphrase.&lt;/li&gt;
+&lt;li&gt;Copy the contents of the public key (.pub file) to a new repository &lt;a class=&#34;link&#34; href=&#34;https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;deploy key&lt;/a&gt; and check the box to &amp;ldquo;Allow write access.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Add a secret to the repository containing the entire contents of the private key.&lt;/li&gt;
+&lt;li&gt;As shown in the example below, configure &lt;code&gt;actions/checkout&lt;/code&gt; to use the deploy key you have created.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;workflow 要怎麼寫?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ssh-key 填入 private key 的 secrets 名稱&lt;/li&gt;
+&lt;li&gt;path 設定 checkout 的 repo 會存在哪一個資料夾內&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Checkout ${{env.TERRAFORM_REPOSITORY_NAME}} repo and push file to ${{env.TERRAFORM_REPOSITORY_NAME}}
+    uses: actions/checkout@v3
+    with:
+      repository: ${{env.TERRAFORM_REPOSITORY_OWNER_NAME}}/${{env.TERRAFORM_REPOSITORY_NAME}}
+      ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      path: ${{env.TERRAFORM_REPOSITORY_NAME}}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定 Personal access token (PAT)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建立 PAT 的方式，&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;將建立完成的 PAT 設定到 repository 的 secrets 中，設定的 secrets 名稱為 GH_PAT，&lt;a class=&#34;link&#34; href=&#34;https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;workflow 要怎麼寫?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;repository 設定為 &lt;code&gt;owner/repository_name&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;token 填入 PAT 的 secrets 名稱，這邊是將 secrets 名稱為 GH_PAT 的內容設定為 PAT&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Checkout ${{env.TERRAFORM_REPOSITORY_NAME}} repo and push file to ${{env.TERRAFORM_REPOSITORY_NAME}}
+    uses: actions/checkout@v3
+    with:
+        repository: ${{env.TERRAFORM_REPOSITORY_OWNER_NAME}}/${{env.TERRAFORM_REPOSITORY_NAME}}
+        token: ${{ secrets.GH_PAT }}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-設定-image-tag&#34;&gt;2. 設定 image tag&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定以 7 digits 長度的 short sha 作為 image tag
+&lt;ul&gt;
+&lt;li&gt;7 digits are the Git default for a short SHA&lt;/li&gt;
+&lt;li&gt;附上其他參考文件 &lt;a class=&#34;link&#34; href=&#34;http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Chapter 7 of the Pro Git book&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Set short sha outputs
+        id: vars
+        run: echo &amp;#34;sha_short=$(git rev-parse --short HEAD)&amp;#34; &amp;gt;&amp;gt; $GITHUB_OUTPUT
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-更新-image-tag&#34;&gt;3. 更新 image tag&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;以 yq 的 github action 工具修改 yaml 檔內的 image tag 值
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://mikefarah.gitbook.io/yq/v/v3.x/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mikefarah/yq&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的 github&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;進行 git 操作，設定 user name, user email、commit 以及 push&lt;/li&gt;
+&lt;li&gt;tag 取上一個步驟 output 的參數 &lt;code&gt;sha_short&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Update image tag
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i &amp;#39;.pet_app_dashboard_site.image.tag = &amp;#34;${{ steps.vars.outputs.sha_short }}&amp;#34;&amp;#39; ./${{env.TERRAFORM_REPOSITORY_NAME}}/${{env.HELM_FILE_NAME}}
+      - run: |
+          cd ${{env.TERRAFORM_REPOSITORY_NAME}}
+          git config user.name ${{env.GIT_USER_NAME}}
+          git config user.email ${{env.GIT_USER_EMAIL}}
+          git add ${{env.HELM_FILE_NAME}}
+          git commit -m &amp;#34;update image tag to ${{ steps.vars.outputs.sha_short }}&amp;#34;
+          git push origin main
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;若要將-docker-image-上傳至-github-container-registry-該怎麼做&#34;&gt;若要將 docker image 上傳至 github container registry 該怎麼做?&lt;/h2&gt;
+&lt;h3 id=&#34;1-登入與登出-github-container-registry&#34;&gt;1. 登入與登出 github container registry&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;需要設定 env.REGISTRY 為 ghcr.io&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不需要另外設定 github.actor 與 &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/security-guides/automatic-token-authentication&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GITHUB_TOKEN&lt;/a&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+      registry: ${{ env.REGISTRY }}
+      username: ${{ github.actor }}
+      password: ${{ secrets.GITHUB_TOKEN }}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-extract-metadata&#34;&gt;2. Extract metadata&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-build-and-push-docker-image&#34;&gt;3. Build and push docker image&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;labels 的值可以從步驟二取出 outputs labels 來使用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ steps.vars.outputs.sha_short }}
+          labels: ${{ steps.meta.outputs.labels }}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/actions/checkout&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;actions/checkout&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/aws-actions/amazon-ecr-login&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;amazon-ecr-login&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/docker/login-action&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docker/login-action&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/57178788/docker-build-fails-for-arm-images/57183566#57183566&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docker-build-fails-for-arm-images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://mikefarah.gitbook.io/yq/v/v3.x/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mikefarah/yq&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的 github&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Chapter 7 of the Pro Git book&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;creating-a-personal-access-token&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;creating-and-using-encrypted-secrets&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

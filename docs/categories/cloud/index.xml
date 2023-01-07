@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Cloud on Jenny blog</title>
+        <link>https://yue-jenny.github.io/categories/cloud/</link>
+        <description>Recent content in Cloud on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 29 Dec 2022 14:32:24 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/cloud/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>在 Github workflow 中使用 OpenID Connect (OIDC) 去認證 AWS 服務</title>
+        <link>https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/</link>
+        <pubDate>Thu, 29 Dec 2022 14:32:24 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/</guid>
+        <description>&lt;h2 id=&#34;openid-connect-oidc-介紹&#34;&gt;OpenID Connect (OIDC) 介紹&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;OIDC 全名為 OpenID Connect，是一種可以 access AWS resources，但&lt;strong&gt;不需要存取 AWS credentials&lt;/strong&gt; 當作 long-lived GitHub secrets 的驗證方式。&lt;/li&gt;
+&lt;li&gt;官方建議的驗證方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;oidc-優點---很好的安全實踐-good-security-practices&#34;&gt;OIDC 優點 - 很好的安全實踐 (good security practices)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;No cloud secrets
+&lt;ul&gt;
+&lt;li&gt;不需要以 cloud credentials 當作 long-lived GitHub secrets&lt;/li&gt;
+&lt;li&gt;在 cloud provider 設定好 OIDC trust，github workflows 就可以利用 OIDC 從 cloud provider 取得一組 short-lived access token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Authentication and authorization management
+&lt;ul&gt;
+&lt;li&gt;透過 cloud provider 的 &lt;strong&gt;authentication (authN)&lt;/strong&gt; 與 &lt;strong&gt;authorization (authZ)&lt;/strong&gt; 工具能夠控制取得 cloud resources&lt;/li&gt;
+&lt;li&gt;能更小粒度地控制 workflows 如何使用 credentials&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Rotating credentials
+&lt;ul&gt;
+&lt;li&gt;cloud provider 提供一組 short-lived access token 給一個 job，使用完畢後會自動過期。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;oidc-的運作方式與信任機制&#34;&gt;OIDC 的運作方式與信任機制&lt;/h3&gt;
+&lt;h4 id=&#34;運作方式&#34;&gt;運作方式&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;主要是兩個角色的互動，分別為 Cloud Provider 與 Github OIDC Provider&lt;/li&gt;
+&lt;li&gt;互動過程 :
+&lt;ul&gt;
+&lt;li&gt;In your cloud provider, create an OIDC trust between your cloud role and your GitHub workflow(s) that need access to the cloud.&lt;/li&gt;
+&lt;li&gt;Every time your job runs, GitHub&amp;rsquo;s OIDC Provider auto-generates an OIDC token. This token contains multiple claims to establish a security-hardened and verifiable identity about the specific workflow that is trying to authenticate.&lt;/li&gt;
+&lt;li&gt;You could include a step or action in your job to request this token from GitHub&amp;rsquo;s OIDC provider, and present it to the cloud provider.&lt;/li&gt;
+&lt;li&gt;Once the cloud provider successfully validates the claims presented in the token, it then provides a short-lived cloud access token that is available only for the duration of the job.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/OIDC.png&#34;
+	width=&#34;1405&#34;
+	height=&#34;477&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/OIDC_hub3f6493e16ed8e4290c950f3d2eba073_80400_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/OIDC_hub3f6493e16ed8e4290c950f3d2eba073_80400_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;how GitHub&amp;rsquo;s OIDC provider integrates with your workflows and cloud provider&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;294&#34;
+		data-flex-basis=&#34;706px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可參考&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;安全---oidc-trust&#34;&gt;安全 - OIDC trust&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;當設定 cloud 能信任 GitHub&amp;rsquo;s OIDC provider 後，&lt;strong&gt;必須&lt;/strong&gt;加上一些情境去過濾掉 requests，&lt;em&gt;避免沒有取得信任的 repositories or workflows 可以透過 access token 操作你的 cloud resources&lt;/em&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;configuring-openid-connect-in-amazon-web-services&#34;&gt;Configuring OpenID Connect in Amazon Web Services&lt;/h2&gt;
+&lt;h3 id=&#34;前言-1&#34;&gt;前言&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;目的是 Use OpenID Connect within your workflows to authenticate with Amazon Web Services.&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;iam-role&#34;&gt;IAM Role&lt;/h3&gt;
+&lt;h4 id=&#34;1-create-a-iam-role&#34;&gt;1. Create a iam role&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;建立一組 iam role，用於上傳 docker image 到 private ECR&lt;/li&gt;
+&lt;li&gt;建立 iam role 的時候，會需要填入以下資訊 :
+&lt;ul&gt;
+&lt;li&gt;provider URL : &lt;code&gt;https://token.actions.githubusercontent.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Audience : &lt;code&gt;sts.amazonaws.com&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-permissions-policies&#34;&gt;2. Permissions policies&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;iam role 綁定的 permissions policies 是 &lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/zh_tw/AmazonECR/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerRegistryPowerUser&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;AmazonEC2ContainerRegistryPowerUser&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;此政策允許委託人讀取和寫入儲存庫，以及讀取生命週期政策。委託人不會被授予刪除儲存庫或變更套用至其生命週期政策的許可。&lt;/li&gt;
+&lt;li&gt;可依據需求設定不同的 permissons policies，可參考&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/zh_tw/AmazonECR/latest/userguide/security-iam-awsmanpol.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-add-the-github-oidc-provider-to-iam&#34;&gt;3. Add the GitHub OIDC provider to IAM&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Configure the role and trust in IAM.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;到 iam role 頁面點選編輯 &lt;code&gt;Trust relationships&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/trust-relationships.png&#34;
+	width=&#34;1083&#34;
+	height=&#34;757&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/trust-relationships_hu5b36277e262e61a36b9a572faa4ec493_70264_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/trust-relationships_hu5b36277e262e61a36b9a572faa4ec493_70264_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;iam role trust-relationships&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;143&#34;
+		data-flex-basis=&#34;343px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;參考以下的方式將 sub 欄位加入到 Condition 中&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;方式一，使用 &lt;code&gt;StringLike&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Version&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2012-10-17&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Statement&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Effect&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Principal&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Federated&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;arn:aws:iam::123456123456:oidc-provider/token.actions.githubusercontent.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Action&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sts:AssumeRoleWithWebIdentity&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Condition&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;StringLike&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:sub&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;repo:octo-org/octo-repo:*&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;StringEquals&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:aud&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sts.amazonaws.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;方式二，使用 &lt;code&gt;StringEquals&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Condition&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;StringEquals&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:aud&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sts.amazonaws.com&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:sub&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;repo:octo-org/octo-repo:ref:refs/heads/octo-branch&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services#adding-the-identity-provider-to-aws&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;updating-your-github-actions-workflow&#34;&gt;Updating your GitHub Actions workflow&lt;/h3&gt;
+&lt;p&gt;上述是 AWS 相關設定，此步驟是調整 github workflow，做兩件事情 :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Adding permissions settings，有兩種權限選擇，可依照自身情境去選擇。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;fetch an OIDC token for a workflow, then the permission can be &lt;strong&gt;set at the workflow level.&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-YAML&#34; data-lang=&#34;YAML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;permissions&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;id-token&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;write&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# This is required for requesting the JWT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;contents&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;read &lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# This is required for actions/checkout&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;only need to fetch an OIDC token &lt;strong&gt;for a single job&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-YAML&#34; data-lang=&#34;YAML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;permissions&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;id-token&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;write&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# This is required for requesting the JWT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use the &lt;code&gt;aws-actions/configure-aws-credentials&lt;/code&gt; action&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;此 action 會接收來自 GitHub OIDC provider 的 JWT，並且向 AWS 請求一組 access token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-YAML&#34; data-lang=&#34;YAML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    - &lt;span style=&#34;color:#f92672&#34;&gt;name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;Configure AWS credentials&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;uses&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;aws-actions/configure-aws-credentials@v1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;with&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;role-to-assume&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;arn:aws:iam::1234567890:role/example-role&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;role-session-name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;GitHubActionsWithAwsEcrUsingOIDCSession&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;aws-region&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;${{env.AWS_DEFAULT_REGION}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;configuring-openid-connect-in-amazon-web-services&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;about-security-hardening-with-openid-connect&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
