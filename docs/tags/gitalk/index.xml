@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Gitalk on Jenny blog</title>
+        <link>https://yue-jenny.github.io/tags/gitalk/</link>
+        <description>Recent content in Gitalk on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 06 Jan 2023 18:10:13 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/gitalk/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>如何在 Hugo 中加入評論系統 Gitalk</title>
+        <link>https://yue-jenny.github.io/2023/01/%E5%A6%82%E4%BD%95%E5%9C%A8-hugo-%E4%B8%AD%E5%8A%A0%E5%85%A5%E8%A9%95%E8%AB%96%E7%B3%BB%E7%B5%B1-gitalk/</link>
+        <pubDate>Fri, 06 Jan 2023 18:10:13 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/%E5%A6%82%E4%BD%95%E5%9C%A8-hugo-%E4%B8%AD%E5%8A%A0%E5%85%A5%E8%A9%95%E8%AB%96%E7%B3%BB%E7%B5%B1-gitalk/</guid>
+        <description>&lt;h2 id=&#34;如何在-hugo-中加入評論系統-gitalk&#34;&gt;如何在 Hugo 中加入評論系統 Gitalk&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;為了在部落格增加互動系統，選擇以 gitalk 作為 comment 系統&lt;/p&gt;
+&lt;h3 id=&#34;實作&#34;&gt;實作&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;建立 Github OAuth App 並取得 &lt;code&gt;client id&lt;/code&gt; &amp;amp; &lt;code&gt;client secret&lt;/code&gt; (很重要，後續會用到)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;作法可參考&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;將資訊填入 &lt;code&gt;themes\hugo-theme-stack\config.yaml&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;clientID&lt;/code&gt;: 步驟一取得的 client id&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;clientSecret&lt;/code&gt;: 步驟一取得的 client secret&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    gitalk:
+        owner: yue-jenny -&amp;gt; 你的 account name
+        admin: yue-jenny -&amp;gt; 你的 account name
+        repo: yue-jenny.github.io -&amp;gt; 你的 repo name
+        clientID: 123 -&amp;gt; 步驟一取得的 client id
+        clientSecret: 456 -&amp;gt; 步驟一取得的 client secret
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;上述步驟完成後，需要 admin (通常就是作者) 先 initial comment。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;initial 完成後，頁面會這樣呈現。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;finish-initial-comment.jpg&#34; &gt;finish-initial-comment&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;到 Github 可以看到，&lt;strong&gt;每一篇文章都會開一個 issue 紀錄&lt;/strong&gt;，就像這樣。如果有留言，會在 issue 內多一個回應。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;github-issue-with-comment.jpg&#34; &gt;github-issue-with-comment&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;關於-github-oauth-app&#34;&gt;關於 Github Oauth App&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;想知道更多，可參考 👉 這篇文章&lt;a class=&#34;link&#34; href=&#34;../github-oauth-app-1&#34; &gt;Github 的 Oauth App 介紹 (一)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;creating-an-oauth-app&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

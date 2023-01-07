@@ -37,6 +37,31 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
+    <loc>https://yue-jenny.github.io/categories/frontend/</loc>
+    <lastmod>2023-01-06T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/gitalk/</loc>
+    <lastmod>2023-01-06T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/hugo/</loc>
+    <lastmod>2023-01-06T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/hugo/</loc>
+    <lastmod>2023-01-06T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/2023/01/%E5%A6%82%E4%BD%95%E5%9C%A8-hugo-%E4%B8%AD%E5%8A%A0%E5%85%A5%E8%A9%95%E8%AB%96%E7%B3%BB%E7%B5%B1-gitalk/</loc>
+    <lastmod>2023-01-06T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/tags/argo-cd/</loc>
     <lastmod>2023-01-06T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -112,11 +137,6 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/categories/frontend/</loc>
-    <lastmod>2022-12-10T18:25:43+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
     <loc>https://yue-jenny.github.io/tags/github-pages/</loc>
     <lastmod>2022-12-10T18:25:43+08:00</lastmod>
     <changefreq>daily</changefreq>
@@ -129,16 +149,6 @@
   </url><url>
     <loc>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/</loc>
     <lastmod>2022-12-10T18:25:43+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/hugo/</loc>
-    <lastmod>2022-12-10T18:22:43+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/categories/hugo/</loc>
-    <lastmod>2022-12-10T18:22:43+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>

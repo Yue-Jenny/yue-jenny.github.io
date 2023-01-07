@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='如何在 Hugo 中加入評論系統 Gitalk 前言 為了在部落格增加互動系統，選擇以 gitalk 作為 comment 系統
+實作 建立 Github OAuth App 並取得 client id &amp;amp; client secret (很重要，後續會用到)
+作法可參考官方文件 將資訊填入 themes\hugo-theme-stack\config.yaml
+clientID: 步驟一取得的 client id clientSecret: 步驟一取得的 client secret gitalk: owner: yue-jenny -&amp;gt; 你的 account name admin: yue-jenny -&amp;gt; 你的 account name repo: yue-jenny.github.io -&amp;gt; 你的 repo name clientID: 123 -&amp;gt; 步驟一取得的 client id clientSecret: 456 -&amp;gt; 步驟一取得的 client secret 上述步驟完成後，需要 admin (通常就是作者) 先 initial comment。'>
+<title>如何在 Hugo 中加入評論系統 Gitalk</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E5%A6%82%E4%BD%95%E5%9C%A8-hugo-%E4%B8%AD%E5%8A%A0%E5%85%A5%E8%A9%95%E8%AB%96%E7%B3%BB%E7%B5%B1-gitalk/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='如何在 Hugo 中加入評論系統 Gitalk'>
+<meta property='og:description' content='如何在 Hugo 中加入評論系統 Gitalk 前言 為了在部落格增加互動系統，選擇以 gitalk 作為 comment 系統
+實作 建立 Github OAuth App 並取得 client id &amp;amp; client secret (很重要，後續會用到)
+作法可參考官方文件 將資訊填入 themes\hugo-theme-stack\config.yaml
+clientID: 步驟一取得的 client id clientSecret: 步驟一取得的 client secret gitalk: owner: yue-jenny -&amp;gt; 你的 account name admin: yue-jenny -&amp;gt; 你的 account name repo: yue-jenny.github.io -&amp;gt; 你的 repo name clientID: 123 -&amp;gt; 步驟一取得的 client id clientSecret: 456 -&amp;gt; 步驟一取得的 client secret 上述步驟完成後，需要 admin (通常就是作者) 先 initial comment。'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E5%A6%82%E4%BD%95%E5%9C%A8-hugo-%E4%B8%AD%E5%8A%A0%E5%85%A5%E8%A9%95%E8%AB%96%E7%B3%BB%E7%B5%B1-gitalk/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Hugo' /><meta property='article:tag' content='Gitalk' /><meta property='article:tag' content='Github OAuth App' /><meta property='article:published_time' content='2023-01-06T18:10:13&#43;08:00'/><meta property='article:modified_time' content='2023-01-06T18:10:13&#43;08:00'/>
+<meta name="twitter:title" content="如何在 Hugo 中加入評論系統 Gitalk">
+<meta name="twitter:description" content="如何在 Hugo 中加入評論系統 Gitalk 前言 為了在部落格增加互動系統，選擇以 gitalk 作為 comment 系統
+實作 建立 Github OAuth App 並取得 client id &amp;amp; client secret (很重要，後續會用到)
+作法可參考官方文件 將資訊填入 themes\hugo-theme-stack\config.yaml
+clientID: 步驟一取得的 client id clientSecret: 步驟一取得的 client secret gitalk: owner: yue-jenny -&amp;gt; 你的 account name admin: yue-jenny -&amp;gt; 你的 account name repo: yue-jenny.github.io -&amp;gt; 你的 repo name clientID: 123 -&amp;gt; 步驟一取得的 client id clientSecret: 456 -&amp;gt; 步驟一取得的 client secret 上述步驟完成後，需要 admin (通常就是作者) 先 initial comment。">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#如何在-hugo-中加入評論系統-gitalk">如何在 Hugo 中加入評論系統 Gitalk</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#實作">實作</a></li>
+        <li><a href="#關於-github-oauth-app">關於 Github Oauth App</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/frontend/" >
+                Frontend
+            </a>
+        
+            <a href="/categories/hugo/" >
+                Hugo
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/%E5%A6%82%E4%BD%95%E5%9C%A8-hugo-%E4%B8%AD%E5%8A%A0%E5%85%A5%E8%A9%95%E8%AB%96%E7%B3%BB%E7%B5%B1-gitalk/">如何在 Hugo 中加入評論系統 Gitalk</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 06, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="如何在-hugo-中加入評論系統-gitalk">如何在 Hugo 中加入評論系統 Gitalk</h2>
+<h3 id="前言">前言</h3>
+<p>為了在部落格增加互動系統，選擇以 gitalk 作為 comment 系統</p>
+<h3 id="實作">實作</h3>
+<ol>
+<li>
+<p>建立 Github OAuth App 並取得 <code>client id</code> &amp; <code>client secret</code> (很重要，後續會用到)</p>
+<ul>
+<li>作法可參考<a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app"  target="_blank" rel="noopener"
+    >官方文件</a></li>
+</ul>
+</li>
+<li>
+<p>將資訊填入 <code>themes\hugo-theme-stack\config.yaml</code></p>
+<ul>
+<li><code>clientID</code>: 步驟一取得的 client id</li>
+<li><code>clientSecret</code>: 步驟一取得的 client secret</li>
+</ul>
+<pre tabindex="0"><code>    gitalk:
+        owner: yue-jenny -&gt; 你的 account name
+        admin: yue-jenny -&gt; 你的 account name
+        repo: yue-jenny.github.io -&gt; 你的 repo name
+        clientID: 123 -&gt; 步驟一取得的 client id
+        clientSecret: 456 -&gt; 步驟一取得的 client secret
+</code></pre></li>
+<li>
+<p>上述步驟完成後，需要 admin (通常就是作者) 先 initial comment。</p>
+</li>
+<li>
+<p>initial 完成後，頁面會這樣呈現。</p>
+<ul>
+<li><a class="link" href="finish-initial-comment.jpg" >finish-initial-comment</a></li>
+</ul>
+</li>
+<li>
+<p>到 Github 可以看到，<strong>每一篇文章都會開一個 issue 紀錄</strong>，就像這樣。如果有留言，會在 issue 內多一個回應。</p>
+<ul>
+<li><a class="link" href="github-issue-with-comment.jpg" >github-issue-with-comment</a></li>
+</ul>
+</li>
+</ol>
+<h3 id="關於-github-oauth-app">關於 Github Oauth App</h3>
+<ul>
+<li>想知道更多，可參考 👉 這篇文章<a class="link" href="../github-oauth-app-1" >Github 的 Oauth App 介紹 (一)</a></li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app"  target="_blank" rel="noopener"
+    >creating-an-oauth-app</a></li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/hugo/">Hugo</a>
+        
+            <a href="/tags/gitalk/">Gitalk</a>
+        
+            <a href="/tags/github-oauth-app/">Github OAuth App</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2f%25E5%25A6%2582%25E4%25BD%2595%25E5%259C%25A8-hugo-%25E4%25B8%25AD%25E5%258A%25A0%25E5%2585%25A5%25E8%25A9%2595%25E8%25AB%2596%25E7%25B3%25BB%25E7%25B5%25B1-gitalk%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/2022/12/%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E6%B1%BA%E5%AE%9A%E4%BD%BF%E7%94%A8-hugo-%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B-blog-%E7%B3%BB%E7%B5%B1-%E4%BB%A5%E5%8F%8A%E6%88%91%E8%A9%B2%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
