@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://yue-jenny.github.io/categories/</loc>
+    <lastmod>2023-01-07T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/github-oauth-app/</loc>
+    <lastmod>2023-01-07T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/github-oauth-app/</loc>
+    <lastmod>2023-01-07T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/2023/01/github-%E7%9A%84-oauth-app-%E4%BB%8B%E7%B4%B9-%E4%B8%80/</loc>
+    <lastmod>2023-01-07T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/</loc>
+    <lastmod>2023-01-07T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/post/</loc>
+    <lastmod>2023-01-07T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-01-07T18:10:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/tags/argo-cd/</loc>
     <lastmod>2023-01-06T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -13,26 +48,6 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/</loc>
-    <lastmod>2023-01-06T00:00:00+00:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/categories/</loc>
-    <lastmod>2023-01-06T00:00:00+00:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-01-06T00:00:00+00:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/post/</loc>
-    <lastmod>2023-01-06T00:00:00+00:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2023-01-06T00:00:00+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Github 的 OAuth App 如何建立 OAuth App? 請參考 Creating an OAuth App - GitHub Docs Authorizing OAuth Apps Authorization flow 的分類 web application flow
+Used to authorize users for standard OAuth apps that run in the browser. (The implicit grant type is not supported.) device flow
+Used for headless apps, such as CLI tools. Web application flow 簡單 3 步驟可完成 Users are redirected to request their GitHub identity Users are redirected back to your site by GitHub Your app accesses the API with the user&amp;rsquo;s access token 讓我們來詳細說說吧!'>
+<title>Github 的 Oauth App 介紹 (一)</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/github-%E7%9A%84-oauth-app-%E4%BB%8B%E7%B4%B9-%E4%B8%80/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='Github 的 Oauth App 介紹 (一)'>
+<meta property='og:description' content='Github 的 OAuth App 如何建立 OAuth App? 請參考 Creating an OAuth App - GitHub Docs Authorizing OAuth Apps Authorization flow 的分類 web application flow
+Used to authorize users for standard OAuth apps that run in the browser. (The implicit grant type is not supported.) device flow
+Used for headless apps, such as CLI tools. Web application flow 簡單 3 步驟可完成 Users are redirected to request their GitHub identity Users are redirected back to your site by GitHub Your app accesses the API with the user&amp;rsquo;s access token 讓我們來詳細說說吧!'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/github-%E7%9A%84-oauth-app-%E4%BB%8B%E7%B4%B9-%E4%B8%80/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Github OAuth App' /><meta property='article:published_time' content='2023-01-07T18:10:13&#43;08:00'/><meta property='article:modified_time' content='2023-01-07T18:10:13&#43;08:00'/>
+<meta name="twitter:title" content="Github 的 Oauth App 介紹 (一)">
+<meta name="twitter:description" content="Github 的 OAuth App 如何建立 OAuth App? 請參考 Creating an OAuth App - GitHub Docs Authorizing OAuth Apps Authorization flow 的分類 web application flow
+Used to authorize users for standard OAuth apps that run in the browser. (The implicit grant type is not supported.) device flow
+Used for headless apps, such as CLI tools. Web application flow 簡單 3 步驟可完成 Users are redirected to request their GitHub identity Users are redirected back to your site by GitHub Your app accesses the API with the user&amp;rsquo;s access token 讓我們來詳細說說吧!">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#github-的-oauth-app">Github 的 OAuth App</a>
+      <ul>
+        <li><a href="#如何建立-oauth-app">如何建立 OAuth App?</a></li>
+        <li><a href="#authorizing-oauth-apps"><strong><strong>Authorizing OAuth Apps</strong></strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ci/cd/" >
+                CI/CD
+            </a>
+        
+            <a href="/categories/github-oauth-app/" >
+                Github OAuth App
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/github-%E7%9A%84-oauth-app-%E4%BB%8B%E7%B4%B9-%E4%B8%80/">Github 的 Oauth App 介紹 (一)</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 07, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    3 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="github-的-oauth-app">Github 的 OAuth App</h2>
+<h3 id="如何建立-oauth-app">如何建立 OAuth App?</h3>
+<ul>
+<li>請參考 <a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app"  target="_blank" rel="noopener"
+    >Creating an OAuth App - GitHub Docs</a></li>
+</ul>
+<h3 id="authorizing-oauth-apps"><strong><strong>Authorizing OAuth Apps</strong></strong></h3>
+<h4 id="authorization-flow-的分類">Authorization flow 的分類</h4>
+<ol>
+<li>
+<p><a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow"  target="_blank" rel="noopener"
+    >web application flow</a></p>
+<ul>
+<li>Used to authorize users for standard OAuth apps that <strong>run in the browser.</strong> (The <a class="link" href="https://tools.ietf.org/html/rfc6749#section-4.2"  target="_blank" rel="noopener"
+    >implicit grant type</a> is not supported.)</li>
+</ul>
+</li>
+<li>
+<p><a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#device-flow"  target="_blank" rel="noopener"
+    >device flow</a></p>
+<ul>
+<li>Used for <strong>headless apps</strong>, such as CLI tools.</li>
+</ul>
+</li>
+</ol>
+<h4 id="web-application-flow">Web application flow</h4>
+<h5 id="簡單-3-步驟可完成">簡單 3 步驟可完成</h5>
+<ol>
+<li>Users are <strong>redirected</strong> to request their GitHub identity</li>
+<li>Users are <strong>redirected back</strong> to your site by GitHub</li>
+<li>Your app <strong>accesses the API</strong> with the user&rsquo;s access token</li>
+</ol>
+<h4 id="讓我們來詳細說說吧">讓我們來詳細說說吧!</h4>
+<ol>
+<li>
+<p>Request a user&rsquo;s GitHub identity</p>
+<ul>
+<li>
+<p>📌瀏覽器會跳出<strong>登入頁面讓使用者登入</strong></p>
+</li>
+<li>
+<p>Request</p>
+<ul>
+<li>Required parameters
+<ul>
+<li>client_id</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>GET https://github.com/login/oauth/authorize
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Users <strong>are redirected back</strong> to your site by GitHub，接著請求 access token</p>
+<ul>
+<li>Request
+<ul>
+<li>📌請求 access token</li>
+<li>Required parameters
+<ul>
+<li>client_id</li>
+<li>client_secret</li>
+<li>code，就是步驟一所帶的 <strong>state</strong> 欄位值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>POST https://github.com/login/oauth/access_token
+</span></span></code></pre></div><ul>
+<li>
+<p>Response</p>
+<ul>
+<li>📌成功取得一組 access token</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Accept: application/json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;access_token&#34;</span>:<span style="color:#e6db74">&#34;gho_16C7e42F292c6912E7710c838347Ae178B4a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;scope&#34;</span>:<span style="color:#e6db74">&#34;repo,gist&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;token_type&#34;</span>:<span style="color:#e6db74">&#34;bearer&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Use the access token to access the API</p>
+<ul>
+<li>📌利用步驟二的 access token 去 access API</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 方式一</span>
+</span></span><span style="display:flex;"><span>Authorization: Bearer OAUTH-TOKEN
+</span></span><span style="display:flex;"><span>GET https://api.github.com/user
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 方式二</span>
+</span></span><span style="display:flex;"><span>curl -H <span style="color:#e6db74">&#34;Authorization: Bearer OAUTH-TOKEN&#34;</span> https://api.github.com/user
+</span></span></code></pre></div></li>
+</ol>
+<h4 id="device-flow"><strong><strong>Device flow</strong></strong></h4>
+<ul>
+<li>authorize users for <strong>a headless app</strong>, such as a CLI tool or Git credential manager.</li>
+</ul>
+<h5 id="簡單-3-步驟可完成-1">簡單 3 步驟可完成</h5>
+<ol>
+<li>Your app requests <strong>device and user verification codes</strong> and gets the authorization URL where the user will enter the user verification code.</li>
+<li>The app prompts the user to <strong>enter a user verification code</strong> at <a class="link" href="https://github.com/login/device"  target="_blank" rel="noopener"
+    >https://github.com/login/device</a>.</li>
+<li>The app polls for the <strong>user authentication status</strong>. Once the user has <strong>authorized</strong> the device, the app will <strong>be able to make API calls with a new access token.</strong></li>
+</ol>
+<h4 id="讓我們來詳細說說吧-1">讓我們來詳細說說吧!</h4>
+<ul>
+<li>
+<p>Step 1: App requests the device and user verification codes from GitHub</p>
+<ul>
+<li>
+<p>Request</p>
+<ul>
+<li>Required parameters
+<ul>
+<li>client_id</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>POST https://github.com/login/device/code
+</span></span></code></pre></div></li>
+<li>
+<p>Response</p>
+<ul>
+<li>⚠️記下來 <strong>user code</strong> &amp; <strong>verification uri</strong>，步驟二驗證時會使用到</li>
+<li>⚠️記下來 <strong>device code</strong>，步驟三驗證時會使用到</li>
+<li>📌interval 意義是 minimum polling interval，單位為<strong>秒</strong>。
+<ul>
+<li>步驟三 app 會去 github poll (輪詢) user 是否已驗證完成此 device</li>
+<li>interval 即指 poll 的最小時間間隔。</li>
+<li>若在 interval 內請求超過 1 次，則會到達 rate limit，會得到一些 error response，更詳細請看 👉 <a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow"  target="_blank" rel="noopener"
+    >rate limits</a></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Accept: application/json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;device_code&#34;</span>: <span style="color:#e6db74">&#34;3584d83530557fdd1f46af8289938c8ef79f9dc5&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;user_code&#34;</span>: <span style="color:#e6db74">&#34;WDJB-MJHT&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;verification_uri&#34;</span>: <span style="color:#e6db74">&#34;https://github.com/login/device&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;expires_in&#34;</span>: 900,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;interval&#34;</span>: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>
+<p>Step 2: Prompt the user to enter the user code in a browser</p>
+<ul>
+<li>📌利用步驟一得到 <strong>user code</strong> &amp; <strong>verification uri</strong> (通常就是 <a class="link" href="https://github.com/login/device"  target="_blank" rel="noopener"
+    ><code>https://github.com/login/device</code></a> )</li>
+<li>📌到 <a class="link" href="https://github.com/login/device"  target="_blank" rel="noopener"
+    ><code>https://github.com/login/device</code></a> 輸入 user code</li>
+</ul>
+</li>
+<li>
+<p>Step 3: App polls GitHub to check if the user authorized the device</p>
+<ul>
+<li>
+<p>Request</p>
+<ul>
+<li>Required parameters
+<ul>
+<li>步驟一得到的 <strong>device code</strong></li>
+<li><strong>client id</strong></li>
+<li>指定的 <strong>grant type</strong></li>
+</ul>
+</li>
+<li>⚠️發送輪詢請求，請求間隔必須大於最小輪詢時間間隔，否則會得到 error response，更詳細請看 👉 <a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow"  target="_blank" rel="noopener"
+    >rate limits</a></li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>POST https://github.com/login/oauth/access_token
+</span></span></code></pre></div></li>
+<li>
+<p>Response</p>
+<ul>
+<li>📌成功取得 access token</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Accept: application/json
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;access_token&#34;</span>: <span style="color:#e6db74">&#34;gho_16C7e42F292c6912E7710c838347Ae178B4a&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;token_type&#34;</span>: <span style="color:#e6db74">&#34;bearer&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;scope&#34;</span>: <span style="color:#e6db74">&#34;repo,gist&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h4 id="rate-limits">Rate limits</h4>
+<ul>
+<li>⚠️當達到 rate limits，會得到 <strong>slow_down</strong> 的 error response</li>
+<li>📌更多 error response 請參考<a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow"  target="_blank" rel="noopener"
+    >官方文件</a></li>
+</ul>
+<h4 id="-續集二會介紹-non-web-application-flowcreating-multiple-tokens-for-oauth-apps-以及-directing-users-to-review-their-access">📅 續集(二)會介紹 Non-Web application flow、Creating multiple tokens for OAuth Apps 以及 Directing users to review their access</h4>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://docs.github.com/en/rest/apps/oauth-applications?apiVersion=2022-11-28"  target="_blank" rel="noopener"
+    >OAuth Apps - GitHub Docs</a></li>
+<li><a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow"  target="_blank" rel="noopener"
+    >error-codes-for-the-device-flow</a></li>
+<li><a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow"  target="_blank" rel="noopener"
+    >web-application-flow - GitHub Docs</a></li>
+<li><a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#device-flow"  target="_blank" rel="noopener"
+    >Device flow - GitHub Docs</a></li>
+<li><a class="link" href="https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app"  target="_blank" rel="noopener"
+    >Creating an OAuth App - GitHub Docs</a></li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/github-oauth-app/">Github OAuth App</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2fgithub-%25E7%259A%2584-oauth-app-%25E4%25BB%258B%25E7%25B4%25B9-%25E4%25B8%2580%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
