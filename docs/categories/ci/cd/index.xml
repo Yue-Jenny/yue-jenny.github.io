@@ -37,22 +37,25 @@
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h4 id=&#34;web-application-flow&#34;&gt;Web application flow&lt;/h4&gt;
-&lt;h5 id=&#34;簡單-3-步驟可完成&#34;&gt;簡單 3 步驟可完成&lt;/h5&gt;
+&lt;h5 id=&#34;簡單-3-步驟可完成-&#34;&gt;簡單 3 步驟可完成 👌&lt;/h5&gt;
 &lt;ol&gt;
-&lt;li&gt;Users are &lt;strong&gt;redirected&lt;/strong&gt; to request their GitHub identity&lt;/li&gt;
-&lt;li&gt;Users are &lt;strong&gt;redirected back&lt;/strong&gt; to your site by GitHub&lt;/li&gt;
-&lt;li&gt;Your app &lt;strong&gt;accesses the API&lt;/strong&gt; with the user&amp;rsquo;s access token&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Users are &lt;strong&gt;redirected&lt;/strong&gt; to request their GitHub identity&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Users are &lt;strong&gt;redirected back&lt;/strong&gt; to your site by GitHub&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Your app &lt;strong&gt;accesses the API&lt;/strong&gt; with the user&amp;rsquo;s access token&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h4 id=&#34;讓我們來詳細說說吧&#34;&gt;讓我們來詳細說說吧!&lt;/h4&gt;
+&lt;h5 id=&#34;讓我們來詳細說說吧&#34;&gt;讓我們來詳細說說吧!&lt;/h5&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Request a user&amp;rsquo;s GitHub identity&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;利用 redirect 方式取得使用者的 GitHub identity&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;瀏覽器會跳出&lt;strong&gt;登入頁面讓使用者登入&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;利用 redirect 方式取得使用者的 GitHub identity，此時瀏覽器會跳出&lt;strong&gt;登入頁面讓使用者登入&lt;/strong&gt;，需輸入帳密&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;📌Request 方式如下&lt;/p&gt;
@@ -70,8 +73,7 @@
 &lt;li&gt;
 &lt;p&gt;Users &lt;strong&gt;are redirected back&lt;/strong&gt; to your site by GitHub，接著請求 access token&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;步驟一若成功完成，則頁面會被返回至 App&lt;/li&gt;
-&lt;li&gt;接著要進行請求 access token&lt;/li&gt;
+&lt;li&gt;步驟一若成功完成驗證，則頁面會被返回至 App，接著要進行請求 access token&lt;/li&gt;
 &lt;li&gt;📌Request 方式如下
 &lt;ul&gt;
 &lt;li&gt;Required parameters
@@ -89,7 +91,7 @@
 &lt;li&gt;
 &lt;p&gt;📌Response&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;成功取得一組 access token&lt;/li&gt;
+&lt;li&gt;成功的話，你會取得一組 access token&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; Accept: application/json
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
@@ -104,7 +106,7 @@
 &lt;p&gt;Use the access token to access the API&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;利用步驟二的 access token 去 access API&lt;/li&gt;
-&lt;li&gt;📌提供兩個 access API 的 request 方式&lt;/li&gt;
+&lt;li&gt;📌這邊提供兩個 access API 的 request 方式&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;# 方式一&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  Authorization: Bearer OAUTH-TOKEN
@@ -116,9 +118,9 @@
 &lt;/ol&gt;
 &lt;h4 id=&#34;device-flow&#34;&gt;&lt;strong&gt;&lt;strong&gt;Device flow&lt;/strong&gt;&lt;/strong&gt;&lt;/h4&gt;
 &lt;ul&gt;
-&lt;li&gt;authorize users for &lt;strong&gt;a headless app&lt;/strong&gt;, such as a CLI tool or Git credential manager.&lt;/li&gt;
+&lt;li&gt;目的: authorize users for &lt;strong&gt;a headless app&lt;/strong&gt;, such as a CLI tool or Git credential manager.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h5 id=&#34;簡單-3-步驟可完成-1&#34;&gt;簡單 3 步驟可完成&lt;/h5&gt;
+&lt;h5 id=&#34;簡單-3-步驟可完成--1&#34;&gt;簡單 3 步驟可完成 👌&lt;/h5&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Your app requests &lt;strong&gt;device and user verification codes&lt;/strong&gt; and gets the authorization URL where the user will enter the user verification code.&lt;/p&gt;
@@ -131,7 +133,7 @@
 &lt;p&gt;The app polls for the &lt;strong&gt;user authentication status&lt;/strong&gt;. Once the user has &lt;strong&gt;authorized&lt;/strong&gt; the device, the app will &lt;strong&gt;be able to make API calls with a new access token.&lt;/strong&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h4 id=&#34;讓我們來詳細說說吧-1&#34;&gt;讓我們來詳細說說吧!&lt;/h4&gt;
+&lt;h5 id=&#34;讓我們來詳細說說吧-1&#34;&gt;讓我們來詳細說說吧!&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Step 1: App requests the device and user verification codes from GitHub&lt;/p&gt;
