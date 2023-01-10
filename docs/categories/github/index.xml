@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Github on Jenny blog</title>
+        <link>https://yue-jenny.github.io/categories/github/</link>
+        <description>Recent content in Github on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 10 Jan 2023 16:05:56 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/github/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>在 Argo CD 中使用 Github App Credential 作為驗證方式</title>
+        <link>https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/</link>
+        <pubDate>Tue, 10 Jan 2023 16:05:56 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;在-argo-cd-中使用-github-app-credential-作為驗證方式&#34;&gt;在 Argo CD 中使用 Github App Credential 作為驗證方式&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;在先前文章&lt;a class=&#34;link&#34; href=&#34;../%e4%bd%bf%e7%94%a8-docker-desktop-%e9%81%8b%e8%a1%8c-argo-cd-%e4%bb%a5%e5%8f%8a%e5%9c%a8-argo-cd-%e5%85%a7%e5%bb%ba%e7%ab%8b-app-%e5%81%b5%e6%b8%ac-repository-%e7%8b%80%e6%85%8b/&#34; &gt;使用 Docker Desktop 運行 Argo CD 以及在 Argo CD 內建立 App 偵測 repository 狀態&lt;/a&gt; 有提到 private repository 驗證的方式有 &lt;code&gt;SSH&lt;/code&gt;、&lt;code&gt;Https&lt;/code&gt; 以及 &lt;code&gt;Github App Credential&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;此文章來筆記下，如何在 Argo CD 中使用 &lt;code&gt;Github App Credential&lt;/code&gt; 作為驗證方式&lt;/p&gt;
+&lt;h3 id=&#34;實作&#34;&gt;實作&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建立 Github App&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;步驟可參考 👉 &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;其中，特別需要設定的值&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Github App Name&lt;/strong&gt;: 為你的 Github App 取名稱&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Homepage URL&lt;/strong&gt;: 你的 web app URL&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;我的 argo cd 是以 docker desktop 啟動，並利用 port forward 方式，讓本地利用 &lt;a class=&#34;link&#34; href=&#34;http://localhost&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;localhost&lt;/a&gt; 可連線 dashboard，可參考&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;我的文章使用 Docker Desktop 運行 Argo CD&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Callback URL&lt;/strong&gt;: 當 github 認證完畢後，要 redirect 回去的 URL&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1.png&#34;
+	width=&#34;927&#34;
+	height=&#34;866&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1_huc5491ce2dc66550e600cbcca3297735a_53484_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1_huc5491ce2dc66550e600cbcca3297735a_53484_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;basic information 1 &#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;256px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2.png&#34;
+	width=&#34;839&#34;
+	height=&#34;911&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2_hua8d901ec71c1f4aeb1737fac5fac2f29_47817_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2_hua8d901ec71c1f4aeb1737fac5fac2f29_47817_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;basic information 2 &#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;92&#34;
+		data-flex-basis=&#34;221px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立完成 Github App 後，還有兩件事情要做，Argo CD 設定連線時會用到&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;查看 Github App Installation ID&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;看 URL &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/settings/installations/%7bYour&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/settings/installations/{Your&lt;/a&gt; Github App Installation ID}&lt;/strong&gt;, 可確認 Github App Installation ID&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立 private key&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;到 &lt;code&gt;Settings / Developer settings / Github Apps / {your-github-app-name}&lt;/code&gt; 的 &lt;code&gt;General&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1.png&#34;
+	width=&#34;681&#34;
+	height=&#34;337&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1_hub4eca3abecd1bcd4a43190f529bfc084_23447_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1_hub4eca3abecd1bcd4a43190f529bfc084_23447_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;set a private key&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;202&#34;
+		data-flex-basis=&#34;484px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;將頁面往下拉可以看見 Private keys，點 &lt;code&gt;Generate a private key&lt;/code&gt; 建立一組 private key&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2.png&#34;
+	width=&#34;806&#34;
+	height=&#34;251&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2_hu418a32b8c70bb709a8142c5945f221c3_17725_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2_hu418a32b8c70bb709a8142c5945f221c3_17725_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;set a private key&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;321&#34;
+		data-flex-basis=&#34;770px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;到 Argo CD 的 Repositories 設定連線資訊&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如何到這頁來設定，可參考&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/#github-app-credential&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;這邊要填寫與設定的資訊分成兩部分&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;先選到 &lt;code&gt;VIA GITHUB APP&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;依照上面的訊息完成填寫&lt;code&gt;框 2&lt;/code&gt;的內容&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點 &lt;code&gt;CONNECT&lt;/code&gt;，完成&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1.png&#34;
+	width=&#34;849&#34;
+	height=&#34;881&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1_hud66466c9c685aacdb265a07c8d099a51_42099_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1_hud66466c9c685aacdb265a07c8d099a51_42099_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Repositories 設定連線資訊&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;96&#34;
+		data-flex-basis=&#34;231px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;連線成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2.png&#34;
+	width=&#34;1377&#34;
+	height=&#34;193&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2_hu171eb20f762b1004e7638657a00c1e7d_21668_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2_hu171eb20f762b1004e7638657a00c1e7d_21668_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;連結成功&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;713&#34;
+		data-flex-basis=&#34;1712px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立一組 NEW APP&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app.png&#34;
+	width=&#34;1408&#34;
+	height=&#34;564&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app_hu8d10ffa92c0cef9f32058c6d59afce6b_119484_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app_hu8d10ffa92c0cef9f32058c6d59afce6b_119484_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;NEW APP&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;249&#34;
+		data-flex-basis=&#34;599px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;心得&#34;&gt;心得&lt;/h2&gt;
+&lt;p&gt;看到官方提供驗證 private repository 的方式有 &lt;code&gt;Github App Credential&lt;/code&gt;，讓我相當好奇，於是就有了這篇文章。&lt;br&gt;
+後續再寫一篇文章來記錄 &lt;code&gt;Github App&lt;/code&gt; 與 &lt;code&gt;OAuth App&lt;/code&gt;差異。&lt;/p&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/getting-started-with-apps/about-apps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;about-apps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/#github-app-credential&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;github-app-credential&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 「記錄」是為了有意識地、有條理地統整所學的學習知識。&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>Github 的 Oauth App 介紹 (一)</title>
+        <link>https://yue-jenny.github.io/2023/01/github-%E7%9A%84-oauth-app-%E4%BB%8B%E7%B4%B9-%E4%B8%80/</link>
+        <pubDate>Sat, 07 Jan 2023 18:10:13 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/github-%E7%9A%84-oauth-app-%E4%BB%8B%E7%B4%B9-%E4%B8%80/</guid>
+        <description>&lt;h2 id=&#34;github-的-oauth-app&#34;&gt;Github 的 OAuth App&lt;/h2&gt;
+&lt;h3 id=&#34;如何建立-oauth-app&#34;&gt;如何建立 OAuth App?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;請參考 &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Creating an OAuth App - GitHub Docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;authorizing-oauth-apps&#34;&gt;&lt;strong&gt;&lt;strong&gt;Authorizing OAuth Apps&lt;/strong&gt;&lt;/strong&gt;&lt;/h3&gt;
+&lt;h4 id=&#34;authorization-flow-的分類&#34;&gt;Authorization flow 的分類&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;web application flow&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Used to authorize users for standard OAuth apps that &lt;strong&gt;run in the browser.&lt;/strong&gt; (The &lt;a class=&#34;link&#34; href=&#34;https://tools.ietf.org/html/rfc6749#section-4.2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;implicit grant type&lt;/a&gt; is not supported.)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#device-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;device flow&lt;/a&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Used for &lt;strong&gt;headless apps&lt;/strong&gt;, such as CLI tools.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;web-application-flow&#34;&gt;Web application flow&lt;/h4&gt;
+&lt;h5 id=&#34;簡單-3-步驟可完成-&#34;&gt;簡單 3 步驟可完成 👌&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Users are &lt;strong&gt;redirected&lt;/strong&gt; to request their GitHub identity&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Users are &lt;strong&gt;redirected back&lt;/strong&gt; to your site by GitHub&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Your app &lt;strong&gt;accesses the API&lt;/strong&gt; with the user&amp;rsquo;s access token&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;讓我們來詳細說說吧&#34;&gt;讓我們來詳細說說吧!&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Request a user&amp;rsquo;s GitHub identity&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;利用 redirect 方式取得使用者的 GitHub identity，此時瀏覽器會跳出&lt;strong&gt;登入頁面讓使用者登入&lt;/strong&gt;，需輸入帳密&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;📌Request 方式如下&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Required parameters
+&lt;ul&gt;
+&lt;li&gt;client_id&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  GET https://github.com/login/oauth/authorize
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Users &lt;strong&gt;are redirected back&lt;/strong&gt; to your site by GitHub，接著請求 access token&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;步驟一若成功完成驗證，則頁面會被返回至 App，接著要進行請求 access token&lt;/li&gt;
+&lt;li&gt;📌Request 方式如下
+&lt;ul&gt;
+&lt;li&gt;Required parameters
+&lt;ul&gt;
+&lt;li&gt;client_id&lt;/li&gt;
+&lt;li&gt;client_secret&lt;/li&gt;
+&lt;li&gt;code，就是步驟一所帶的 &lt;strong&gt;state&lt;/strong&gt; 欄位值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  POST https://github.com/login/oauth/access_token
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;📌Response&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;成功的話，你會取得一組 access token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; Accept: application/json
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;access_token&amp;#34;&lt;/span&gt;:&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gho_16C7e42F292c6912E7710c838347Ae178B4a&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;scope&amp;#34;&lt;/span&gt;:&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;repo,gist&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;token_type&amp;#34;&lt;/span&gt;:&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bearer&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use the access token to access the API&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;利用步驟二的 access token 去 access API&lt;/li&gt;
+&lt;li&gt;📌這邊提供兩個 access API 的 request 方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;# 方式一&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  Authorization: Bearer OAUTH-TOKEN
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  GET https://api.github.com/user
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;# 方式二&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  curl -H &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Authorization: Bearer OAUTH-TOKEN&amp;#34;&lt;/span&gt; https://api.github.com/user
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;device-flow&#34;&gt;&lt;strong&gt;&lt;strong&gt;Device flow&lt;/strong&gt;&lt;/strong&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;目的: authorize users for &lt;strong&gt;a headless app&lt;/strong&gt;, such as a CLI tool or Git credential manager.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;簡單-3-步驟可完成--1&#34;&gt;簡單 3 步驟可完成 👌&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Your app requests &lt;strong&gt;device and user verification codes&lt;/strong&gt; and gets the authorization URL where the user will enter the user verification code.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The app prompts the user to &lt;strong&gt;enter a user verification code&lt;/strong&gt; at &lt;a class=&#34;link&#34; href=&#34;https://github.com/login/device&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/login/device&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The app polls for the &lt;strong&gt;user authentication status&lt;/strong&gt;. Once the user has &lt;strong&gt;authorized&lt;/strong&gt; the device, the app will &lt;strong&gt;be able to make API calls with a new access token.&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;讓我們來詳細說說吧-1&#34;&gt;讓我們來詳細說說吧!&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Step 1: App requests the device and user verification codes from GitHub&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;📌Request&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Required parameters
+&lt;ul&gt;
+&lt;li&gt;client_id&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  POST https://github.com/login/device/code
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;📌Response&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;⚠️記下來 &lt;strong&gt;user code&lt;/strong&gt; &amp;amp; &lt;strong&gt;verification uri&lt;/strong&gt;，步驟二驗證時會使用到&lt;/li&gt;
+&lt;li&gt;⚠️記下來 &lt;strong&gt;device code&lt;/strong&gt;，步驟三驗證時會使用到&lt;/li&gt;
+&lt;li&gt;interval 意義是 minimum polling interval，單位為&lt;strong&gt;秒&lt;/strong&gt;。
+&lt;ul&gt;
+&lt;li&gt;步驟三 app 會去 github poll (輪詢) user 是否已驗證完成此 device&lt;/li&gt;
+&lt;li&gt;interval 即指 poll 的最小時間間隔。&lt;/li&gt;
+&lt;li&gt;若在 interval 內請求超過 1 次，則會到達 rate limit，會得到一些 error response，更詳細請看 👉 &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;rate limits&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  Accept: application/json
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;device_code&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;3584d83530557fdd1f46af8289938c8ef79f9dc5&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;user_code&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;WDJB-MJHT&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;verification_uri&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://github.com/login/device&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;expires_in&amp;#34;&lt;/span&gt;: 900,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;interval&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Step 2: Prompt the user to enter the user code in a browser&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;📌利用步驟一得到 &lt;strong&gt;user code&lt;/strong&gt; &amp;amp; &lt;strong&gt;verification uri&lt;/strong&gt; (通常就是 &lt;a class=&#34;link&#34; href=&#34;https://github.com/login/device&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;https://github.com/login/device&lt;/code&gt;&lt;/a&gt; )&lt;/li&gt;
+&lt;li&gt;📌到 &lt;a class=&#34;link&#34; href=&#34;https://github.com/login/device&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;&lt;code&gt;https://github.com/login/device&lt;/code&gt;&lt;/a&gt; 輸入 user code&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Step 3: App polls GitHub to check if the user authorized the device&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;📌Request&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Required parameters
+&lt;ul&gt;
+&lt;li&gt;步驟一得到的 &lt;strong&gt;device code&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;client id&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;指定的 &lt;strong&gt;grant type&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;⚠️注意: 發送輪詢請求，請求間隔必須大於最小輪詢時間間隔，否則會得到 error response，更詳細請看 👉 &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;rate limits&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  POST https://github.com/login/oauth/access_token
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;📌Response&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;成功取得 access token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  Accept: application/json
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;access_token&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gho_16C7e42F292c6912E7710c838347Ae178B4a&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;token_type&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;bearer&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;scope&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;repo,gist&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;rate-limits&#34;&gt;Rate limits&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;⚠️當達到 rate limits，會得到 &lt;strong&gt;slow_down&lt;/strong&gt; 的 error response&lt;/li&gt;
+&lt;li&gt;📌更多 error response 請參考&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;-續集二會介紹-non-web-application-flowcreating-multiple-tokens-for-oauth-apps-以及-directing-users-to-review-their-access&#34;&gt;📅 續集(二)會介紹 Non-Web application flow、Creating multiple tokens for OAuth Apps 以及 Directing users to review their access&lt;/h4&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/rest/apps/oauth-applications?apiVersion=2022-11-28&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;OAuth Apps - GitHub Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#error-codes-for-the-device-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;error-codes-for-the-device-flow&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;web-application-flow - GitHub Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#device-flow&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Device flow - GitHub Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Creating an OAuth App - GitHub Docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>在 Github workflow 中使用 OpenID Connect (OIDC) 去認證 AWS 服務</title>
+        <link>https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/</link>
+        <pubDate>Thu, 29 Dec 2022 14:32:24 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/</guid>
+        <description>&lt;h2 id=&#34;openid-connect-oidc-介紹&#34;&gt;OpenID Connect (OIDC) 介紹&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;OIDC 全名為 OpenID Connect，是一種可以 access AWS resources，但&lt;strong&gt;不需要存取 AWS credentials&lt;/strong&gt; 當作 long-lived GitHub secrets 的驗證方式。&lt;/li&gt;
+&lt;li&gt;官方建議的驗證方式。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;oidc-優點---很好的安全實踐-good-security-practices&#34;&gt;OIDC 優點 - 很好的安全實踐 (good security practices)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;No cloud secrets
+&lt;ul&gt;
+&lt;li&gt;不需要以 cloud credentials 當作 long-lived GitHub secrets&lt;/li&gt;
+&lt;li&gt;在 cloud provider 設定好 OIDC trust，github workflows 就可以利用 OIDC 從 cloud provider 取得一組 short-lived access token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Authentication and authorization management
+&lt;ul&gt;
+&lt;li&gt;透過 cloud provider 的 &lt;strong&gt;authentication (authN)&lt;/strong&gt; 與 &lt;strong&gt;authorization (authZ)&lt;/strong&gt; 工具能夠控制取得 cloud resources&lt;/li&gt;
+&lt;li&gt;能更小粒度地控制 workflows 如何使用 credentials&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Rotating credentials
+&lt;ul&gt;
+&lt;li&gt;cloud provider 提供一組 short-lived access token 給一個 job，使用完畢後會自動過期。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;oidc-的運作方式與信任機制&#34;&gt;OIDC 的運作方式與信任機制&lt;/h3&gt;
+&lt;h4 id=&#34;運作方式&#34;&gt;運作方式&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;主要是兩個角色的互動，分別為 Cloud Provider 與 Github OIDC Provider&lt;/li&gt;
+&lt;li&gt;互動過程 :
+&lt;ul&gt;
+&lt;li&gt;In your cloud provider, create an OIDC trust between your cloud role and your GitHub workflow(s) that need access to the cloud.&lt;/li&gt;
+&lt;li&gt;Every time your job runs, GitHub&amp;rsquo;s OIDC Provider auto-generates an OIDC token. This token contains multiple claims to establish a security-hardened and verifiable identity about the specific workflow that is trying to authenticate.&lt;/li&gt;
+&lt;li&gt;You could include a step or action in your job to request this token from GitHub&amp;rsquo;s OIDC provider, and present it to the cloud provider.&lt;/li&gt;
+&lt;li&gt;Once the cloud provider successfully validates the claims presented in the token, it then provides a short-lived cloud access token that is available only for the duration of the job.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/OIDC.png&#34;
+	width=&#34;1405&#34;
+	height=&#34;477&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/OIDC_hub3f6493e16ed8e4290c950f3d2eba073_80400_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/OIDC_hub3f6493e16ed8e4290c950f3d2eba073_80400_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;how GitHub&amp;rsquo;s OIDC provider integrates with your workflows and cloud provider&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;294&#34;
+		data-flex-basis=&#34;706px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可參考&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;安全---oidc-trust&#34;&gt;安全 - OIDC trust&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;當設定 cloud 能信任 GitHub&amp;rsquo;s OIDC provider 後，&lt;strong&gt;必須&lt;/strong&gt;加上一些情境去過濾掉 requests，&lt;em&gt;避免沒有取得信任的 repositories or workflows 可以透過 access token 操作你的 cloud resources&lt;/em&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;configuring-openid-connect-in-amazon-web-services&#34;&gt;Configuring OpenID Connect in Amazon Web Services&lt;/h2&gt;
+&lt;h3 id=&#34;前言-1&#34;&gt;前言&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;目的是 Use OpenID Connect within your workflows to authenticate with Amazon Web Services.&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;iam-role&#34;&gt;IAM Role&lt;/h3&gt;
+&lt;h4 id=&#34;1-create-a-iam-role&#34;&gt;1. Create a iam role&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;建立一組 iam role，用於上傳 docker image 到 private ECR&lt;/li&gt;
+&lt;li&gt;建立 iam role 的時候，會需要填入以下資訊 :
+&lt;ul&gt;
+&lt;li&gt;provider URL : &lt;code&gt;https://token.actions.githubusercontent.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Audience : &lt;code&gt;sts.amazonaws.com&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-permissions-policies&#34;&gt;2. Permissions policies&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;iam role 綁定的 permissions policies 是 &lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/zh_tw/AmazonECR/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerRegistryPowerUser&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;AmazonEC2ContainerRegistryPowerUser&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;此政策允許委託人讀取和寫入儲存庫，以及讀取生命週期政策。委託人不會被授予刪除儲存庫或變更套用至其生命週期政策的許可。&lt;/li&gt;
+&lt;li&gt;可依據需求設定不同的 permissons policies，可參考&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/zh_tw/AmazonECR/latest/userguide/security-iam-awsmanpol.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-add-the-github-oidc-provider-to-iam&#34;&gt;3. Add the GitHub OIDC provider to IAM&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Configure the role and trust in IAM.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;到 iam role 頁面點選編輯 &lt;code&gt;Trust relationships&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/trust-relationships.png&#34;
+	width=&#34;1083&#34;
+	height=&#34;757&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/trust-relationships_hu5b36277e262e61a36b9a572faa4ec493_70264_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/trust-relationships_hu5b36277e262e61a36b9a572faa4ec493_70264_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;iam role trust-relationships&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;143&#34;
+		data-flex-basis=&#34;343px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;參考以下的方式將 sub 欄位加入到 Condition 中&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;方式一，使用 &lt;code&gt;StringLike&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Version&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2012-10-17&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Statement&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Effect&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Allow&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Principal&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Federated&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;arn:aws:iam::123456123456:oidc-provider/token.actions.githubusercontent.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Action&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sts:AssumeRoleWithWebIdentity&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Condition&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;StringLike&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:sub&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;repo:octo-org/octo-repo:*&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;StringEquals&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:aud&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sts.amazonaws.com&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;方式二，使用 &lt;code&gt;StringEquals&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Condition&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;StringEquals&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:aud&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sts.amazonaws.com&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;token.actions.githubusercontent.com:sub&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;repo:octo-org/octo-repo:ref:refs/heads/octo-branch&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services#adding-the-identity-provider-to-aws&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;updating-your-github-actions-workflow&#34;&gt;Updating your GitHub Actions workflow&lt;/h3&gt;
+&lt;p&gt;上述是 AWS 相關設定，此步驟是調整 github workflow，做兩件事情 :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Adding permissions settings，有兩種權限選擇，可依照自身情境去選擇。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;fetch an OIDC token for a workflow, then the permission can be &lt;strong&gt;set at the workflow level.&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-YAML&#34; data-lang=&#34;YAML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;permissions&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;id-token&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;write&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# This is required for requesting the JWT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;contents&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;read &lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# This is required for actions/checkout&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;only need to fetch an OIDC token &lt;strong&gt;for a single job&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-YAML&#34; data-lang=&#34;YAML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;permissions&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;id-token&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;write&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# This is required for requesting the JWT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use the &lt;code&gt;aws-actions/configure-aws-credentials&lt;/code&gt; action&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;此 action 會接收來自 GitHub OIDC provider 的 JWT，並且向 AWS 請求一組 access token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-YAML&#34; data-lang=&#34;YAML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    - &lt;span style=&#34;color:#f92672&#34;&gt;name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;Configure AWS credentials&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;uses&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;aws-actions/configure-aws-credentials@v1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;with&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;role-to-assume&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;arn:aws:iam::1234567890:role/example-role&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;role-session-name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;GitHubActionsWithAwsEcrUsingOIDCSession&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;aws-region&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;${{env.AWS_DEFAULT_REGION}}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;configuring-openid-connect-in-amazon-web-services&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;about-security-hardening-with-openid-connect&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>如何使用 Github Workflow 完成 CI/CD</title>
+        <link>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-github-workflow-%E5%AE%8C%E6%88%90-ci/cd/</link>
+        <pubDate>Sat, 10 Dec 2022 18:33:05 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-github-workflow-%E5%AE%8C%E6%88%90-ci/cd/</guid>
+        <description>&lt;h2 id=&#34;github-workflow-介紹&#34;&gt;Github Workflow 介紹&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;為了利用 Github Workflow 完成 CI/CD，分成幾個部分來寫，分別是&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Github Workflow 的基本設定&lt;/li&gt;
+&lt;li&gt;Github Workflow 中進行 CI&lt;/li&gt;
+&lt;li&gt;登入登出 AWS ECR 與 github container registry&lt;/li&gt;
+&lt;li&gt;build &amp;amp; upload image&lt;/li&gt;
+&lt;li&gt;更新 helm value 中的 image tag，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;基本設定&#34;&gt;基本設定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;action 為 &lt;code&gt;push&lt;/code&gt; 的時候，&lt;code&gt;所有 branch&lt;/code&gt; 都會進行 github workflow&lt;/li&gt;
+&lt;li&gt;action 為 &lt;code&gt;pull_request&lt;/code&gt; 的時候，只有 &lt;code&gt;main branch&lt;/code&gt; 會進行 github workflow&lt;/li&gt;
+&lt;li&gt;types&lt;/li&gt;
+&lt;li&gt;paths&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;on:
+  push:
+    branches: [&amp;#34;*&amp;#34;]
+  pull_request:
+    branches: [&amp;#34;main&amp;#34;]
+    types:
+      - opened
+    paths:
+      - &amp;#34;**.js&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;env-設定&#34;&gt;env 設定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定方式如下，可以依照自身需求進行設定&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;env:
+  AWS_DEFAULT_REGION: ap-southeast-1
+  GIT_USER_NAME: jennyc
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;permissions-設定&#34;&gt;permissions 設定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定方式如下，可以依照自身需求進行設定&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;自動化測試-ci&#34;&gt;自動化測試 CI&lt;/h2&gt;
+&lt;h3 id=&#34;checkout-repository&#34;&gt;checkout repository&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;actions/checkout@v3&lt;/code&gt; 進行&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Checkout repository
+  uses: actions/checkout@v3
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;執行-npm-install&#34;&gt;執行 npm install&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Install dependencies
+  run: npm install
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;執行-npm-test&#34;&gt;執行 npm test&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Run tests
+  run: npm run test
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;build-multi-platform-images-並上傳至-aws-ecr&#34;&gt;Build multi-platform images 並上傳至 AWS ECR&lt;/h2&gt;
+&lt;h3 id=&#34;前言-1&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;這部分需要先設定 AWS Credential 才能使用 AWS ECR，&lt;br&gt;
+接著 build multi-platform image 並且上傳至 AWS ECR。&lt;/p&gt;
+&lt;h3 id=&#34;1-設定-aws-credential&#34;&gt;1. 設定 AWS Credential&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;設定 AWS Credential&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用 GitHub&amp;rsquo;s OIDC provider 方式取得 short-lived credentials&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;OpenID Connect (OIDC) 設定方式可以&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;參考官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;也可以參考這篇&lt;a class=&#34;link&#34; href=&#34;../how-to-use-oidc-to-auth-aws-services/&#34; &gt;文章&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;workflow 要怎麼寫?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;env.AWS_DEFAULT_REGION&lt;/code&gt; 需要特別設定，與 AWS ECR 相同的 region&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;role-to-assume&lt;/code&gt; 填入 AWS role&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;role-session-name&lt;/code&gt; 預設是 GitHubActions，可以自行調整名稱&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+        role-to-assume: arn:aws:iam::1234567890:role/example-role
+        role-session-name: GitHubActionsWithAwsEcrUsingOIDCSession 
+        aws-region: ${{env.AWS_DEFAULT_REGION}}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-登入-aws-private-ecr&#34;&gt;2. 登入 AWS private ECR&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;有兩種方式
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Using &lt;code&gt;access key id&lt;/code&gt; and &lt;code&gt;secret access key&lt;/code&gt; to login&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Configure AWS credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-region: ap-southeast-1
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Using &lt;code&gt;OpenID Connect (OIDC)&lt;/code&gt; to login&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;官方推薦使用此方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Login to Amazon ECR
+    id: login-ecr
+    uses: aws-actions/amazon-ecr-login@v1
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-登入-aws-public-ecr&#34;&gt;3. 登入 AWS public ECR&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;可參考&lt;a class=&#34;link&#34; href=&#34;https://github.com/aws-actions/amazon-ecr-login#login-to-amazon-ecr-public-then-package-and-push-a-helm-chart&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方說明&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-登出-aws-ecr&#34;&gt;4. 登出 AWS ECR&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Logout of Amazon ECR
+  if: always()
+  run: docker logout ${{ steps.login-ecr.outputs.registry }}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;5-設定-short-sha-為-image-tag&#34;&gt;5. 設定 short sha 為 image tag&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定以 7 digits 長度的 short sha 作為 image tag，原因可以參考:
+&lt;ul&gt;
+&lt;li&gt;7 digits are the Git default for a short SHA&lt;/li&gt;
+&lt;li&gt;附上其他參考文件 &lt;a class=&#34;link&#34; href=&#34;http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Chapter 7 of the Pro Git book&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;將 output 出去的參數命名為 &lt;code&gt;sha_short&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Set short sha outputs
+        id: vars
+        run: echo &amp;#34;sha_short=$(git rev-parse --short HEAD)&amp;#34; &amp;gt;&amp;gt; $GITHUB_OUTPUT
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;6-build-multi-platform-images-並上傳-images-到-aws-ecr&#34;&gt;6. Build multi-platform images 並上傳 images 到 AWS ECR&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;建立多平台 docker images 的&lt;a class=&#34;link&#34; href=&#34;https://docs.docker.com/build/building/multi-platform/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;IMAGE_TAG&lt;/code&gt; 會從&lt;a class=&#34;link&#34; href=&#34;./#5-%e8%a8%ad%e5%ae%9a-short-sha-%e7%82%ba-image-tag&#34; &gt;步驟 5&lt;/a&gt; 取得 output 的變數 &lt;code&gt;sha_short&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;--platform&lt;/code&gt; 可接上需要的 platform 參考，例如 linux/amd64, linux/arm64&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Build, tag, and push docker image to Amazon ECR
+    env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: pet-app
+        IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
+    run: |
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        ( 官方建議: docker run --privileged --rm tonistiigi/binfmt --install all )
+        docker buildx create --name mybuilder --driver docker-container --bootstrap
+        docker buildx use mybuilder
+        docker buildx inspect
+        docker buildx build --platform linux/amd64,linux/arm64 -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --push .
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;為什麼需要 &lt;code&gt;docker run --rm --privileged multiarch/qemu-user-static --reset -p yes&lt;/code&gt;&lt;/strong&gt; ?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;因為遇到 &lt;code&gt;Error: while loading /usr/local/sbin/node: No such file or directory&lt;/code&gt; 問題
+&lt;ul&gt;
+&lt;li&gt;先使用方式一 : &lt;a class=&#34;link&#34; href=&#34;https://blog.csdn.net/wmg13178599398/article/details/127605036&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;連接方式&lt;/a&gt;，結果還是有相同問題
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  ln -s /usr/bin/node /usr/local/sbin/node
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;後來使用&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/72167570/docker-buildx-nodejs-fail&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;方式二&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;使用 docker buildx 指令前&lt;strong&gt;先執行以下命令&lt;/strong&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/57178788/docker-build-fails-for-arm-images/57183566#57183566&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;詳細原因的 Stack Overflow 原始文章在這邊，以下是節錄部分&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;`
+When you ask the Linux kernel to run some executable file, it needs to know, how to load this specific file, and whether this file is compatible with current machine, or not. By default, the ELF binary compiled for, say, arm64v8 is rejected by the kernel, running on amd64 hardware.&lt;/p&gt;
+&lt;p&gt;However, the binfmt_misc feature of the kernel allows you to tell it, how to handle the executables it cannot usually handle on its own - this includes the cases when the kernel does not know the binary format or considers it incompatible with current machine.&lt;br&gt;
+`&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/docker/buildx/issues/495&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;github issue&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;官方建議使用以下命令解決 QEMU binaries 問題，&lt;a class=&#34;link&#34; href=&#34;https://docs.docker.com/build/building/multi-platform/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  docker run --privileged --rm tonistiigi/binfmt --install all
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;更新-helm-value-的-image-tag&#34;&gt;更新 helm value 的 image tag&lt;/h2&gt;
+&lt;h3 id=&#34;前言-2&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;應用是以 terraform 方式部屬，並搭配使用 helm charts。而 docker image 的 tag 是寫在 helm values 內。&lt;br&gt;
+目標是更新 helm values 的 docker image tag 值，後續讓 argocd 得以偵測到 helm values 的變化後，進行自動化部屬。&lt;/p&gt;
+&lt;p&gt;需做到兩件事情:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;checkout 私有 repository&lt;/li&gt;
+&lt;li&gt;設定與更新 image tag&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;1-先-checkout-私有存放-helm-value-的-repository&#34;&gt;1. 先 checkout 私有存放 helm value 的 repository&lt;/h3&gt;
+&lt;p&gt;需要先設定 credential 才能 fetch private repository，有兩種設定的方式&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;設定 deploy key&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;步驟如下，可參考&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/60222741/github-actions-and-git-clone-issue&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;這篇&lt;/a&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Create a new SSH key pair&lt;/a&gt; for your repository. Do not set a passphrase.&lt;/li&gt;
+&lt;li&gt;Copy the contents of the public key (.pub file) to a new repository &lt;a class=&#34;link&#34; href=&#34;https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;deploy key&lt;/a&gt; and check the box to &amp;ldquo;Allow write access.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Add a secret to the repository containing the entire contents of the private key.&lt;/li&gt;
+&lt;li&gt;As shown in the example below, configure &lt;code&gt;actions/checkout&lt;/code&gt; to use the deploy key you have created.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;workflow 要怎麼寫?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ssh-key 填入 private key 的 secrets 名稱&lt;/li&gt;
+&lt;li&gt;path 設定 checkout 的 repo 會存在哪一個資料夾內&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;  - name: Checkout ${{env.TERRAFORM_REPOSITORY_NAME}} repo and push file to ${{env.TERRAFORM_REPOSITORY_NAME}}
+    uses: actions/checkout@v3
+    with:
+      repository: ${{env.TERRAFORM_REPOSITORY_OWNER_NAME}}/${{env.TERRAFORM_REPOSITORY_NAME}}
+      ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      path: ${{env.TERRAFORM_REPOSITORY_NAME}}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;設定 Personal access token (PAT)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建立 PAT 的方式，&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;將建立完成的 PAT 設定到 repository 的 secrets 中，設定的 secrets 名稱為 GH_PAT，&lt;a class=&#34;link&#34; href=&#34;https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;workflow 要怎麼寫?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;repository 設定為 &lt;code&gt;owner/repository_name&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;token 填入 PAT 的 secrets 名稱，這邊是將 secrets 名稱為 GH_PAT 的內容設定為 PAT&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;- name: Checkout ${{env.TERRAFORM_REPOSITORY_NAME}} repo and push file to ${{env.TERRAFORM_REPOSITORY_NAME}}
+    uses: actions/checkout@v3
+    with:
+        repository: ${{env.TERRAFORM_REPOSITORY_OWNER_NAME}}/${{env.TERRAFORM_REPOSITORY_NAME}}
+        token: ${{ secrets.GH_PAT }}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-設定-image-tag&#34;&gt;2. 設定 image tag&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;設定以 7 digits 長度的 short sha 作為 image tag
+&lt;ul&gt;
+&lt;li&gt;7 digits are the Git default for a short SHA&lt;/li&gt;
+&lt;li&gt;附上其他參考文件 &lt;a class=&#34;link&#34; href=&#34;http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Chapter 7 of the Pro Git book&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Set short sha outputs
+        id: vars
+        run: echo &amp;#34;sha_short=$(git rev-parse --short HEAD)&amp;#34; &amp;gt;&amp;gt; $GITHUB_OUTPUT
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-更新-image-tag&#34;&gt;3. 更新 image tag&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;以 yq 的 github action 工具修改 yaml 檔內的 image tag 值
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://mikefarah.gitbook.io/yq/v/v3.x/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mikefarah/yq&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的 github&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;進行 git 操作，設定 user name, user email、commit 以及 push&lt;/li&gt;
+&lt;li&gt;tag 取上一個步驟 output 的參數 &lt;code&gt;sha_short&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Update image tag
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i &amp;#39;.pet_app_dashboard_site.image.tag = &amp;#34;${{ steps.vars.outputs.sha_short }}&amp;#34;&amp;#39; ./${{env.TERRAFORM_REPOSITORY_NAME}}/${{env.HELM_FILE_NAME}}
+      - run: |
+          cd ${{env.TERRAFORM_REPOSITORY_NAME}}
+          git config user.name ${{env.GIT_USER_NAME}}
+          git config user.email ${{env.GIT_USER_EMAIL}}
+          git add ${{env.HELM_FILE_NAME}}
+          git commit -m &amp;#34;update image tag to ${{ steps.vars.outputs.sha_short }}&amp;#34;
+          git push origin main
+&lt;/code&gt;&lt;/pre&gt;&lt;!-- raw HTML omitted --&gt;
+&lt;h2 id=&#34;若要將-docker-image-上傳至-github-container-registry-該怎麼做&#34;&gt;若要將 docker image 上傳至 github container registry 該怎麼做?&lt;/h2&gt;
+&lt;h3 id=&#34;1-登入與登出-github-container-registry&#34;&gt;1. 登入與登出 github container registry&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;需要設定 env.REGISTRY 為 ghcr.io&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不需要另外設定 github.actor 與 &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/actions/security-guides/automatic-token-authentication&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;GITHUB_TOKEN&lt;/a&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+      registry: ${{ env.REGISTRY }}
+      username: ${{ github.actor }}
+      password: ${{ secrets.GITHUB_TOKEN }}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-extract-metadata&#34;&gt;2. Extract metadata&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;3-build-and-push-docker-image&#34;&gt;3. Build and push docker image&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;labels 的值可以從步驟二取出 outputs labels 來使用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ steps.vars.outputs.sha_short }}
+          labels: ${{ steps.meta.outputs.labels }}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/actions/checkout&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;actions/checkout&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/aws-actions/amazon-ecr-login&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;amazon-ecr-login&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/docker/login-action&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docker/login-action&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://stackoverflow.com/questions/57178788/docker-build-fails-for-arm-images/57183566#57183566&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;docker-build-fails-for-arm-images&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://mikefarah.gitbook.io/yq/v/v3.x/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/mikefarah/yq&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;yq 的 github&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;http://git-scm.com/book/en/v2/Git-Tools-Revision-Selection#Short-SHA-1&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Chapter 7 of the Pro Git book&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;creating-a-personal-access-token&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;creating-and-using-encrypted-secrets&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>如何用 github pages host 靜態檔案?</title>
+        <link>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/</link>
+        <pubDate>Sat, 10 Dec 2022 18:25:43 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/</guid>
+        <description>&lt;h2 id=&#34;如何用-github-pages-host-靜態檔案&#34;&gt;如何用 github pages host 靜態檔案?&lt;/h2&gt;
+&lt;p&gt;讓我們一步一步開始吧! 💪&lt;/p&gt;
+&lt;h3 id=&#34;1-create-a-repository&#34;&gt;1. Create a repository&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/new-repo.jpg&#34;
+	width=&#34;314&#34;
+	height=&#34;270&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/new-repo_hu04edbf9f38019c93cdaa7f20135e3517_11401_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Create a repository&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;116&#34;
+		data-flex-basis=&#34;279px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;2-naming-repository-name&#34;&gt;2. Naming repository name&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;將 repository 依據模板 &lt;code&gt;username.github.io&lt;/code&gt; 命名
+&lt;ul&gt;
+&lt;li&gt;⚠️ username 是帳戶名稱&lt;/li&gt;
+&lt;li&gt;查看自己的 URL 可以查出 username，依據模板 &lt;code&gt;https://github.com/YOUR_USERNAME&lt;/code&gt; 呈現&lt;/li&gt;
+&lt;li&gt;我帳戶名稱是 Yue-Jenny，username 需設定為 yue-jenny&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-上傳你的靜態檔案到-github&#34;&gt;3. 上傳你的靜態檔案到 github&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;參考&amp;quot;&lt;a class=&#34;link&#34; href=&#34;../build-with-hugo/&#34; &gt;為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?&lt;/a&gt;&amp;quot;，用 hugo 建立你的部落格系統，並將 publishing directory 的靜態檔案上傳到 github repository&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-設定&#34;&gt;4. 設定&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;到 repository 的 &lt;code&gt;Settings&lt;/code&gt; 頁籤&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ldquo;Code and automation&amp;rdquo; 區塊中點選 &lt;code&gt;Pages&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ldquo;Source&amp;rdquo; 選 &lt;code&gt;Deploy from a branch&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ldquo;Branch&amp;rdquo; 選 publishing 的來源&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;&lt;a class=&#34;link&#34; href=&#34;../build-with-hugo/&#34; &gt;為什麼我決定使用 hugo 建立一個 blog 系統 📙，以及我該如何建立?&lt;/a&gt;&amp;rdquo; 設定 publishing directory 為 &lt;code&gt;docs&lt;/code&gt;，所以選 &lt;code&gt;docs&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/github-pages-settings.jpg&#34;
+	width=&#34;1408&#34;
+	height=&#34;718&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/github-pages-settings_hu5bf893194075448b12f5338fd28b2ac9_124827_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;github pages settings&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;196&#34;
+		data-flex-basis=&#34;470px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;5-拜訪你的新網站-&#34;&gt;5. 拜訪你的新網站 🔥&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;瀏覽器輸入 URL &lt;code&gt;username.github.io&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/my-blogger.jpg&#34;
+	width=&#34;652&#34;
+	height=&#34;401&#34;
+	srcset=&#34;https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2022/12/%E5%A6%82%E4%BD%95%E7%94%A8-github-pages-host-%E9%9D%9C%E6%85%8B%E6%AA%94%E6%A1%88/my-blogger_hu2b590bd1663ff9bfd801bbf92e3e2d27_33982_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;my-blogger&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;162&#34;
+		data-flex-basis=&#34;390px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/pages/quickstart&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;github pages quickstart&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
