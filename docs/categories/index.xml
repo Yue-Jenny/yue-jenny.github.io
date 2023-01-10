@@ -6,7 +6,23 @@
         <description>Recent content in Categories on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 07 Jan 2023 18:10:13 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 10 Jan 2023 16:05:56 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Argo CD</title>
+        <link>https://yue-jenny.github.io/categories/argo-cd/</link>
+        <pubDate>Tue, 10 Jan 2023 16:05:56 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/categories/argo-cd/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Github App</title>
+        <link>https://yue-jenny.github.io/categories/github-app/</link>
+        <pubDate>Tue, 10 Jan 2023 16:05:56 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/categories/github-app/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Github OAuth App</title>
         <link>https://yue-jenny.github.io/categories/github-oauth-app/</link>
         <pubDate>Sat, 07 Jan 2023 18:10:13 +0800</pubDate>
@@ -28,14 +44,6 @@
         <pubDate>Fri, 06 Jan 2023 18:10:13 +0800</pubDate>
         
         <guid>https://yue-jenny.github.io/categories/hugo/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Argo CD</title>
-        <link>https://yue-jenny.github.io/categories/argo-cd/</link>
-        <pubDate>Thu, 05 Jan 2023 10:56:11 +0800</pubDate>
-        
-        <guid>https://yue-jenny.github.io/categories/argo-cd/</guid>
         <description></description>
         </item>
         <item>

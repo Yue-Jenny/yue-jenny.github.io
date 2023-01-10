@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='在 Argo CD 中使用 Github App Credential 作為驗證方式 前言 在先前文章使用 Docker Desktop 運行 Argo CD 以及在 Argo CD 內建立 App 偵測 repository 狀態 有提到 private repository 驗證的方式有 SSH、Https 以及 Github App Credential
+此文章來筆記下，如何在 Argo CD 中使用 Github App Credential 作為驗證方式
+實作 建立 Github App
+步驟可參考 👉 官方文件
+其中，特別需要設定的值
+Github App Name: 為你的 Github App 取名稱
+Homepage URL: 你的 web app URL
+我的 argo cd 是以 docker desktop 啟動，並利用 port forward 方式，讓本地利用 localhost 可連線 dashboard，可參考我的文章使用 Docker Desktop 運行 Argo CD Callback URL: 當 github 認證完畢後，要 redirect 回去的 URL'>
+<title>在 Argo CD 中使用 Github App Credential 作為驗證方式</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='在 Argo CD 中使用 Github App Credential 作為驗證方式'>
+<meta property='og:description' content='在 Argo CD 中使用 Github App Credential 作為驗證方式 前言 在先前文章使用 Docker Desktop 運行 Argo CD 以及在 Argo CD 內建立 App 偵測 repository 狀態 有提到 private repository 驗證的方式有 SSH、Https 以及 Github App Credential
+此文章來筆記下，如何在 Argo CD 中使用 Github App Credential 作為驗證方式
+實作 建立 Github App
+步驟可參考 👉 官方文件
+其中，特別需要設定的值
+Github App Name: 為你的 Github App 取名稱
+Homepage URL: 你的 web app URL
+我的 argo cd 是以 docker desktop 啟動，並利用 port forward 方式，讓本地利用 localhost 可連線 dashboard，可參考我的文章使用 Docker Desktop 運行 Argo CD Callback URL: 當 github 認證完畢後，要 redirect 回去的 URL'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Github App' /><meta property='article:tag' content='' /><meta property='article:published_time' content='2023-01-10T16:05:56&#43;08:00'/><meta property='article:modified_time' content='2023-01-10T16:05:56&#43;08:00'/>
+<meta name="twitter:title" content="在 Argo CD 中使用 Github App Credential 作為驗證方式">
+<meta name="twitter:description" content="在 Argo CD 中使用 Github App Credential 作為驗證方式 前言 在先前文章使用 Docker Desktop 運行 Argo CD 以及在 Argo CD 內建立 App 偵測 repository 狀態 有提到 private repository 驗證的方式有 SSH、Https 以及 Github App Credential
+此文章來筆記下，如何在 Argo CD 中使用 Github App Credential 作為驗證方式
+實作 建立 Github App
+步驟可參考 👉 官方文件
+其中，特別需要設定的值
+Github App Name: 為你的 Github App 取名稱
+Homepage URL: 你的 web app URL
+我的 argo cd 是以 docker desktop 啟動，並利用 port forward 方式，讓本地利用 localhost 可連線 dashboard，可參考我的文章使用 Docker Desktop 運行 Argo CD Callback URL: 當 github 認證完畢後，要 redirect 回去的 URL">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#在-argo-cd-中使用-github-app-credential-作為驗證方式">在 Argo CD 中使用 Github App Credential 作為驗證方式</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#實作">實作</a></li>
+      </ul>
+    </li>
+    <li><a href="#心得">心得</a></li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/ci/cd/" >
+                CI/CD
+            </a>
+        
+            <a href="/categories/argo-cd/" >
+                Argo CD
+            </a>
+        
+            <a href="/categories/github-app/" >
+                Github App
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/">在 Argo CD 中使用 Github App Credential 作為驗證方式</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 10, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="在-argo-cd-中使用-github-app-credential-作為驗證方式">在 Argo CD 中使用 Github App Credential 作為驗證方式</h2>
+<h3 id="前言">前言</h3>
+<p>在先前文章<a class="link" href="../%e4%bd%bf%e7%94%a8-docker-desktop-%e9%81%8b%e8%a1%8c-argo-cd-%e4%bb%a5%e5%8f%8a%e5%9c%a8-argo-cd-%e5%85%a7%e5%bb%ba%e7%ab%8b-app-%e5%81%b5%e6%b8%ac-repository-%e7%8b%80%e6%85%8b/" >使用 Docker Desktop 運行 Argo CD 以及在 Argo CD 內建立 App 偵測 repository 狀態</a> 有提到 private repository 驗證的方式有 <code>SSH</code>、<code>Https</code> 以及 <code>Github App Credential</code></p>
+<p>此文章來筆記下，如何在 Argo CD 中使用 <code>Github App Credential</code> 作為驗證方式</p>
+<h3 id="實作">實作</h3>
+<ul>
+<li>
+<p>建立 Github App</p>
+<ul>
+<li>
+<p>步驟可參考 👉 <a class="link" href="https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+</li>
+<li>
+<p>其中，特別需要設定的值</p>
+<ul>
+<li>
+<p><strong>Github App Name</strong>: 為你的 Github App 取名稱</p>
+</li>
+<li>
+<p><strong>Homepage URL</strong>: 你的 web app URL</p>
+<ul>
+<li>我的 argo cd 是以 docker desktop 啟動，並利用 port forward 方式，讓本地利用 <a class="link" href="http://localhost"  target="_blank" rel="noopener"
+    >localhost</a> 可連線 dashboard，可參考<a class="link" href="https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/"  target="_blank" rel="noopener"
+    >我的文章使用 Docker Desktop 運行 Argo CD</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Callback URL</strong>: 當 github 認證完畢後，要 redirect 回去的 URL</p>
+</li>
+</ul>
+<p><img src="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1.png"
+	width="927"
+	height="866"
+	srcset="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1_huc5491ce2dc66550e600cbcca3297735a_53484_480x0_resize_box_3.png 480w, /2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1_huc5491ce2dc66550e600cbcca3297735a_53484_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="basic information 1 "
+	
+	
+		class="gallery-image" 
+		data-flex-grow="107"
+		data-flex-basis="256px"
+	
+></p>
+<p><img src="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2.png"
+	width="839"
+	height="911"
+	srcset="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2_hua8d901ec71c1f4aeb1737fac5fac2f29_47817_480x0_resize_box_3.png 480w, /2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2_hua8d901ec71c1f4aeb1737fac5fac2f29_47817_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="basic information 2 "
+	
+	
+		class="gallery-image" 
+		data-flex-grow="92"
+		data-flex-basis="221px"
+	
+></p>
+</li>
+</ul>
+</li>
+<li>
+<p>建立完成 Github App 後，還有兩件事情要做，Argo CD 設定連線時會用到</p>
+<ul>
+<li>
+<p>查看 Github App Installation ID</p>
+</li>
+<li>
+<p>看 URL <strong><a class="link" href="https://github.com/settings/installations/%7bYour"  target="_blank" rel="noopener"
+    >https://github.com/settings/installations/{Your</a> Github App Installation ID}</strong>, 可確認 Github App Installation ID</p>
+</li>
+</ul>
+</li>
+<li>
+<p>建立 private key</p>
+<ul>
+<li>
+<p>到 <code>Settings / Developer settings / Github Apps / {your-github-app-name}</code> 的 <code>General</code></p>
+<p><img src="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1.png"
+	width="681"
+	height="337"
+	srcset="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1_hub4eca3abecd1bcd4a43190f529bfc084_23447_480x0_resize_box_3.png 480w, /2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1_hub4eca3abecd1bcd4a43190f529bfc084_23447_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="set a private key"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="202"
+		data-flex-basis="484px"
+	
+></p>
+</li>
+<li>
+<p>將頁面往下拉可以看見 Private keys，點 <code>Generate a private key</code> 建立一組 private key</p>
+<p><img src="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2.png"
+	width="806"
+	height="251"
+	srcset="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2_hu418a32b8c70bb709a8142c5945f221c3_17725_480x0_resize_box_3.png 480w, /2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2_hu418a32b8c70bb709a8142c5945f221c3_17725_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="set a private key"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="321"
+		data-flex-basis="770px"
+	
+></p>
+</li>
+</ul>
+</li>
+<li>
+<p>到 Argo CD 的 Repositories 設定連線資訊</p>
+<ul>
+<li>
+<p>如何到這頁來設定，可參考<a class="link" href="https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/#github-app-credential"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+</li>
+<li>
+<p>這邊要填寫與設定的資訊分成兩部分</p>
+<ol>
+<li>
+<p>先選到 <code>VIA GITHUB APP</code></p>
+</li>
+<li>
+<p>依照上面的訊息完成填寫<code>框 2</code>的內容</p>
+</li>
+<li>
+<p>點 <code>CONNECT</code>，完成</p>
+</li>
+</ol>
+<p><img src="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1.png"
+	width="849"
+	height="881"
+	srcset="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1_hud66466c9c685aacdb265a07c8d099a51_42099_480x0_resize_box_3.png 480w, /2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1_hud66466c9c685aacdb265a07c8d099a51_42099_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="Repositories 設定連線資訊"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="96"
+		data-flex-basis="231px"
+	
+></p>
+</li>
+</ul>
+</li>
+<li>
+<p>連線成功</p>
+<p><img src="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2.png"
+	width="1377"
+	height="193"
+	srcset="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2_hu171eb20f762b1004e7638657a00c1e7d_21668_480x0_resize_box_3.png 480w, /2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2_hu171eb20f762b1004e7638657a00c1e7d_21668_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="連結成功"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="713"
+		data-flex-basis="1712px"
+	
+></p>
+</li>
+<li>
+<p>建立一組 NEW APP</p>
+<p><img src="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app.png"
+	width="1408"
+	height="564"
+	srcset="/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app_hu8d10ffa92c0cef9f32058c6d59afce6b_119484_480x0_resize_box_3.png 480w, /2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app_hu8d10ffa92c0cef9f32058c6d59afce6b_119484_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="NEW APP"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="249"
+		data-flex-basis="599px"
+	
+></p>
+</li>
+</ul>
+<h2 id="心得">心得</h2>
+<p>看到官方提供驗證 private repository 的方式有 <code>Github App Credential</code>，讓我相當好奇，於是就有了這篇文章。<br>
+後續再寫一篇文章來記錄 <code>Github App</code> 與 <code>OAuth App</code>差異。</p>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://docs.github.com/en/developers/apps/getting-started-with-apps/about-apps"  target="_blank" rel="noopener"
+    >about-apps</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/#github-app-credential"  target="_blank" rel="noopener"
+    >github-app-credential</a></li>
+</ul>
+<p><strong>🍀 「記錄」是為了有意識地、有條理地統整所學的學習知識。</strong><br>
+<strong>🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/github-app/">Github App</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2f%25E5%259C%25A8-argo-cd-%25E4%25B8%25AD%25E4%25BD%25BF%25E7%2594%25A8-github-app-credential-%25E4%25BD%259C%25E7%2582%25BA%25E9%25A9%2597%25E8%25AD%2589%25E6%2596%25B9%25E5%25BC%258F%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

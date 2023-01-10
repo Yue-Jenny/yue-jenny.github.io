@@ -6,7 +6,212 @@
         <description>Recent content in Posts on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 07 Jan 2023 18:10:13 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 10 Jan 2023 16:05:56 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>在 Argo CD 中使用 Github App Credential 作為驗證方式</title>
+        <link>https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/</link>
+        <pubDate>Tue, 10 Jan 2023 16:05:56 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;在-argo-cd-中使用-github-app-credential-作為驗證方式&#34;&gt;在 Argo CD 中使用 Github App Credential 作為驗證方式&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;在先前文章&lt;a class=&#34;link&#34; href=&#34;../%e4%bd%bf%e7%94%a8-docker-desktop-%e9%81%8b%e8%a1%8c-argo-cd-%e4%bb%a5%e5%8f%8a%e5%9c%a8-argo-cd-%e5%85%a7%e5%bb%ba%e7%ab%8b-app-%e5%81%b5%e6%b8%ac-repository-%e7%8b%80%e6%85%8b/&#34; &gt;使用 Docker Desktop 運行 Argo CD 以及在 Argo CD 內建立 App 偵測 repository 狀態&lt;/a&gt; 有提到 private repository 驗證的方式有 &lt;code&gt;SSH&lt;/code&gt;、&lt;code&gt;Https&lt;/code&gt; 以及 &lt;code&gt;Github App Credential&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;此文章來筆記下，如何在 Argo CD 中使用 &lt;code&gt;Github App Credential&lt;/code&gt; 作為驗證方式&lt;/p&gt;
+&lt;h3 id=&#34;實作&#34;&gt;實作&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建立 Github App&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;步驟可參考 👉 &lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;其中，特別需要設定的值&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Github App Name&lt;/strong&gt;: 為你的 Github App 取名稱&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Homepage URL&lt;/strong&gt;: 你的 web app URL&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;我的 argo cd 是以 docker desktop 啟動，並利用 port forward 方式，讓本地利用 &lt;a class=&#34;link&#34; href=&#34;http://localhost&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;localhost&lt;/a&gt; 可連線 dashboard，可參考&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;我的文章使用 Docker Desktop 運行 Argo CD&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Callback URL&lt;/strong&gt;: 當 github 認證完畢後，要 redirect 回去的 URL&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1.png&#34;
+	width=&#34;927&#34;
+	height=&#34;866&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1_huc5491ce2dc66550e600cbcca3297735a_53484_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-1_huc5491ce2dc66550e600cbcca3297735a_53484_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;basic information 1 &#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;107&#34;
+		data-flex-basis=&#34;256px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2.png&#34;
+	width=&#34;839&#34;
+	height=&#34;911&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2_hua8d901ec71c1f4aeb1737fac5fac2f29_47817_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/basic-info-2_hua8d901ec71c1f4aeb1737fac5fac2f29_47817_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;basic information 2 &#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;92&#34;
+		data-flex-basis=&#34;221px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立完成 Github App 後，還有兩件事情要做，Argo CD 設定連線時會用到&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;查看 Github App Installation ID&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;看 URL &lt;strong&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/settings/installations/%7bYour&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://github.com/settings/installations/{Your&lt;/a&gt; Github App Installation ID}&lt;/strong&gt;, 可確認 Github App Installation ID&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立 private key&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;到 &lt;code&gt;Settings / Developer settings / Github Apps / {your-github-app-name}&lt;/code&gt; 的 &lt;code&gt;General&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1.png&#34;
+	width=&#34;681&#34;
+	height=&#34;337&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1_hub4eca3abecd1bcd4a43190f529bfc084_23447_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-1_hub4eca3abecd1bcd4a43190f529bfc084_23447_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;set a private key&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;202&#34;
+		data-flex-basis=&#34;484px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;將頁面往下拉可以看見 Private keys，點 &lt;code&gt;Generate a private key&lt;/code&gt; 建立一組 private key&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2.png&#34;
+	width=&#34;806&#34;
+	height=&#34;251&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2_hu418a32b8c70bb709a8142c5945f221c3_17725_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/get-private-key-2_hu418a32b8c70bb709a8142c5945f221c3_17725_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;set a private key&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;321&#34;
+		data-flex-basis=&#34;770px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;到 Argo CD 的 Repositories 設定連線資訊&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如何到這頁來設定，可參考&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/#github-app-credential&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;這邊要填寫與設定的資訊分成兩部分&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;先選到 &lt;code&gt;VIA GITHUB APP&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;依照上面的訊息完成填寫&lt;code&gt;框 2&lt;/code&gt;的內容&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;點 &lt;code&gt;CONNECT&lt;/code&gt;，完成&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1.png&#34;
+	width=&#34;849&#34;
+	height=&#34;881&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1_hud66466c9c685aacdb265a07c8d099a51_42099_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-1_hud66466c9c685aacdb265a07c8d099a51_42099_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Repositories 設定連線資訊&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;96&#34;
+		data-flex-basis=&#34;231px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;連線成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2.png&#34;
+	width=&#34;1377&#34;
+	height=&#34;193&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2_hu171eb20f762b1004e7638657a00c1e7d_21668_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/connect-repo-2_hu171eb20f762b1004e7638657a00c1e7d_21668_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;連結成功&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;713&#34;
+		data-flex-basis=&#34;1712px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;建立一組 NEW APP&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app.png&#34;
+	width=&#34;1408&#34;
+	height=&#34;564&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app_hu8d10ffa92c0cef9f32058c6d59afce6b_119484_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E5%9C%A8-argo-cd-%E4%B8%AD%E4%BD%BF%E7%94%A8-github-app-credential-%E4%BD%9C%E7%82%BA%E9%A9%97%E8%AD%89%E6%96%B9%E5%BC%8F/new-app_hu8d10ffa92c0cef9f32058c6d59afce6b_119484_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;NEW APP&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;249&#34;
+		data-flex-basis=&#34;599px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;心得&#34;&gt;心得&lt;/h2&gt;
+&lt;p&gt;看到官方提供驗證 private repository 的方式有 &lt;code&gt;Github App Credential&lt;/code&gt;，讓我相當好奇，於是就有了這篇文章。&lt;br&gt;
+後續再寫一篇文章來記錄 &lt;code&gt;Github App&lt;/code&gt; 與 &lt;code&gt;OAuth App&lt;/code&gt;差異。&lt;/p&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.github.com/en/developers/apps/getting-started-with-apps/about-apps&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;about-apps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/#github-app-credential&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;github-app-credential&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 「記錄」是為了有意識地、有條理地統整所學的學習知識。&lt;/strong&gt;&lt;br&gt;
+&lt;strong&gt;🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Github 的 Oauth App 介紹 (一)</title>
         <link>https://yue-jenny.github.io/2023/01/github-%E7%9A%84-oauth-app-%E4%BB%8B%E7%B4%B9-%E4%B8%80/</link>
         <pubDate>Sat, 07 Jan 2023 18:10:13 +0800</pubDate>
@@ -455,11 +660,11 @@
 </description>
         </item>
         <item>
-        <title>使用 Docker Desktop 運行 Argo CD</title>
-        <link>https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/</link>
+        <title>使用 Docker Desktop 運行 Argo CD 以及在 Argo CD 內建立 App 偵測 repository 狀態</title>
+        <link>https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/</link>
         <pubDate>Wed, 04 Jan 2023 04:39:13 +0000</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/</guid>
         <description>&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
 &lt;p&gt;開始前，需要先確保有以下的先備知識&lt;/p&gt;
 &lt;ul&gt;
@@ -493,10 +698,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;pod 運行狀態&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/get-pod-n-argocd.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/get-pod-n-argocd.jpg&#34;
 	width=&#34;850&#34;
 	height=&#34;189&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/get-pod-n-argocd_hue72648a3aa0105e4010abdc11108abb9_48197_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/get-pod-n-argocd_hue72648a3aa0105e4010abdc11108abb9_48197_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/get-pod-n-argocd_hue72648a3aa0105e4010abdc11108abb9_48197_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/get-pod-n-argocd_hue72648a3aa0105e4010abdc11108abb9_48197_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;argocd 相關的 pod 都已是 running 狀態&#34;
@@ -524,10 +729,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;port forward 成功&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/port-forward.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/port-forward.jpg&#34;
 	width=&#34;748&#34;
 	height=&#34;339&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/port-forward_huabd24b4c8f56be51fa0779e4ac514db3_51986_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/port-forward_huabd24b4c8f56be51fa0779e4ac514db3_51986_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/port-forward_huabd24b4c8f56be51fa0779e4ac514db3_51986_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/port-forward_huabd24b4c8f56be51fa0779e4ac514db3_51986_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;port forward 成功&#34;
@@ -548,10 +753,10 @@
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;成功登入 Argo CD dashboard&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/argocd-dashboard-clean.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/argocd-dashboard-clean.png&#34;
 	width=&#34;1071&#34;
 	height=&#34;638&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/argocd-dashboard-clean_hubf35350a067953686ac0ffaa070558e3_60462_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/argocd-dashboard-clean_hubf35350a067953686ac0ffaa070558e3_60462_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/argocd-dashboard-clean_hubf35350a067953686ac0ffaa070558e3_60462_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/argocd-dashboard-clean_hubf35350a067953686ac0ffaa070558e3_60462_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;成功登入 Argo CD dashboard&#34;
@@ -576,10 +781,10 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Step 1
-&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/new-app.png&#34;
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/new-app.png&#34;
 	width=&#34;638&#34;
 	height=&#34;158&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;NEW APP&#34;
@@ -614,10 +819,10 @@
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;到 &lt;code&gt;Settings/Repositories&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/setting-private-repo.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/setting-private-repo.png&#34;
 	width=&#34;814&#34;
 	height=&#34;353&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/setting-private-repo_hu78a555d7bb85e8a49707de97e637f012_33877_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/setting-private-repo_hu78a555d7bb85e8a49707de97e637f012_33877_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/setting-private-repo_hu78a555d7bb85e8a49707de97e637f012_33877_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/setting-private-repo_hu78a555d7bb85e8a49707de97e637f012_33877_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Settings/Repositories&#34;
@@ -630,18 +835,19 @@
 &gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;以 &lt;code&gt;ssh-key&lt;/code&gt; 方式認證，也能選擇以 &lt;code&gt;Https&lt;/code&gt; 的方式驗證&lt;/p&gt;
+&lt;p&gt;以 &lt;code&gt;ssh-key&lt;/code&gt; 方式認證，也能選擇以 &lt;code&gt;Https&lt;/code&gt;或者 &lt;code&gt;Github App&lt;/code&gt; 的方式驗證&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;可參考&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/user-guide/private-repositories/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Argo CD Private Repositories Credential 設定&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;可參考我的文章&lt;a class=&#34;link&#34; href=&#34;../%e5%9c%a8-argo-cd-%e4%b8%ad%e4%bd%bf%e7%94%a8-github-app-credential-%e4%bd%9c%e7%82%ba%e9%a9%97%e8%ad%89%e6%96%b9%e5%bc%8f/&#34; &gt;使用 Github App Credential 認證&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;設定完成會顯示 &lt;code&gt;Successful&lt;/code&gt;
-&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/ssh-key-auth.png&#34;
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/ssh-key-auth.png&#34;
 	width=&#34;1060&#34;
 	height=&#34;210&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/ssh-key-auth_huabe8ed2476538e932deefecd450f8e3f_14786_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/ssh-key-auth_huabe8ed2476538e932deefecd450f8e3f_14786_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/ssh-key-auth_huabe8ed2476538e932deefecd450f8e3f_14786_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/ssh-key-auth_huabe8ed2476538e932deefecd450f8e3f_14786_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;以 ssh-key 方式認證&#34;
@@ -658,10 +864,10 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Step 1
-&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/new-app.png&#34;
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/new-app.png&#34;
 	width=&#34;638&#34;
 	height=&#34;158&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/new-app_hu49baf9f48e5f3f774443692722b5a225_19254_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;NEW APP&#34;
@@ -678,10 +884,10 @@
 &lt;ul&gt;
 &lt;li&gt;依照&lt;a class=&#34;link&#34; href=&#34;https://argo-cd.readthedocs.io/en/stable/getting_started/#creating-apps-via-ui&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;官方文件指示步驟&lt;/a&gt;填入資料
-&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/add-info-and-create.png&#34;
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/add-info-and-create.png&#34;
 	width=&#34;1021&#34;
 	height=&#34;815&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/add-info-and-create_hu338b5f90a6ef44a979a415c69ad0440f_40531_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/add-info-and-create_hu338b5f90a6ef44a979a415c69ad0440f_40531_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/add-info-and-create_hu338b5f90a6ef44a979a415c69ad0440f_40531_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/add-info-and-create_hu338b5f90a6ef44a979a415c69ad0440f_40531_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;填入資料並 CREATE&#34;
@@ -698,10 +904,10 @@
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;成功建立一組 private application 🚀&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/enter-argocd-dshaboard-successfully.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/enter-argocd-dshaboard-successfully.jpg&#34;
 	width=&#34;1023&#34;
 	height=&#34;581&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/enter-argocd-dshaboard-successfully_hu2f9e0fec8e3eb44dc7df0f48b6ca8d80_56232_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/enter-argocd-dshaboard-successfully_hu2f9e0fec8e3eb44dc7df0f48b6ca8d80_56232_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/enter-argocd-dshaboard-successfully_hu2f9e0fec8e3eb44dc7df0f48b6ca8d80_56232_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/enter-argocd-dshaboard-successfully_hu2f9e0fec8e3eb44dc7df0f48b6ca8d80_56232_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;成功建立一組 application&#34;
@@ -718,10 +924,10 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;執行 &lt;code&gt;DELETE&lt;/code&gt; 按鈕&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/delete-app.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/delete-app.png&#34;
 	width=&#34;531&#34;
 	height=&#34;328&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/delete-app_hu66f4bb314802a66182a28a7e0c029fae_30154_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd/delete-app_hu66f4bb314802a66182a28a7e0c029fae_30154_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/delete-app_hu66f4bb314802a66182a28a7e0c029fae_30154_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E4%BD%BF%E7%94%A8-docker-desktop-%E9%81%8B%E8%A1%8C-argo-cd-%E4%BB%A5%E5%8F%8A%E5%9C%A8-argo-cd-%E5%85%A7%E5%BB%BA%E7%AB%8B-app-%E5%81%B5%E6%B8%AC-repository-%E7%8B%80%E6%85%8B/delete-app_hu66f4bb314802a66182a28a7e0c029fae_30154_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;DELETE 按鈕&#34;
