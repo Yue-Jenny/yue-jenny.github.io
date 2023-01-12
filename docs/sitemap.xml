@@ -2,37 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://yue-jenny.github.io/categories/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/github/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/github/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/github-workflow/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/monorepo/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/monorepo/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/post/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/2023/01/%E5%A6%82%E4%BD%95%E8%A8%AD%E8%A8%88%E8%88%87%E5%AF%A6%E4%BD%9C-monorepo-%E7%9A%84-github-workflow/</loc>
+    <lastmod>2023-01-12T14:56:21+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/categories/argo-cd/</loc>
     <lastmod>2023-01-10T16:05:56+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/categories/</loc>
-    <lastmod>2023-01-10T16:05:56+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/categories/github/</loc>
-    <lastmod>2023-01-10T16:05:56+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
     <loc>https://yue-jenny.github.io/tags/github-app/</loc>
-    <lastmod>2023-01-10T16:05:56+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-01-10T16:05:56+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/post/</loc>
-    <lastmod>2023-01-10T16:05:56+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2023-01-10T16:05:56+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -129,11 +154,6 @@
   </url><url>
     <loc>https://yue-jenny.github.io/2022/12/%E5%9C%A8-github-workflow-%E4%B8%AD%E4%BD%BF%E7%94%A8-openid-connect-oidc-%E5%8E%BB%E8%AA%8D%E8%AD%89-aws-%E6%9C%8D%E5%8B%99/</loc>
     <lastmod>2022-12-29T14:32:24+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/github-workflow/</loc>
-    <lastmod>2022-12-10T18:33:05+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
