@@ -108,6 +108,17 @@
           branches: [&amp;#39;stage&amp;#39;]
 &lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;h3 id=&#34;我如何設計&#34;&gt;我如何設計?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;根據&lt;code&gt;兩種環境 stage 與 main&lt;/code&gt;，以及&lt;code&gt;兩種 app&lt;/code&gt;，總共會有 4 組 workflow yaml 檔案
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;stage-app1.yml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;stage-app2.yml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;main-app1.yml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;main-app1.yml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h3 id=&#34;注意事項&#34;&gt;注意事項&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;❗ &amp;ldquo;You must store workflow files in the .github/workflows directory of your repository.&amp;rdquo;

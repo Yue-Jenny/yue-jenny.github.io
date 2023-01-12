@@ -244,6 +244,7 @@
         <li><a href="#什麼是-monorepo">什麼是 monorepo?</a></li>
         <li><a href="#如何設計-github-workflow">如何設計 Github workflow?</a></li>
         <li><a href="#實作">實作</a></li>
+        <li><a href="#我如何設計">我如何設計?</a></li>
         <li><a href="#注意事項">注意事項</a></li>
       </ul>
     </li>
@@ -427,6 +428,17 @@
       pull_request:
           branches: [&#39;stage&#39;]
 </code></pre></li>
+</ul>
+<h3 id="我如何設計">我如何設計?</h3>
+<ul>
+<li>根據<code>兩種環境 stage 與 main</code>，以及<code>兩種 app</code>，總共會有 4 組 workflow yaml 檔案
+<ul>
+<li><code>stage-app1.yml</code></li>
+<li><code>stage-app2.yml</code></li>
+<li><code>main-app1.yml</code></li>
+<li><code>main-app1.yml</code></li>
+</ul>
+</li>
 </ul>
 <h3 id="注意事項">注意事項</h3>
 <ul>
