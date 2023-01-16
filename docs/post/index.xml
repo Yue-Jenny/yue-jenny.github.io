@@ -6,7 +6,170 @@
         <description>Recent content in Posts on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 12 Jan 2023 14:56:21 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 16 Jan 2023 12:35:00 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Security And HTTPS</title>
+        <link>https://yue-jenny.github.io/2023/01/security-and-https/</link>
+        <pubDate>Mon, 16 Jan 2023 12:35:00 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/security-and-https/</guid>
+        <description>&lt;h2 id=&#34;security-and-https&#34;&gt;Security And HTTPS&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;IP Packet&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload&lt;/li&gt;
+&lt;li&gt;IP Header 包含來源與目的地的 IP Address&lt;/li&gt;
+&lt;li&gt;payload 就是你要傳送的資料&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Man-In-The-Middle Attack (又稱呼為 MITM)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;意思是攔截 client 與 server 間傳送的訊息 💬&lt;/li&gt;
+&lt;li&gt;若 client 與 server 間傳送訊息有透過&lt;code&gt;加密&lt;/code&gt;與 &lt;code&gt;Https&lt;/code&gt; 可防止資料被竊取&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Symmetric Encryption (對稱加密)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;加密與解密資料都使用&lt;strong&gt;同一把 key&lt;/strong&gt; 🔑&lt;/li&gt;
+&lt;li&gt;缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點&lt;/li&gt;
+&lt;li&gt;優點是速度比非對稱加密快 🐇&lt;/li&gt;
+&lt;li&gt;最廣泛使用的演算法是 Advanced Ecryption Standard(AES)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Asymmetric Encryption (非對稱加密)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;加密與解密資料會利用到&lt;strong&gt;兩把 key&lt;/strong&gt; 🔑🔑，分別為 public key 與 private key&lt;/li&gt;
+&lt;li&gt;public key 負責加密資料，只能利用相對應的 private key 解密資料&lt;/li&gt;
+&lt;li&gt;所以 public key 分享給需要加密資料的一端，而 private key 則需要 &lt;strong&gt;安全地保存&lt;/strong&gt; ㊙️&lt;/li&gt;
+&lt;li&gt;速度會比對稱加密慢 🐢&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Advanced Ecryption Standard(AES)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;最廣泛&lt;/strong&gt;使用的&lt;strong&gt;加密標準&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;三種對稱演算法分別為 AES-128、AES-192、AES-256&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Transport Layer Security (TLS)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在&lt;strong&gt;傳輸層&lt;/strong&gt;的一種協定，目的是為了網路通訊時的安全，確保沒有第三方能竊聽或者竊取任何資訊&lt;/li&gt;
+&lt;li&gt;衍生於另一種安全協定 Secure Socket Layer (SSL)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;SSL certificate&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;由 certificate authority (CA) 頒發給 server 的數位憑證&lt;/li&gt;
+&lt;li&gt;內容包含 server 端的 public key，因為在 TLS Handshake 過程中會使用到&lt;/li&gt;
+&lt;li&gt;目的是確認&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;http-vs-https&#34;&gt;Http vs Https&lt;/h3&gt;
+&lt;h4 id=&#34;http&#34;&gt;Http&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;全名為 HyperText Transfer Protocol&lt;/li&gt;
+&lt;li&gt;一種常見的網路通訊協議&lt;/li&gt;
+&lt;li&gt;流程是 client 送出 http request，而 server 送出回應&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;https&#34;&gt;Https&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;全名為 HyperText Transfer Protocol &lt;strong&gt;Secure&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;顧名思義是為了可於網路上🔐&lt;strong&gt;安全地&lt;/strong&gt;通訊而出現的一種網路通訊協議&lt;/li&gt;
+&lt;li&gt;為了達到上述要求，因此 server 被要求須具備以下兩項
+&lt;ul&gt;
+&lt;li&gt;須獲得可信任的憑證(&lt;code&gt;SSL certificates&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;Transport Layer Security (TLS)&lt;/code&gt; 加密 client 與 server 端的數據。TLS 如何運作，請往下看。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;tls-連接是透過-tls-handshake-來啟動&#34;&gt;TLS 連接是透過 TLS Handshake 來啟動&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;流程
+&lt;ul&gt;
+&lt;li&gt;client 送出 &lt;code&gt;client hello&lt;/code&gt; (隨機的 bytes) 給 server&lt;/li&gt;
+&lt;li&gt;server 回應 &lt;code&gt;server hello&lt;/code&gt; (也是隨機的 bytes) 以及 SSL certificate&lt;/li&gt;
+&lt;li&gt;client 驗證 CA 頒發的憑證，確認憑證正確屬於此 server 擁有&lt;/li&gt;
+&lt;li&gt;client 接著會送出一組用 public key 加密的 &lt;code&gt;premaster secret&lt;/code&gt; 給 server&lt;/li&gt;
+&lt;li&gt;client 和 server 將會使用 &lt;code&gt;client hello&lt;/code&gt;, &lt;code&gt;server hello&lt;/code&gt;與 &lt;code&gt;premaster secret&lt;/code&gt; 產生對稱加密的 &lt;code&gt;session keys&lt;/code&gt;，用於後續的通訊內容的加密與解密 🔐&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;tcp-利用-handshake-方式來連接與斷連&#34;&gt;TCP 利用 Handshake 方式來連接與斷連&lt;/h3&gt;
+&lt;h4 id=&#34;tcp-三次握手建立連線&#34;&gt;TCP 三次握手(建立連線)&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;流程&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一次握手：
+&lt;ul&gt;
+&lt;li&gt;客戶端傳送請求 SYN 報文給服務端，傳送完畢之後，客戶端處於 SYN_Send 狀態。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;第二次握手：
+&lt;ul&gt;
+&lt;li&gt;服務端收到請求報文之後，&lt;strong&gt;如果同意連線，會回傳 SYN + ACK 應答報文&lt;/strong&gt;，服務端為SYN_Receive狀態&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;第三次握手：
+&lt;ul&gt;
+&lt;li&gt;客戶端接收到服務端的 SYN + ACK ，然後&lt;strong&gt;傳送確認報文作為應答&lt;/strong&gt;，客戶端轉為Established狀態&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;為什麼一定要三次?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;為了防止已失效的連接請求報文段突然又傳送到了服務端，因而產生錯誤&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;tcp-四次握手結束連線&#34;&gt;TCP 四次握手(結束連線)&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;流程
+&lt;ul&gt;
+&lt;li&gt;第一次分手
+&lt;ul&gt;
+&lt;li&gt;客戶端傳送FIN=1告訴服務端，客戶端所有的資料&lt;strong&gt;全部發送完畢&lt;/strong&gt;，服務端可以關閉接收了。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;第二次分手
+&lt;ul&gt;
+&lt;li&gt;服務端接收到客戶端的釋放請求連線之後，知道客戶端沒有資料傳送給自己了，然後&lt;strong&gt;服務端傳送ACK=1告訴客戶端接收到你發給我的訊息&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;第三次分手
+&lt;ul&gt;
+&lt;li&gt;告訴客戶端，&lt;strong&gt;服務端的所有資料傳送完畢&lt;/strong&gt;，客戶端你也可以關閉接收資料連線了。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;第四次分手
+&lt;ul&gt;
+&lt;li&gt;客戶端接收到了服務端傳送完畢的訊息之後，就&lt;strong&gt;傳送ACK=1，告訴服務端，客戶端已經接收到你的訊息&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;System expert&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;what-happens-in-a-tls-handshake&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>如何設計與實作 Monorepo 的 Github Workflow?</title>
         <link>https://yue-jenny.github.io/2023/01/%E5%A6%82%E4%BD%95%E8%A8%AD%E8%A8%88%E8%88%87%E5%AF%A6%E4%BD%9C-monorepo-%E7%9A%84-github-workflow/</link>
         <pubDate>Thu, 12 Jan 2023 14:56:21 +0800</pubDate>
