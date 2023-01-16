@@ -14,6 +14,7 @@
         <guid>https://yue-jenny.github.io/2023/01/security-and-https/</guid>
         <description>&lt;h2 id=&#34;security-and-https&#34;&gt;Security And HTTPS&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。&lt;/p&gt;
 &lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
