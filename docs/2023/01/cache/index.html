@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Cache 快取 前言 快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。
+Prerequistites cache 意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快 通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求 cache hit 需要的資料能在快取中找到 🉐 cache miss 需要的資料無法在快取中找到 🈚 content delivery network (CDN) 一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看 越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency 舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN 3 個使用快取的目的 利用前端快取，減少請求到後端 減少對資料庫的請求，降低資料庫壓力 避免 long compute operation，增加系統速度 快取更新機制 write through cache 同時更新資料庫與快取的資料 write back cache 先更新快取，再以非同步的方式更新資料庫的資料 快取替換機制 Cache eviction policy Least Recently Used (LRU) 依照最近使用時間來排序 思路: 最近使用時間最接近，表示近期內使用到的可能性也越高 優先替換掉最近使用時間距離當下最遠的那組數據 Least Frequently Used (LFU) 依照使用頻率來排序 思路: 使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️ 優先替換掉使用次數最低的那組數據 First in First out (FIFO) 顧名思義，先進先出 思路: 最先進去快取的資料，越早會被淘汰 參考資料 👐 System expert 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<title>Cache</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/cache/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='Cache'>
+<meta property='og:description' content='Cache 快取 前言 快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。
+Prerequistites cache 意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快 通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求 cache hit 需要的資料能在快取中找到 🉐 cache miss 需要的資料無法在快取中找到 🈚 content delivery network (CDN) 一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看 越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency 舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN 3 個使用快取的目的 利用前端快取，減少請求到後端 減少對資料庫的請求，降低資料庫壓力 避免 long compute operation，增加系統速度 快取更新機制 write through cache 同時更新資料庫與快取的資料 write back cache 先更新快取，再以非同步的方式更新資料庫的資料 快取替換機制 Cache eviction policy Least Recently Used (LRU) 依照最近使用時間來排序 思路: 最近使用時間最接近，表示近期內使用到的可能性也越高 優先替換掉最近使用時間距離當下最遠的那組數據 Least Frequently Used (LFU) 依照使用頻率來排序 思路: 使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️ 優先替換掉使用次數最低的那組數據 First in First out (FIFO) 顧名思義，先進先出 思路: 最先進去快取的資料，越早會被淘汰 參考資料 👐 System expert 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/cache/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='Cache' /><meta property='article:published_time' content='2023-01-17T11:04:46&#43;08:00'/><meta property='article:modified_time' content='2023-01-17T11:04:46&#43;08:00'/>
+<meta name="twitter:title" content="Cache">
+<meta name="twitter:description" content="Cache 快取 前言 快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。
+Prerequistites cache 意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快 通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求 cache hit 需要的資料能在快取中找到 🉐 cache miss 需要的資料無法在快取中找到 🈚 content delivery network (CDN) 一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看 越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency 舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN 3 個使用快取的目的 利用前端快取，減少請求到後端 減少對資料庫的請求，降低資料庫壓力 避免 long compute operation，增加系統速度 快取更新機制 write through cache 同時更新資料庫與快取的資料 write back cache 先更新快取，再以非同步的方式更新資料庫的資料 快取替換機制 Cache eviction policy Least Recently Used (LRU) 依照最近使用時間來排序 思路: 最近使用時間最接近，表示近期內使用到的可能性也越高 優先替換掉最近使用時間距離當下最遠的那組數據 Least Frequently Used (LFU) 依照使用頻率來排序 思路: 使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️ 優先替換掉使用次數最低的那組數據 First in First out (FIFO) 顧名思義，先進先出 思路: 最先進去快取的資料，越早會被淘汰 參考資料 👐 System expert 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#cache-快取">Cache 快取</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#prerequistites">Prerequistites</a></li>
+        <li><a href="#3-個使用快取的目的">3 個使用快取的目的</a></li>
+        <li><a href="#快取更新機制">快取更新機制</a></li>
+        <li><a href="#快取替換機制-cache-eviction-policy">快取替換機制 Cache eviction policy</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/cache/">Cache</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 17, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="cache-快取">Cache 快取</h2>
+<h3 id="前言">前言</h3>
+<p>快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。<br>
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。</p>
+<h3 id="prerequistites">Prerequistites</h3>
+<ul>
+<li>cache
+<ul>
+<li>意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快</li>
+<li>通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求</li>
+</ul>
+</li>
+<li>cache hit
+<ul>
+<li>需要的資料能在快取中找到 🉐</li>
+</ul>
+</li>
+<li>cache miss
+<ul>
+<li>需要的資料無法在快取中找到 🈚</li>
+</ul>
+</li>
+<li>content delivery network (CDN)
+<ul>
+<li>一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看</li>
+<li>越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency</li>
+<li>舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-個使用快取的目的">3 個使用快取的目的</h3>
+<ul>
+<li>利用前端快取，減少請求到後端</li>
+<li>減少對資料庫的請求，降低資料庫壓力</li>
+<li>避免 long compute operation，增加系統速度</li>
+</ul>
+<h3 id="快取更新機制">快取更新機制</h3>
+<ul>
+<li>write through cache
+<ul>
+<li><strong>同時</strong>更新資料庫與快取的資料</li>
+</ul>
+</li>
+<li>write back cache
+<ul>
+<li>先更新快取，再以<strong>非同步</strong>的方式更新資料庫的資料</li>
+</ul>
+</li>
+</ul>
+<h3 id="快取替換機制-cache-eviction-policy">快取替換機制 Cache eviction policy</h3>
+<ul>
+<li>Least <strong>Recently</strong> Used (LRU)
+<ul>
+<li>依照<strong>最近使用時間</strong>來排序</li>
+<li>思路:
+<ul>
+<li>最近使用時間最接近，表示近期內使用到的可能性也越高</li>
+<li>優先替換掉最近使用時間距離當下最遠的那組數據</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Least <strong>Frequently</strong> Used (LFU)
+<ul>
+<li>依照<strong>使用頻率</strong>來排序</li>
+<li>思路:
+<ul>
+<li>使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️</li>
+<li>優先替換掉使用次數最低的那組數據</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>First in First out (FIFO)
+<ul>
+<li>顧名思義，<strong>先進先出</strong></li>
+<li>思路: 最先進去快取的資料，越早會被淘汰</li>
+</ul>
+</li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li>System expert</li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
+        
+            <a href="/tags/cache/">Cache</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2fcache%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/2023/01/security-and-https/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Security And HTTPS</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

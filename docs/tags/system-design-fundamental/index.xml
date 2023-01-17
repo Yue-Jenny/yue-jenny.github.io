@@ -6,7 +6,100 @@
         <description>Recent content in System Design Fundamental on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 16 Jan 2023 12:35:00 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/system-design-fundamental/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 17 Jan 2023 11:04:46 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/system-design-fundamental/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Cache</title>
+        <link>https://yue-jenny.github.io/2023/01/cache/</link>
+        <pubDate>Tue, 17 Jan 2023 11:04:46 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/cache/</guid>
+        <description>&lt;h2 id=&#34;cache-快取&#34;&gt;Cache 快取&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。&lt;br&gt;
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。&lt;/p&gt;
+&lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;cache
+&lt;ul&gt;
+&lt;li&gt;意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快&lt;/li&gt;
+&lt;li&gt;通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;cache hit
+&lt;ul&gt;
+&lt;li&gt;需要的資料能在快取中找到 🉐&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;cache miss
+&lt;ul&gt;
+&lt;li&gt;需要的資料無法在快取中找到 🈚&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;content delivery network (CDN)
+&lt;ul&gt;
+&lt;li&gt;一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看&lt;/li&gt;
+&lt;li&gt;越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency&lt;/li&gt;
+&lt;li&gt;舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-個使用快取的目的&#34;&gt;3 個使用快取的目的&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;利用前端快取，減少請求到後端&lt;/li&gt;
+&lt;li&gt;減少對資料庫的請求，降低資料庫壓力&lt;/li&gt;
+&lt;li&gt;避免 long compute operation，增加系統速度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;快取更新機制&#34;&gt;快取更新機制&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;write through cache
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;同時&lt;/strong&gt;更新資料庫與快取的資料&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;write back cache
+&lt;ul&gt;
+&lt;li&gt;先更新快取，再以&lt;strong&gt;非同步&lt;/strong&gt;的方式更新資料庫的資料&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;快取替換機制-cache-eviction-policy&#34;&gt;快取替換機制 Cache eviction policy&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Least &lt;strong&gt;Recently&lt;/strong&gt; Used (LRU)
+&lt;ul&gt;
+&lt;li&gt;依照&lt;strong&gt;最近使用時間&lt;/strong&gt;來排序&lt;/li&gt;
+&lt;li&gt;思路:
+&lt;ul&gt;
+&lt;li&gt;最近使用時間最接近，表示近期內使用到的可能性也越高&lt;/li&gt;
+&lt;li&gt;優先替換掉最近使用時間距離當下最遠的那組數據&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Least &lt;strong&gt;Frequently&lt;/strong&gt; Used (LFU)
+&lt;ul&gt;
+&lt;li&gt;依照&lt;strong&gt;使用頻率&lt;/strong&gt;來排序&lt;/li&gt;
+&lt;li&gt;思路:
+&lt;ul&gt;
+&lt;li&gt;使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️&lt;/li&gt;
+&lt;li&gt;優先替換掉使用次數最低的那組數據&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;First in First out (FIFO)
+&lt;ul&gt;
+&lt;li&gt;顧名思義，&lt;strong&gt;先進先出&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;思路: 最先進去快取的資料，越早會被淘汰&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;System expert&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Security And HTTPS</title>
         <link>https://yue-jenny.github.io/2023/01/security-and-https/</link>
         <pubDate>Mon, 16 Jan 2023 12:35:00 +0800</pubDate>
