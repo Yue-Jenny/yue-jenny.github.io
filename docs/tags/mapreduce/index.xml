@@ -14,7 +14,7 @@
         <guid>https://yue-jenny.github.io/2023/01/mapreduce/</guid>
         <description>&lt;h2 id=&#34;mapreduce&#34;&gt;MapReduce&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
-&lt;p&gt;MapReduce 是一個重要的概念，&lt;/p&gt;
+&lt;p&gt;MapReduce 是一個 Google 提出的軟體架構，適用於&lt;strong&gt;大規模資料的並列運算&lt;/strong&gt;&lt;/p&gt;
 &lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;File System
@@ -99,6 +99,8 @@
 &lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;system expert&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://zh.wikipedia.org/zh-tw/MapReduce&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;wiki MapReduce&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨&lt;/strong&gt;&lt;/p&gt;
 </description>
