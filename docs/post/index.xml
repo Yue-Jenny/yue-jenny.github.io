@@ -6,7 +6,104 @@
         <description>Recent content in Posts on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 17 Jan 2023 11:04:46 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 18 Jan 2023 10:32:40 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MapReduce</title>
+        <link>https://yue-jenny.github.io/2023/01/mapreduce/</link>
+        <pubDate>Wed, 18 Jan 2023 10:32:40 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/mapreduce/</guid>
+        <description>&lt;h2 id=&#34;mapreduce&#34;&gt;MapReduce&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;p&gt;MapReduce 是一個重要的概念，&lt;/p&gt;
+&lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;File System
+&lt;ul&gt;
+&lt;li&gt;資料的儲存系統&lt;/li&gt;
+&lt;li&gt;有許多不同型態，例如以垂直結構為主的目錄與資料夾、Object storage 等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Distributed File System
+&lt;ul&gt;
+&lt;li&gt;分散式檔案系統，透過一大群機器(cluster)互相合作，對外表現如同&lt;strong&gt;一個巨大的 file system&lt;/strong&gt;，將 data 切成特定大小的 chunks (如 4 MB 或 64 MB)，會透過 &lt;strong&gt;central control plane&lt;/strong&gt; 會決定應該將 chunks 存在哪一個 node，後續應該去哪一個 node 讀取 chunks&lt;/li&gt;
+&lt;li&gt;主要操作方式是透過&lt;strong&gt;網路&lt;/strong&gt;以定義好的通訊協定進行資料存取&lt;/li&gt;
+&lt;li&gt;目前現有的產品有 Google File System (GFS)、Hadoop Distributed File System (HDFS)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Hadoop
+&lt;ul&gt;
+&lt;li&gt;支持 MapReduce 與資料管線的 open-source 框架，最重要的中央組件為 Hadoop Distributed File System (HDFS)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;各階段簡介&#34;&gt;各階段簡介&lt;/h3&gt;
+&lt;h4 id=&#34;map-階段&#34;&gt;Map 階段&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;負責 &lt;strong&gt;filtering&lt;/strong&gt; 和 &lt;strong&gt;sorting&lt;/strong&gt; 並且組合出一個 key value pair 結果&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;reduce-階段&#34;&gt;Reduce 階段&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;負責&lt;strong&gt;資料整合&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;以 wordcount 為例，從 Map 傳過來的 key 若一樣，表示同一個字，因此把一樣的 key 做加總，可以得出最後的出總筆數&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;冪等性idempotency特性&#34;&gt;冪等性(idempotency)特性&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;意義: &lt;strong&gt;當操作多次，結果應呈現一致&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;透過 pub/sub messaging system 應當有冪等性，因為 pub/sub 系統本身允許相同訊息被 consumer 接收多次&lt;/li&gt;
+&lt;li&gt;舉例，增加資料庫某欄位的 integer value，就不是一個具有冪等性的操作，因為保持每次增加的操作後都不會保持跟前一個相同的數值&lt;/li&gt;
+&lt;li&gt;另一舉例，將欄位值設定為 &amp;ldquo;DONE&amp;rdquo;，多次重複此操作，還是會顯示為 &amp;ldquo;DONE&amp;rdquo;，因此設定為 &amp;ldquo;DONE&amp;rdquo; 是一個冪等性操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;範例&#34;&gt;範例&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;input&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;要做計算的原始資料，可以是一堆文字清單等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;split&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;把 input 資料做分散處理&lt;/li&gt;
+&lt;li&gt;以 hadoop 來說，當 MapReduce 工作被輸入的時候，會被&lt;strong&gt;切割到各個 cluster 裡面等待做處理&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;🔔&lt;strong&gt;map&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;MapReduce 的 map 階段&lt;/li&gt;
+&lt;li&gt;每一個節點有自己的一份資料要分析，會把對應切割出來的資料&lt;strong&gt;建立 key value 的結果&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;key 是字本身，value 是 1 代表找到一筆&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;combine&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;在 map 的機器進行以下動作&lt;/li&gt;
+&lt;li&gt;將一樣的 key 先做一次加總，避免傳送多次出去，例如 combine 後的結果可能是 &amp;ldquo;A&amp;rdquo; 有 2 筆、&amp;ldquo;B&amp;rdquo; 有 1 筆等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;shuffle &amp;amp; sort&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;在進入 reduce 階段之前，會先被做一個&lt;strong&gt;排序&lt;/strong&gt;，因此&lt;strong&gt;相關的 key 會放在一起&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;比如第一批資料的 &amp;ldquo;A&amp;rdquo; 有 2 筆、第二批資料的 &amp;ldquo;A&amp;rdquo; 有 5 筆&amp;hellip;第一批資料的 &amp;ldquo;B&amp;rdquo; 有 1 筆、第二批資料的 &amp;ldquo;B&amp;rdquo; 有 3 筆&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;🔔&lt;strong&gt;reduce&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;此階段會做&lt;strong&gt;實際的加總&lt;/strong&gt;，因此每一個 key 的 value 會被加總&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;output&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;最後得到的結果&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;system expert&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>Cache</title>
         <link>https://yue-jenny.github.io/2023/01/cache/</link>
         <pubDate>Tue, 17 Jan 2023 11:04:46 +0800</pubDate>
