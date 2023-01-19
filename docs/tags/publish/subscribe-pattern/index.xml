@@ -23,7 +23,7 @@
 &lt;/li&gt;
 &lt;li&gt;通常有以下的保證，如「&lt;strong&gt;至少傳送一次&lt;/strong&gt;」、「&lt;strong&gt;持久化&lt;/strong&gt;」、「&lt;strong&gt;訊息的順序性&lt;/strong&gt;」、「&lt;strong&gt;訊息可重送多次&lt;/strong&gt;」
 &lt;ul&gt;
-&lt;li&gt;相同&lt;strong&gt;訊息可重送多次&lt;/strong&gt;，但不能影響結果，符合冪等性(idempotent)&lt;/li&gt;
+&lt;li&gt;若相同&lt;strong&gt;訊息可重送多次&lt;/strong&gt;，不會影響結果就是符合冪等性(idempotent)，需要 consumer 另外實作&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -42,7 +42,7 @@
 	
 &gt;&lt;/p&gt;
 &lt;h3 id=&#34;有哪些-pubsub-服務&#34;&gt;有哪些 Pub/Sub 服務?&lt;/h3&gt;
-&lt;p&gt;這邊舉幾個服務&lt;/p&gt;
+&lt;p&gt;這邊舉幾個服務，後續再寫一篇較詳細文章來比較之間差異&lt;/p&gt;
 &lt;h4 id=&#34;rabbitmq&#34;&gt;RabbitMQ&lt;/h4&gt;
 &lt;ul&gt;
 &lt;li&gt;最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求&lt;/li&gt;
@@ -54,23 +54,25 @@
 &lt;li&gt;最先是由 LinkedIn 創立的一款&lt;strong&gt;分散式訊息系統 (distributed messaging system)&lt;/strong&gt;，由 Scala 和 Java 編寫的 open-source 專案，&lt;a class=&#34;link&#34; href=&#34;https://kafka.apache.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;點我看更多👀&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.svg.png&#34;
-	width=&#34;400&#34;
-	height=&#34;303&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.svg_hu092c7e85702da920700c156ecd72f4c5_6627_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.svg_hu092c7e85702da920700c156ecd72f4c5_6627_1024x0_resize_box_3.png 1024w&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.jpg&#34;
+	width=&#34;416&#34;
+	height=&#34;309&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Kafka 概覽。source: wiki&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;132&#34;
-		data-flex-basis=&#34;316px&#34;
+		data-flex-grow=&#34;134&#34;
+		data-flex-basis=&#34;323px&#34;
 	
 &gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;雲端受託管版本的 Kafka - &lt;strong&gt;Confluent Cloud (Cloud Native Apache Kafka®)&lt;/strong&gt;，&lt;a class=&#34;link&#34; href=&#34;https://www.confluent.io/apache-kafka-vs-confluent/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+&lt;li&gt;原本的 Kafka 團隊有出雲端受託管版本的 Kafka - &lt;strong&gt;Confluent Cloud (Cloud Native Apache Kafka®)&lt;/strong&gt;，&lt;a class=&#34;link&#34; href=&#34;https://www.confluent.io/apache-kafka-vs-confluent/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;點我看更多👀&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;另外，AWS 也有是出自己的雲端版本的 Kafka - &lt;strong&gt;Amazon MSK&lt;/strong&gt;，&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/tw/msk/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;點我看更多&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id=&#34;cloud-pubsub&#34;&gt;Cloud Pub/Sub&lt;/h4&gt;
 &lt;ul&gt;

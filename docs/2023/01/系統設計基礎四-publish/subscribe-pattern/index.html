@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Publish/Subscribe Pattern Publish/Subscribe Pattern (Pub/Sub) 簡介 一種包含 publisher、subscriber 與 broker 的訊息模型 publisher - 將訊息傳送至特定 topic(也可能被稱呼為 channels)，不需要擔心誰需要收到這筆消息 subscriber - 訂閱特定 topic 後，將會收到來自此 topic 的訊息 broker - 負責將 topic 的訊息轉發給 subscriber 通常有以下的保證，如「至少傳送一次」、「持久化」、「訊息的順序性」、「訊息可重送多次」 相同訊息可重送多次，但不能影響結果，符合冪等性(idempotent) 有哪些 Pub/Sub 服務? 這邊舉幾個服務
-RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求 點我看更多👀 Apache Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案，點我看更多👀 雲端受託管版本的 Kafka - Confluent Cloud (Cloud Native Apache Kafka®)，點我看更多👀 Cloud Pub/Sub Google 創立的雲端 Pub/Sub 服務，可用於串流服務、非同步微服務整合。點我看更多👀 參考資料 👐 system expert wiki - Kafka publisher-subscriber pattern 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Publish/Subscribe Pattern Publish/Subscribe Pattern (Pub/Sub) 簡介 一種包含 publisher、subscriber 與 broker 的訊息模型 publisher - 將訊息傳送至特定 topic(也可能被稱呼為 channels)，不需要擔心誰需要收到這筆消息 subscriber - 訂閱特定 topic 後，將會收到來自此 topic 的訊息 broker - 負責將 topic 的訊息轉發給 subscriber 通常有以下的保證，如「至少傳送一次」、「持久化」、「訊息的順序性」、「訊息可重送多次」 若相同訊息可重送多次，不會影響結果就是符合冪等性(idempotent)，需要 consumer 另外實作 有哪些 Pub/Sub 服務? 這邊舉幾個服務，後續再寫一篇較詳細文章來比較之間差異
+RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求 點我看更多👀 Apache Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案，點我看更多👀 原本的 Kafka 團隊有出雲端受託管版本的 Kafka - Confluent Cloud (Cloud Native Apache Kafka®)，點我看更多👀 另外，AWS 也有是出自己的雲端版本的 Kafka - Amazon MSK，點我看更多 Cloud Pub/Sub Google 創立的雲端 Pub/Sub 服務，可用於串流服務、非同步微服務整合。點我看更多👀 參考資料 👐 system expert wiki - Kafka publisher-subscriber pattern 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
 <title>系統設計基礎(四) Publish/Subscribe Pattern</title>
 
 <link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/'>
 
 <link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎(四) Publish/Subscribe Pattern'>
-<meta property='og:description' content='Publish/Subscribe Pattern Publish/Subscribe Pattern (Pub/Sub) 簡介 一種包含 publisher、subscriber 與 broker 的訊息模型 publisher - 將訊息傳送至特定 topic(也可能被稱呼為 channels)，不需要擔心誰需要收到這筆消息 subscriber - 訂閱特定 topic 後，將會收到來自此 topic 的訊息 broker - 負責將 topic 的訊息轉發給 subscriber 通常有以下的保證，如「至少傳送一次」、「持久化」、「訊息的順序性」、「訊息可重送多次」 相同訊息可重送多次，但不能影響結果，符合冪等性(idempotent) 有哪些 Pub/Sub 服務? 這邊舉幾個服務
-RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求 點我看更多👀 Apache Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案，點我看更多👀 雲端受託管版本的 Kafka - Confluent Cloud (Cloud Native Apache Kafka®)，點我看更多👀 Cloud Pub/Sub Google 創立的雲端 Pub/Sub 服務，可用於串流服務、非同步微服務整合。點我看更多👀 參考資料 👐 system expert wiki - Kafka publisher-subscriber pattern 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<meta property='og:description' content='Publish/Subscribe Pattern Publish/Subscribe Pattern (Pub/Sub) 簡介 一種包含 publisher、subscriber 與 broker 的訊息模型 publisher - 將訊息傳送至特定 topic(也可能被稱呼為 channels)，不需要擔心誰需要收到這筆消息 subscriber - 訂閱特定 topic 後，將會收到來自此 topic 的訊息 broker - 負責將 topic 的訊息轉發給 subscriber 通常有以下的保證，如「至少傳送一次」、「持久化」、「訊息的順序性」、「訊息可重送多次」 若相同訊息可重送多次，不會影響結果就是符合冪等性(idempotent)，需要 consumer 另外實作 有哪些 Pub/Sub 服務? 這邊舉幾個服務，後續再寫一篇較詳細文章來比較之間差異
+RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求 點我看更多👀 Apache Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案，點我看更多👀 原本的 Kafka 團隊有出雲端受託管版本的 Kafka - Confluent Cloud (Cloud Native Apache Kafka®)，點我看更多👀 另外，AWS 也有是出自己的雲端版本的 Kafka - Amazon MSK，點我看更多 Cloud Pub/Sub Google 創立的雲端 Pub/Sub 服務，可用於串流服務、非同步微服務整合。點我看更多👀 參考資料 👐 system expert wiki - Kafka publisher-subscriber pattern 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
 <meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/'>
 <meta property='og:site_name' content='Jenny blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='Publish/Subscribe Pattern' /><meta property='article:published_time' content='2023-01-18T20:13:18&#43;08:00'/><meta property='article:modified_time' content='2023-01-18T20:13:18&#43;08:00'/>
 <meta name="twitter:title" content="系統設計基礎(四) Publish/Subscribe Pattern">
-<meta name="twitter:description" content="Publish/Subscribe Pattern Publish/Subscribe Pattern (Pub/Sub) 簡介 一種包含 publisher、subscriber 與 broker 的訊息模型 publisher - 將訊息傳送至特定 topic(也可能被稱呼為 channels)，不需要擔心誰需要收到這筆消息 subscriber - 訂閱特定 topic 後，將會收到來自此 topic 的訊息 broker - 負責將 topic 的訊息轉發給 subscriber 通常有以下的保證，如「至少傳送一次」、「持久化」、「訊息的順序性」、「訊息可重送多次」 相同訊息可重送多次，但不能影響結果，符合冪等性(idempotent) 有哪些 Pub/Sub 服務? 這邊舉幾個服務
-RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求 點我看更多👀 Apache Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案，點我看更多👀 雲端受託管版本的 Kafka - Confluent Cloud (Cloud Native Apache Kafka®)，點我看更多👀 Cloud Pub/Sub Google 創立的雲端 Pub/Sub 服務，可用於串流服務、非同步微服務整合。點我看更多👀 參考資料 👐 system expert wiki - Kafka publisher-subscriber pattern 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!">
+<meta name="twitter:description" content="Publish/Subscribe Pattern Publish/Subscribe Pattern (Pub/Sub) 簡介 一種包含 publisher、subscriber 與 broker 的訊息模型 publisher - 將訊息傳送至特定 topic(也可能被稱呼為 channels)，不需要擔心誰需要收到這筆消息 subscriber - 訂閱特定 topic 後，將會收到來自此 topic 的訊息 broker - 負責將 topic 的訊息轉發給 subscriber 通常有以下的保證，如「至少傳送一次」、「持久化」、「訊息的順序性」、「訊息可重送多次」 若相同訊息可重送多次，不會影響結果就是符合冪等性(idempotent)，需要 consumer 另外實作 有哪些 Pub/Sub 服務? 這邊舉幾個服務，後續再寫一篇較詳細文章來比較之間差異
+RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求 點我看更多👀 Apache Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案，點我看更多👀 原本的 Kafka 團隊有出雲端受託管版本的 Kafka - Confluent Cloud (Cloud Native Apache Kafka®)，點我看更多👀 另外，AWS 也有是出自己的雲端版本的 Kafka - Amazon MSK，點我看更多 Cloud Pub/Sub Google 創立的雲端 Pub/Sub 服務，可用於串流服務、非同步微服務整合。點我看更多👀 參考資料 👐 system expert wiki - Kafka publisher-subscriber pattern 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!">
     <link rel="shortcut icon" href="/leaves.png" />
 
 
@@ -327,7 +327,7 @@ RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，�
 </li>
 <li>通常有以下的保證，如「<strong>至少傳送一次</strong>」、「<strong>持久化</strong>」、「<strong>訊息的順序性</strong>」、「<strong>訊息可重送多次</strong>」
 <ul>
-<li>相同<strong>訊息可重送多次</strong>，但不能影響結果，符合冪等性(idempotent)</li>
+<li>若相同<strong>訊息可重送多次</strong>，不會影響結果就是符合冪等性(idempotent)，需要 consumer 另外實作</li>
 </ul>
 </li>
 </ul>
@@ -346,7 +346,7 @@ RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，�
 	
 ></p>
 <h3 id="有哪些-pubsub-服務">有哪些 Pub/Sub 服務?</h3>
-<p>這邊舉幾個服務</p>
+<p>這邊舉幾個服務，後續再寫一篇較詳細文章來比較之間差異</p>
 <h4 id="rabbitmq">RabbitMQ</h4>
 <ul>
 <li>最廣泛使用的 message broker，特色是輕量級輕鬆部屬，但也有支援 distributed 以符合 high-scale 與 high-availability 的要求</li>
@@ -358,23 +358,25 @@ RabbitMQ 最廣泛使用的 message broker，特色是輕量級輕鬆部屬，�
 <li>最先是由 LinkedIn 創立的一款<strong>分散式訊息系統 (distributed messaging system)</strong>，由 Scala 和 Java 編寫的 open-source 專案，<a class="link" href="https://kafka.apache.org/"  target="_blank" rel="noopener"
     >點我看更多👀</a></li>
 </ul>
-<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.svg.png"
-	width="400"
-	height="303"
-	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.svg_hu092c7e85702da920700c156ecd72f4c5_6627_480x0_resize_box_3.png 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.svg_hu092c7e85702da920700c156ecd72f4c5_6627_1024x0_resize_box_3.png 1024w"
+<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.jpg"
+	width="416"
+	height="309"
+	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_480x0_resize_q75_box.jpg 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_1024x0_resize_q75_box.jpg 1024w"
 	loading="lazy"
 	
 		alt="Kafka 概覽。source: wiki"
 	
 	
 		class="gallery-image" 
-		data-flex-grow="132"
-		data-flex-basis="316px"
+		data-flex-grow="134"
+		data-flex-basis="323px"
 	
 ></p>
 <ul>
-<li>雲端受託管版本的 Kafka - <strong>Confluent Cloud (Cloud Native Apache Kafka®)</strong>，<a class="link" href="https://www.confluent.io/apache-kafka-vs-confluent/"  target="_blank" rel="noopener"
+<li>原本的 Kafka 團隊有出雲端受託管版本的 Kafka - <strong>Confluent Cloud (Cloud Native Apache Kafka®)</strong>，<a class="link" href="https://www.confluent.io/apache-kafka-vs-confluent/"  target="_blank" rel="noopener"
     >點我看更多👀</a></li>
+<li>另外，AWS 也有是出自己的雲端版本的 Kafka - <strong>Amazon MSK</strong>，<a class="link" href="https://aws.amazon.com/tw/msk/"  target="_blank" rel="noopener"
+    >點我看更多</a></li>
 </ul>
 <h4 id="cloud-pubsub">Cloud Pub/Sub</h4>
 <ul>

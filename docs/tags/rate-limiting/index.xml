@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Rate Limiting on Jenny blog</title>
+        <link>https://yue-jenny.github.io/tags/rate-limiting/</link>
+        <description>Recent content in Rate Limiting on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 19 Jan 2023 10:55:49 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/rate-limiting/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>系統設計基礎(五) Rate Limiting</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94-rate-limiting/</link>
+        <pubDate>Thu, 19 Jan 2023 10:55:49 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94-rate-limiting/</guid>
+        <description>&lt;h2 id=&#34;rate-limiting&#34;&gt;Rate Limiting&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
+&lt;h3 id=&#34;小主題一&#34;&gt;小主題一&lt;/h3&gt;
+&lt;h3 id=&#34;小主題二&#34;&gt;小主題二&lt;/h3&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
