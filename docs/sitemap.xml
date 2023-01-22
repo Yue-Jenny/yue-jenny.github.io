@@ -3,17 +3,37 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yue-jenny.github.io/categories/</loc>
-    <lastmod>2023-01-18T20:13:18+08:00</lastmod>
+    <lastmod>2023-01-20T13:38:08+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-01-18T20:13:18+08:00</lastmod>
+    <lastmod>2023-01-20T13:38:08+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/</loc>
+    <lastmod>2023-01-20T13:38:08+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/kakfa/</loc>
+    <lastmod>2023-01-20T13:38:08+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/mq/</loc>
+    <lastmod>2023-01-20T13:38:08+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/post/</loc>
-    <lastmod>2023-01-18T20:13:18+08:00</lastmod>
+    <lastmod>2023-01-20T13:38:08+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-01-20T13:38:08+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
@@ -23,11 +43,6 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/categories/system-design-fundamental/</loc>
-    <lastmod>2023-01-18T20:13:18+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2023-01-18T20:13:18+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

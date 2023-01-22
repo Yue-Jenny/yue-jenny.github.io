@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
+用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
+Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
+💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
+partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。'>
+<title>Kafka 簡介</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='Kafka 簡介'>
+<meta property='og:description' content='Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
+用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
+Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
+💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
+partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Publish/Subscribe Pattern' /><meta property='article:tag' content='Kakfa' /><meta property='article:published_time' content='2023-01-20T13:38:08&#43;08:00'/><meta property='article:modified_time' content='2023-01-20T13:38:08&#43;08:00'/>
+<meta name="twitter:title" content="Kafka 簡介">
+<meta name="twitter:description" content="Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
+用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
+Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
+💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
+partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#kafka">Kafka</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#prerequistites">Prerequistites</a></li>
+        <li><a href="#-功能">📌 功能</a></li>
+        <li><a href="#最重要的觀念">💫最重要的觀念💫</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/mq/" >
+                MQ
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/">Kafka 簡介</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 20, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="kafka">Kafka</h2>
+<ul>
+<li>最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案</li>
+</ul>
+<h3 id="前言">前言</h3>
+<h3 id="prerequistites">Prerequistites</h3>
+<ul>
+<li><a class="link" href="../%e7%b3%bb%e7%b5%b1%e8%a8%ad%e8%a8%88%e5%9f%ba%e7%a4%8e%e5%9b%9b-publish/subscribe-pattern/" >Publish/Subscribe Pattern</a></li>
+</ul>
+<h3 id="-功能">📌 功能</h3>
+<ul>
+<li>
+<p><strong>高效能</strong>、<strong>容錯</strong>且具<strong>可擴展性</strong>的平台</p>
+</li>
+<li>
+<p>用於建置<strong>即時串流資料管道</strong>，並以 pub/sub pattern 來管理生產者與消費者的資料</p>
+<ul>
+<li><strong>Kafka Connect</strong> 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。</li>
+<li>串流資料是一種<strong>小型記錄或事件</strong> (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路</li>
+</ul>
+</li>
+<li>
+<p>資料取用的順序以 <strong>FIFO (First In First Out)</strong> 作為原則</p>
+<p><img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO.jpg"
+	width="428"
+	height="270"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_480x0_resize_q75_box.jpg 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+		alt="First In First Out, source:https://en.wikipedia.org/wiki/FIFO_%28computing_and_electronics%29"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="158"
+		data-flex-basis="380px"
+	
+></p>
+</li>
+</ul>
+<h3 id="最重要的觀念">💫最重要的觀念💫</h3>
+<p>如何達到高效能、容錯且可擴展的呢?</p>
+<h4 id="partition">partition</h4>
+<ul>
+<li>
+<p>Partition 是最小的存儲單元
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01.png"
+	width="1080"
+	height="601"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="179"
+		data-flex-basis="431px"
+	
+></p>
+</li>
+<li>
+<p>一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02.png"
+	width="1080"
+	height="520"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="207"
+		data-flex-basis="498px"
+	
+>
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03.png"
+	width="698"
+	height="590"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="118"
+		data-flex-basis="283px"
+	
+></p>
+</li>
+<li>
+<p>一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。</p>
+<ul>
+<li>Partition 分佈在多個 Broker 的話，Consumer 的多個實例就可以連接不同的 Broker</li>
+<li>好處
+<ul>
+<li>Topic 就可以水平擴展</li>
+<li>支持更多的 Consumer</li>
+<li>一個 Consumer 實例負責一個 Partition
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04.png"
+	width="1080"
+	height="588"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="183"
+		data-flex-basis="440px"
+	
+></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>數據冗餘</p>
+<ul>
+<li>一個 Partition 生成多個副本，並且把它們分散在不同的 Broker。</li>
+<li>如果一個 Broker 故障了，Consumer 可以在其他 Broker 上找到 Partition 的副本，繼續獲取消息。</li>
+</ul>
+</li>
+<li>
+<p>寫入 Partition 的方式</p>
+<ul>
+<li>給 Kafka 決定
+<ul>
+<li>若沒有 key 則 kafka 以 round robin 方式將訊息寫入 partition，但這樣就不保證順序性了，若需要有順序性，請參考下面一個方式
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05.png"
+	width="847"
+	height="614"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="137"
+		data-flex-basis="331px"
+	
+></li>
+</ul>
+</li>
+<li>使用 Partition Key 寫入特定 Partition
+<ul>
+<li>kafka 保證使用相同的 key 會將訊息放到同一個 partition，並且保證順序性 ( in order )</li>
+<li>舉例，如果相同客戶的資訊有序地取得，表示需要放在同一個 partition，可以使用 customer id 作為 partition key，這樣同一個 customer 的資料都會放到同一個 partition
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06.png"
+	width="827"
+	height="622"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="132"
+		data-flex-basis="319px"
+	
+></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>讀取 partition
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07.png"
+	width="1368"
+	height="751"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="182"
+		data-flex-basis="437px"
+	
+></p>
+<ul>
+<li>consumer group
+<ul>
+<li>多個 consumer 組合成一個 consumer group，目的是為了<strong>水平擴展(scale out)</strong> consumer</li>
+<li>決定 consumer group 要從哪裡開始讀取資料的關鍵是 consumer offsets
+<ul>
+<li>offsets 會被存在 topic name 中</li>
+<li>如果 consumer 讀取資料完畢，則會 commit offsets
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08.png"
+	width="519"
+	height="250"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="207"
+		data-flex-basis="498px"
+	
+>
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09.png"
+	width="1261"
+	height="615"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="205"
+		data-flex-basis="492px"
+	
+>
+<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10.png"
+	width="916"
+	height="214"
+	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="428"
+		data-flex-basis="1027px"
+	
+></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="apache-zookeeper">apache zookeeper</h4>
+<ul>
+<li>an open-source server which enables highly reliable distributed coordination</li>
+<li>通過冗餘服務實現高可用性</li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://youtu.be/y9BStKvVzSs"  target="_blank" rel="noopener"
+    >Apache Kafka® 101: Partitioning</a></li>
+<li><a class="link" href="https://www.readfog.com/a/1635090175644241920"  target="_blank" rel="noopener"
+    >細說 Kafka Partition 分區</a></li>
+<li><a class="link" href="https://www.confluent.io/apache-kafka-vs-confluent/"  target="_blank" rel="noopener"
+    >Apache Kafka vs Confluent: Comparing Features &amp; Capabilities</a></li>
+<li><a class="link" href="https://aws.amazon.com/tw/msk/faqs/"  target="_blank" rel="noopener"
+    >全受管 Apache Kafka - Amazon MSK 常見問答集 - Amazon Web Services</a></li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/publish/subscribe-pattern/">Publish/Subscribe Pattern</a>
+        
+            <a href="/tags/kakfa/">Kakfa</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2fkafka-%25E7%25B0%25A1%25E4%25BB%258B%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎(四) Publish/Subscribe Pattern</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>MQ on Jenny blog</title>
+        <link>https://yue-jenny.github.io/categories/mq/</link>
+        <description>Recent content in MQ on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 20 Jan 2023 13:38:08 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/categories/mq/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Kafka 簡介</title>
+        <link>https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/</link>
+        <pubDate>Fri, 20 Jan 2023 13:38:08 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/</guid>
+        <description>&lt;h2 id=&#34;kafka&#34;&gt;Kafka&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;../%e7%b3%bb%e7%b5%b1%e8%a8%ad%e8%a8%88%e5%9f%ba%e7%a4%8e%e5%9b%9b-publish/subscribe-pattern/&#34; &gt;Publish/Subscribe Pattern&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-功能&#34;&gt;📌 功能&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;高效能&lt;/strong&gt;、&lt;strong&gt;容錯&lt;/strong&gt;且具&lt;strong&gt;可擴展性&lt;/strong&gt;的平台&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用於建置&lt;strong&gt;即時串流資料管道&lt;/strong&gt;，並以 pub/sub pattern 來管理生產者與消費者的資料&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Kafka Connect&lt;/strong&gt; 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。&lt;/li&gt;
+&lt;li&gt;串流資料是一種&lt;strong&gt;小型記錄或事件&lt;/strong&gt; (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;資料取用的順序以 &lt;strong&gt;FIFO (First In First Out)&lt;/strong&gt; 作為原則&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO.jpg&#34;
+	width=&#34;428&#34;
+	height=&#34;270&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;First In First Out, source:https://en.wikipedia.org/wiki/FIFO_%28computing_and_electronics%29&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;158&#34;
+		data-flex-basis=&#34;380px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;最重要的觀念&#34;&gt;💫最重要的觀念💫&lt;/h3&gt;
+&lt;p&gt;如何達到高效能、容錯且可擴展的呢?&lt;/p&gt;
+&lt;h4 id=&#34;partition&#34;&gt;partition&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Partition 是最小的存儲單元
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01.png&#34;
+	width=&#34;1080&#34;
+	height=&#34;601&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;431px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02.png&#34;
+	width=&#34;1080&#34;
+	height=&#34;520&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;207&#34;
+		data-flex-basis=&#34;498px&#34;
+	
+&gt;
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03.png&#34;
+	width=&#34;698&#34;
+	height=&#34;590&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;118&#34;
+		data-flex-basis=&#34;283px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Partition 分佈在多個 Broker 的話，Consumer 的多個實例就可以連接不同的 Broker&lt;/li&gt;
+&lt;li&gt;好處
+&lt;ul&gt;
+&lt;li&gt;Topic 就可以水平擴展&lt;/li&gt;
+&lt;li&gt;支持更多的 Consumer&lt;/li&gt;
+&lt;li&gt;一個 Consumer 實例負責一個 Partition
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04.png&#34;
+	width=&#34;1080&#34;
+	height=&#34;588&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;183&#34;
+		data-flex-basis=&#34;440px&#34;
+	
+&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;數據冗餘&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一個 Partition 生成多個副本，並且把它們分散在不同的 Broker。&lt;/li&gt;
+&lt;li&gt;如果一個 Broker 故障了，Consumer 可以在其他 Broker 上找到 Partition 的副本，繼續獲取消息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;寫入 Partition 的方式&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;給 Kafka 決定
+&lt;ul&gt;
+&lt;li&gt;若沒有 key 則 kafka 以 round robin 方式將訊息寫入 partition，但這樣就不保證順序性了，若需要有順序性，請參考下面一個方式
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05.png&#34;
+	width=&#34;847&#34;
+	height=&#34;614&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;137&#34;
+		data-flex-basis=&#34;331px&#34;
+	
+&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;使用 Partition Key 寫入特定 Partition
+&lt;ul&gt;
+&lt;li&gt;kafka 保證使用相同的 key 會將訊息放到同一個 partition，並且保證順序性 ( in order )&lt;/li&gt;
+&lt;li&gt;舉例，如果相同客戶的資訊有序地取得，表示需要放在同一個 partition，可以使用 customer id 作為 partition key，這樣同一個 customer 的資料都會放到同一個 partition
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06.png&#34;
+	width=&#34;827&#34;
+	height=&#34;622&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;132&#34;
+		data-flex-basis=&#34;319px&#34;
+	
+&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;讀取 partition
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07.png&#34;
+	width=&#34;1368&#34;
+	height=&#34;751&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;182&#34;
+		data-flex-basis=&#34;437px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;consumer group
+&lt;ul&gt;
+&lt;li&gt;多個 consumer 組合成一個 consumer group，目的是為了&lt;strong&gt;水平擴展(scale out)&lt;/strong&gt; consumer&lt;/li&gt;
+&lt;li&gt;決定 consumer group 要從哪裡開始讀取資料的關鍵是 consumer offsets
+&lt;ul&gt;
+&lt;li&gt;offsets 會被存在 topic name 中&lt;/li&gt;
+&lt;li&gt;如果 consumer 讀取資料完畢，則會 commit offsets
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08.png&#34;
+	width=&#34;519&#34;
+	height=&#34;250&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;207&#34;
+		data-flex-basis=&#34;498px&#34;
+	
+&gt;
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09.png&#34;
+	width=&#34;1261&#34;
+	height=&#34;615&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;492px&#34;
+	
+&gt;
+&lt;img src=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10.png&#34;
+	width=&#34;916&#34;
+	height=&#34;214&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;428&#34;
+		data-flex-basis=&#34;1027px&#34;
+	
+&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;apache-zookeeper&#34;&gt;apache zookeeper&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;an open-source server which enables highly reliable distributed coordination&lt;/li&gt;
+&lt;li&gt;通過冗餘服務實現高可用性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://youtu.be/y9BStKvVzSs&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Apache Kafka® 101: Partitioning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.readfog.com/a/1635090175644241920&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;細說 Kafka Partition 分區&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.confluent.io/apache-kafka-vs-confluent/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Apache Kafka vs Confluent: Comparing Features &amp;amp; Capabilities&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/tw/msk/faqs/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;全受管 Apache Kafka - Amazon MSK 常見問答集 - Amazon Web Services&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
