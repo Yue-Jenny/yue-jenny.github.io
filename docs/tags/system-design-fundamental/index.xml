@@ -6,7 +6,193 @@
         <description>Recent content in System Design Fundamental on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 18 Jan 2023 20:13:18 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/system-design-fundamental/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 26 Jan 2023 12:16:48 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/system-design-fundamental/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>系統設計基礎(五)筆記 Logging And Monitoring</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/</link>
+        <pubDate>Thu, 26 Jan 2023 12:16:48 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/</guid>
+        <description>&lt;h2 id=&#34;logging-and-monitoring&#34;&gt;Logging And Monitoring&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Logging&lt;/li&gt;
+&lt;li&gt;Monitoring&lt;/li&gt;
+&lt;li&gt;Alerting&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;elastic-search-logstash-kibana-elk&#34;&gt;Elastic Search, Logstash, Kibana (ELK)&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked.jpg&#34;
+	width=&#34;493&#34;
+	height=&#34;360&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;source: https://www.elastic.co/cn/what-is/elk-stack&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;136&#34;
+		data-flex-basis=&#34;328px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;elastic-search&#34;&gt;Elastic Search&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。&lt;/li&gt;
+&lt;li&gt;因此出現了&lt;strong&gt;OpenSearch&lt;/strong&gt;，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;logstash&#34;&gt;Logstash&lt;/h4&gt;
+&lt;h5 id=&#34;introduce&#34;&gt;Introduce&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;架構:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。&lt;/li&gt;
+&lt;li&gt;three stages: inputs → filters → outputs&lt;/li&gt;
+&lt;li&gt;Inputs generate events, filters modify them, and outputs ship them elsewhere.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash.png&#34;
+	width=&#34;1089&#34;
+	height=&#34;243&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;logstash, source: https://www.elastic.co/guide/en/logstash/current/first-event.html&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;448&#34;
+		data-flex-basis=&#34;1075px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;簡介 Inputs, Filters 與 Outputs
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Inputs&lt;/code&gt; 如 file, syslog, redis or beat&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;參考&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html#configuring-filebeat&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;這篇&lt;/a&gt; configure Filebeat to send log lines to Logstash&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Filters&lt;/code&gt; 如 grok, mutate, drop, clone, geoip&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;grok: 解析與重組文字，Logstash 中用來解析非結構性的 log 的最好方式，可參考&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html#configuring-grok-filter&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;這篇&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;mutate: 能夠 rename, remove, replace, and modify fields in your events&lt;/li&gt;
+&lt;li&gt;drop: 完整剔除一個 event&lt;/li&gt;
+&lt;li&gt;clone: 複製一個 event&lt;/li&gt;
+&lt;li&gt;geoip: 加入一些新的資訊，如 IP 地址&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Outputs&lt;/code&gt; 如 elasticsearch, file, graphite, statsd&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;elasticsearch: 放在這邊的優點是效率、方便且容易搜尋的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;file: 寫入檔案內&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;graphite: 一個 open-source 的儲存時序資料與 render graphs 工具&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;根據官方文件介紹
+&lt;blockquote&gt;
+&lt;p&gt;Graphite does two things:&lt;br&gt;
+1.Store numeric time-series data&lt;br&gt;
+2.Render graphs of this data on demand&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;statsd:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用途是監控應用程式，方式是將 metrics 收集、儲存並建立對應的警報機制&lt;/li&gt;
+&lt;li&gt;原理是監聽 UDP (或 TCP) 的程式並收集數據，將數據傳送給其他應用程式。&lt;/li&gt;
+&lt;li&gt;重要概念
+&lt;ul&gt;
+&lt;li&gt;bucket: 每個 stat 擁有自己的 bucket&lt;/li&gt;
+&lt;li&gt;value: 每個 stat 擁有一個 value，通常是 integer&lt;/li&gt;
+&lt;li&gt;type: 指定 c (用於計數器)、g (用於測量儀)、ms (用於計時器)、h (用於長條圖) 或 s (用於 set)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/statsd/statsd&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;官方文件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Codecs plugins&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可在 input 或者 output 流程去更改數據顯示的格式&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/logstash/8.6/codec-plugins.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;codec-plugins&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;整合多種-data-source&#34;&gt;整合多種 data source&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;參考&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/logstash/current/multiple-input-output-plugins.html#multiple-input-output-plugins&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;這篇範例&lt;/a&gt;, conf 檔設定值應如下:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;input {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#ae81ff&#34;&gt;twitter {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;consumer_key =&amp;gt; &amp;#34;enter_your_consumer_key_here&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;consumer_secret =&amp;gt; &amp;#34;enter_your_secret_here&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;keywords =&amp;gt; [&amp;#34;cloud&amp;#34;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;oauth_token =&amp;gt; &amp;#34;enter_your_access_token_here&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;oauth_token_secret =&amp;gt; &amp;#34;enter_your_access_token_secret_here&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#ae81ff&#34;&gt;beats {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;port =&amp;gt; &amp;#34;5044&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;output {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#ae81ff&#34;&gt;elasticsearch {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;hosts =&amp;gt; [&amp;#34;IP Address 1:port1&amp;#34;, &amp;#34;IP Address 2:port2&amp;#34;, &amp;#34;IP Address 3&amp;#34;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#ae81ff&#34;&gt;file {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#ae81ff&#34;&gt;path =&amp;gt; &amp;#34;/path/to/target/file&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;kibana&#34;&gt;Kibana&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;一種用於檢視日誌和事件的資料視覺化和探索工具。Kibana 提供易於使用的互動式圖表、預先建置的彙總和篩選條件以及地理空間支援&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;prometheus&#34;&gt;Prometheus&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;待續&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/cn/what-is/elk-stack&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;what-is-elk-stack&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/cloud/current/ec-getting-started.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Elasticsearch Service Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/tw/what-is/elasticsearch/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;AWS - what-is-elasticsearch&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/logstash/current/pipeline.html#pipeline&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;How Logstash Works | Logstash Reference [8.6] | Elastic&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>系統設計基礎(四)筆記 Publish/Subscribe Pattern</title>
         <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/</link>
         <pubDate>Wed, 18 Jan 2023 20:13:18 +0800</pubDate>

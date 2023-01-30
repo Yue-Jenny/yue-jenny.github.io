@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Logging And Monitoring 前言 Prerequistites Logging Monitoring Alerting Elastic Search, Logstash, Kibana (ELK) Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。
+Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。 因此出現了OpenSearch，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支 Logstash Introduce 一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。
+架構:
+一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。 three stages: inputs → filters → outputs Inputs generate events, filters modify them, and outputs ship them elsewhere. 簡介 Inputs, Filters 與 Outputs Inputs 如 file, syslog, redis or beat
+參考這篇 configure Filebeat to send log lines to Logstash Filters 如 grok, mutate, drop, clone, geoip'>
+<title>系統設計基礎(五)筆記 Logging And Monitoring</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎(五)筆記 Logging And Monitoring'>
+<meta property='og:description' content='Logging And Monitoring 前言 Prerequistites Logging Monitoring Alerting Elastic Search, Logstash, Kibana (ELK) Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。
+Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。 因此出現了OpenSearch，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支 Logstash Introduce 一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。
+架構:
+一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。 three stages: inputs → filters → outputs Inputs generate events, filters modify them, and outputs ship them elsewhere. 簡介 Inputs, Filters 與 Outputs Inputs 如 file, syslog, redis or beat
+參考這篇 configure Filebeat to send log lines to Logstash Filters 如 grok, mutate, drop, clone, geoip'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:published_time' content='2023-01-26T12:16:48&#43;08:00'/><meta property='article:modified_time' content='2023-01-26T12:16:48&#43;08:00'/>
+<meta name="twitter:title" content="系統設計基礎(五)筆記 Logging And Monitoring">
+<meta name="twitter:description" content="Logging And Monitoring 前言 Prerequistites Logging Monitoring Alerting Elastic Search, Logstash, Kibana (ELK) Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。
+Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。 因此出現了OpenSearch，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支 Logstash Introduce 一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。
+架構:
+一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。 three stages: inputs → filters → outputs Inputs generate events, filters modify them, and outputs ship them elsewhere. 簡介 Inputs, Filters 與 Outputs Inputs 如 file, syslog, redis or beat
+參考這篇 configure Filebeat to send log lines to Logstash Filters 如 grok, mutate, drop, clone, geoip">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#logging-and-monitoring">Logging And Monitoring</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#prerequistites">Prerequistites</a></li>
+        <li><a href="#elastic-search-logstash-kibana-elk">Elastic Search, Logstash, Kibana (ELK)</a></li>
+        <li><a href="#prometheus">Prometheus</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/">系統設計基礎(五)筆記 Logging And Monitoring</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 26, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="logging-and-monitoring">Logging And Monitoring</h2>
+<h3 id="前言">前言</h3>
+<h3 id="prerequistites">Prerequistites</h3>
+<ul>
+<li>Logging</li>
+<li>Monitoring</li>
+<li>Alerting</li>
+</ul>
+<h3 id="elastic-search-logstash-kibana-elk">Elastic Search, Logstash, Kibana (ELK)</h3>
+<ul>
+<li>
+<p>Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。</p>
+<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked.jpg"
+	width="493"
+	height="360"
+	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_480x0_resize_q75_box.jpg 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+		alt="source: https://www.elastic.co/cn/what-is/elk-stack"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="136"
+		data-flex-basis="328px"
+	
+></p>
+</li>
+</ul>
+<h4 id="elastic-search">Elastic Search</h4>
+<ul>
+<li>一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。</li>
+<li>因此出現了<strong>OpenSearch</strong>，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支</li>
+</ul>
+<h4 id="logstash">Logstash</h4>
+<h5 id="introduce">Introduce</h5>
+<ul>
+<li>
+<p>一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。</p>
+</li>
+<li>
+<p>架構:</p>
+<ul>
+<li>一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。</li>
+<li>three stages: inputs → filters → outputs</li>
+<li>Inputs generate events, filters modify them, and outputs ship them elsewhere.</li>
+</ul>
+<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash.png"
+	width="1089"
+	height="243"
+	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_480x0_resize_box_3.png 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="logstash, source: https://www.elastic.co/guide/en/logstash/current/first-event.html"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="448"
+		data-flex-basis="1075px"
+	
+></p>
+<ul>
+<li>簡介 Inputs, Filters 與 Outputs
+<ul>
+<li>
+<p><code>Inputs</code> 如 file, syslog, redis or beat</p>
+<ul>
+<li>參考<a class="link" href="https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html#configuring-filebeat"  target="_blank" rel="noopener"
+    >這篇</a> configure Filebeat to send log lines to Logstash</li>
+</ul>
+</li>
+<li>
+<p><code>Filters</code> 如 grok, mutate, drop, clone, geoip</p>
+<ul>
+<li>grok: 解析與重組文字，Logstash 中用來解析非結構性的 log 的最好方式，可參考<a class="link" href="https://www.elastic.co/guide/en/logstash/current/advanced-pipeline.html#configuring-grok-filter"  target="_blank" rel="noopener"
+    >這篇</a></li>
+<li>mutate: 能夠 rename, remove, replace, and modify fields in your events</li>
+<li>drop: 完整剔除一個 event</li>
+<li>clone: 複製一個 event</li>
+<li>geoip: 加入一些新的資訊，如 IP 地址</li>
+</ul>
+</li>
+<li>
+<p><code>Outputs</code> 如 elasticsearch, file, graphite, statsd</p>
+<ul>
+<li>
+<p>elasticsearch: 放在這邊的優點是效率、方便且容易搜尋的</p>
+</li>
+<li>
+<p>file: 寫入檔案內</p>
+</li>
+<li>
+<p>graphite: 一個 open-source 的儲存時序資料與 render graphs 工具</p>
+<ul>
+<li>根據官方文件介紹
+<blockquote>
+<p>Graphite does two things:<br>
+1.Store numeric time-series data<br>
+2.Render graphs of this data on demand</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>statsd:</p>
+<ul>
+<li>用途是監控應用程式，方式是將 metrics 收集、儲存並建立對應的警報機制</li>
+<li>原理是監聽 UDP (或 TCP) 的程式並收集數據，將數據傳送給其他應用程式。</li>
+<li>重要概念
+<ul>
+<li>bucket: 每個 stat 擁有自己的 bucket</li>
+<li>value: 每個 stat 擁有一個 value，通常是 integer</li>
+<li>type: 指定 c (用於計數器)、g (用於測量儀)、ms (用於計時器)、h (用於長條圖) 或 s (用於 set)</li>
+</ul>
+</li>
+<li><a class="link" href="https://github.com/statsd/statsd"  target="_blank" rel="noopener"
+    >官方文件</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Codecs plugins</p>
+<ul>
+<li>可在 input 或者 output 流程去更改數據顯示的格式</li>
+<li><a class="link" href="https://www.elastic.co/guide/en/logstash/8.6/codec-plugins.html"  target="_blank" rel="noopener"
+    >codec-plugins</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="整合多種-data-source">整合多種 data source</h5>
+<ul>
+<li>參考<a class="link" href="https://www.elastic.co/guide/en/logstash/current/multiple-input-output-plugins.html#multiple-input-output-plugins"  target="_blank" rel="noopener"
+    >這篇範例</a>, conf 檔設定值應如下:</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">input {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">twitter {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">consumer_key =&gt; &#34;enter_your_consumer_key_here&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">consumer_secret =&gt; &#34;enter_your_secret_here&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">keywords =&gt; [&#34;cloud&#34;]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">oauth_token =&gt; &#34;enter_your_access_token_here&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">oauth_token_secret =&gt; &#34;enter_your_access_token_secret_here&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">beats {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">port =&gt; &#34;5044&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">output {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">elasticsearch {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">hosts =&gt; [&#34;IP Address 1:port1&#34;, &#34;IP Address 2:port2&#34;, &#34;IP Address 3&#34;]</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#ae81ff">file {</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">path =&gt; &#34;/path/to/target/file&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="kibana">Kibana</h4>
+<ul>
+<li>一種用於檢視日誌和事件的資料視覺化和探索工具。Kibana 提供易於使用的互動式圖表、預先建置的彙總和篩選條件以及地理空間支援</li>
+</ul>
+<h3 id="prometheus">Prometheus</h3>
+<ul>
+<li>待續&hellip;</li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://www.elastic.co/cn/what-is/elk-stack"  target="_blank" rel="noopener"
+    >what-is-elk-stack</a></li>
+<li><a class="link" href="https://www.elastic.co/guide/en/cloud/current/ec-getting-started.html"  target="_blank" rel="noopener"
+    >Elasticsearch Service Documentation</a></li>
+<li><a class="link" href="https://aws.amazon.com/tw/what-is/elasticsearch/"  target="_blank" rel="noopener"
+    >AWS - what-is-elasticsearch</a></li>
+<li><a class="link" href="https://www.elastic.co/guide/en/logstash/current/pipeline.html#pipeline"  target="_blank" rel="noopener"
+    >How Logstash Works | Logstash Reference [8.6] | Elastic</a></li>
+</ul>
+<p><strong>🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2f%25E7%25B3%25BB%25E7%25B5%25B1%25E8%25A8%25AD%25E8%25A8%2588%25E5%259F%25BA%25E7%25A4%258E%25E4%25BA%2594%25E7%25AD%2586%25E8%25A8%2598-logging-and-monitoring%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎(四)筆記 Publish/Subscribe Pattern</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎(三)筆記 MapReduce</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎(二)筆記 Cache</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎(一)筆記 Security And HTTPS</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
