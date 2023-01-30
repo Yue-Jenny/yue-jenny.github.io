@@ -254,11 +254,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(四) Publish/Subscribe Pattern</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/</link>
+        <title>系統設計基礎(四)筆記 Publish/Subscribe Pattern</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/</link>
         <pubDate>Wed, 18 Jan 2023 20:13:18 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/</guid>
         <description>&lt;h2 id=&#34;publishsubscribe-pattern&#34;&gt;Publish/Subscribe Pattern&lt;/h2&gt;
 &lt;h3 id=&#34;publishsubscribe-pattern-pubsub-簡介&#34;&gt;Publish/Subscribe Pattern (Pub/Sub) 簡介&lt;/h3&gt;
 &lt;ul&gt;
@@ -275,10 +275,10 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/publish-subscribe.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/publish-subscribe.png&#34;
 	width=&#34;1531&#34;
 	height=&#34;543&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;source:https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber&#34;
@@ -302,10 +302,10 @@
 &lt;li&gt;最先是由 LinkedIn 創立的一款&lt;strong&gt;分散式訊息系統 (distributed messaging system)&lt;/strong&gt;，由 Scala 和 Java 編寫的 open-source 專案，&lt;a class=&#34;link&#34; href=&#34;https://kafka.apache.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;點我看更多👀&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/Overview_of_Apache_Kafka.jpg&#34;
 	width=&#34;416&#34;
 	height=&#34;309&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Kafka 概覽。source: wiki&#34;
@@ -339,11 +339,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(三) MapReduce</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89-mapreduce/</link>
+        <title>系統設計基礎(三)筆記 MapReduce</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/</link>
         <pubDate>Wed, 18 Jan 2023 10:32:40 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89-mapreduce/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/</guid>
         <description>&lt;h2 id=&#34;mapreduce&#34;&gt;MapReduce&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 &lt;p&gt;MapReduce 是一個 Google 提出的軟體架構，適用於&lt;strong&gt;大規模資料的並列運算&lt;/strong&gt;&lt;/p&gt;
@@ -428,10 +428,10 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89-mapreduce/061114_0930_Introductio1.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1.jpg&#34;
 	width=&#34;642&#34;
 	height=&#34;460&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;source: https://www.guru99.com/introduction-to-mapreduce.html&#34;
@@ -454,11 +454,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(二) Cache</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C-cache/</link>
+        <title>系統設計基礎(二)筆記 Cache</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/</link>
         <pubDate>Tue, 17 Jan 2023 11:04:46 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C-cache/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/</guid>
         <description>&lt;h2 id=&#34;cache-快取&#34;&gt;Cache 快取&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 &lt;p&gt;快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。&lt;br&gt;
@@ -547,11 +547,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(一) Security And HTTPS</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80-security-and-https/</link>
+        <title>系統設計基礎(一)筆記 Security And HTTPS</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/</link>
         <pubDate>Mon, 16 Jan 2023 12:35:00 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80-security-and-https/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/</guid>
         <description>&lt;h2 id=&#34;security-and-https&#34;&gt;Security And HTTPS&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 &lt;p&gt;除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。&lt;/p&gt;

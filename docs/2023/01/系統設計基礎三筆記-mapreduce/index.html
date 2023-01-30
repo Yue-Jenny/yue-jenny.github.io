@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='MapReduce 前言 MapReduce 是一個 Google 提出的軟體架構，適用於大規模資料的並列運算
+Prerequistites File System 資料的儲存系統 有許多不同型態，例如以垂直結構為主的目錄與資料夾、Object storage 等 Distributed File System 分散式檔案系統，透過一大群機器(cluster)互相合作，對外表現如同一個巨大的 file system，將 data 切成特定大小的 chunks (如 4 MB 或 64 MB)，會透過 central control plane 會決定應該將 chunks 存在哪一個 node，後續應該去哪一個 node 讀取 chunks 主要操作方式是透過網路以定義好的通訊協定進行資料存取 目前現有的產品有 Google File System (GFS)、Hadoop Distributed File System (HDFS) Hadoop 支持 MapReduce 與資料管線的 open-source 框架，最重要的中央組件為 Hadoop Distributed File System (HDFS) 各階段簡介 Map 階段 負責 filtering 和 sorting 並且組合出一個 key value pair 結果 Reduce 階段 負責資料整合 以 wordcount 為例，從 Map 傳過來的 key 若一樣，表示同一個字，因此把一樣的 key 做加總，可以得出最後的出總筆數 冪等性(idempotency)特性 意義: 當操作多次，結果應呈現一致 透過 pub/sub messaging system 應當有冪等性，因為 pub/sub 系統本身允許相同訊息被 consumer 接收多次 舉例，增加資料庫某欄位的 integer value，就不是一個具有冪等性的操作，因為保持每次增加的操作後都不會保持跟前一個相同的數值 另一舉例，將欄位值設定為 &amp;ldquo;DONE&amp;rdquo;，多次重複此操作，還是會顯示為 &amp;ldquo;DONE&amp;rdquo;，因此設定為 &amp;ldquo;DONE&amp;rdquo; 是一個冪等性操作 範例 input 要做計算的原始資料，可以是一堆文字清單等 split 把 input 資料做分散處理 以 hadoop 來說，當 MapReduce 工作被輸入的時候，會被切割到各個 cluster 裡面等待做處理 🔔map MapReduce 的 map 階段 每一個節點有自己的一份資料要分析，會把對應切割出來的資料建立 key value 的結果 key 是字本身，value 是 1 代表找到一筆 combine 在 map 的機器進行以下動作 將一樣的 key 先做一次加總，避免傳送多次出去，例如 combine 後的結果可能是 &amp;ldquo;A&amp;rdquo; 有 2 筆、&amp;ldquo;B&amp;rdquo; 有 1 筆等 shuffle &amp;amp; sort 在進入 reduce 階段之前，會先被做一個排序，因此相關的 key 會放在一起 比如第一批資料的 &amp;ldquo;A&amp;rdquo; 有 2 筆、第二批資料的 &amp;ldquo;A&amp;rdquo; 有 5 筆&amp;hellip;第一批資料的 &amp;ldquo;B&amp;rdquo; 有 1 筆、第二批資料的 &amp;ldquo;B&amp;rdquo; 有 3 筆 🔔reduce 此階段會做實際的加總，因此每一個 key 的 value 會被加總 output 最後得到的結果 參考資料 👐 system expert wiki MapReduce introduction-to-mapreduce 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<title>系統設計基礎(三)筆記 MapReduce</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎(三)筆記 MapReduce'>
+<meta property='og:description' content='MapReduce 前言 MapReduce 是一個 Google 提出的軟體架構，適用於大規模資料的並列運算
+Prerequistites File System 資料的儲存系統 有許多不同型態，例如以垂直結構為主的目錄與資料夾、Object storage 等 Distributed File System 分散式檔案系統，透過一大群機器(cluster)互相合作，對外表現如同一個巨大的 file system，將 data 切成特定大小的 chunks (如 4 MB 或 64 MB)，會透過 central control plane 會決定應該將 chunks 存在哪一個 node，後續應該去哪一個 node 讀取 chunks 主要操作方式是透過網路以定義好的通訊協定進行資料存取 目前現有的產品有 Google File System (GFS)、Hadoop Distributed File System (HDFS) Hadoop 支持 MapReduce 與資料管線的 open-source 框架，最重要的中央組件為 Hadoop Distributed File System (HDFS) 各階段簡介 Map 階段 負責 filtering 和 sorting 並且組合出一個 key value pair 結果 Reduce 階段 負責資料整合 以 wordcount 為例，從 Map 傳過來的 key 若一樣，表示同一個字，因此把一樣的 key 做加總，可以得出最後的出總筆數 冪等性(idempotency)特性 意義: 當操作多次，結果應呈現一致 透過 pub/sub messaging system 應當有冪等性，因為 pub/sub 系統本身允許相同訊息被 consumer 接收多次 舉例，增加資料庫某欄位的 integer value，就不是一個具有冪等性的操作，因為保持每次增加的操作後都不會保持跟前一個相同的數值 另一舉例，將欄位值設定為 &amp;ldquo;DONE&amp;rdquo;，多次重複此操作，還是會顯示為 &amp;ldquo;DONE&amp;rdquo;，因此設定為 &amp;ldquo;DONE&amp;rdquo; 是一個冪等性操作 範例 input 要做計算的原始資料，可以是一堆文字清單等 split 把 input 資料做分散處理 以 hadoop 來說，當 MapReduce 工作被輸入的時候，會被切割到各個 cluster 裡面等待做處理 🔔map MapReduce 的 map 階段 每一個節點有自己的一份資料要分析，會把對應切割出來的資料建立 key value 的結果 key 是字本身，value 是 1 代表找到一筆 combine 在 map 的機器進行以下動作 將一樣的 key 先做一次加總，避免傳送多次出去，例如 combine 後的結果可能是 &amp;ldquo;A&amp;rdquo; 有 2 筆、&amp;ldquo;B&amp;rdquo; 有 1 筆等 shuffle &amp;amp; sort 在進入 reduce 階段之前，會先被做一個排序，因此相關的 key 會放在一起 比如第一批資料的 &amp;ldquo;A&amp;rdquo; 有 2 筆、第二批資料的 &amp;ldquo;A&amp;rdquo; 有 5 筆&amp;hellip;第一批資料的 &amp;ldquo;B&amp;rdquo; 有 1 筆、第二批資料的 &amp;ldquo;B&amp;rdquo; 有 3 筆 🔔reduce 此階段會做實際的加總，因此每一個 key 的 value 會被加總 output 最後得到的結果 參考資料 👐 system expert wiki MapReduce introduction-to-mapreduce 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='MapReduce' /><meta property='article:published_time' content='2023-01-18T10:32:40&#43;08:00'/><meta property='article:modified_time' content='2023-01-18T10:32:40&#43;08:00'/>
+<meta name="twitter:title" content="系統設計基礎(三)筆記 MapReduce">
+<meta name="twitter:description" content="MapReduce 前言 MapReduce 是一個 Google 提出的軟體架構，適用於大規模資料的並列運算
+Prerequistites File System 資料的儲存系統 有許多不同型態，例如以垂直結構為主的目錄與資料夾、Object storage 等 Distributed File System 分散式檔案系統，透過一大群機器(cluster)互相合作，對外表現如同一個巨大的 file system，將 data 切成特定大小的 chunks (如 4 MB 或 64 MB)，會透過 central control plane 會決定應該將 chunks 存在哪一個 node，後續應該去哪一個 node 讀取 chunks 主要操作方式是透過網路以定義好的通訊協定進行資料存取 目前現有的產品有 Google File System (GFS)、Hadoop Distributed File System (HDFS) Hadoop 支持 MapReduce 與資料管線的 open-source 框架，最重要的中央組件為 Hadoop Distributed File System (HDFS) 各階段簡介 Map 階段 負責 filtering 和 sorting 並且組合出一個 key value pair 結果 Reduce 階段 負責資料整合 以 wordcount 為例，從 Map 傳過來的 key 若一樣，表示同一個字，因此把一樣的 key 做加總，可以得出最後的出總筆數 冪等性(idempotency)特性 意義: 當操作多次，結果應呈現一致 透過 pub/sub messaging system 應當有冪等性，因為 pub/sub 系統本身允許相同訊息被 consumer 接收多次 舉例，增加資料庫某欄位的 integer value，就不是一個具有冪等性的操作，因為保持每次增加的操作後都不會保持跟前一個相同的數值 另一舉例，將欄位值設定為 &amp;ldquo;DONE&amp;rdquo;，多次重複此操作，還是會顯示為 &amp;ldquo;DONE&amp;rdquo;，因此設定為 &amp;ldquo;DONE&amp;rdquo; 是一個冪等性操作 範例 input 要做計算的原始資料，可以是一堆文字清單等 split 把 input 資料做分散處理 以 hadoop 來說，當 MapReduce 工作被輸入的時候，會被切割到各個 cluster 裡面等待做處理 🔔map MapReduce 的 map 階段 每一個節點有自己的一份資料要分析，會把對應切割出來的資料建立 key value 的結果 key 是字本身，value 是 1 代表找到一筆 combine 在 map 的機器進行以下動作 將一樣的 key 先做一次加總，避免傳送多次出去，例如 combine 後的結果可能是 &amp;ldquo;A&amp;rdquo; 有 2 筆、&amp;ldquo;B&amp;rdquo; 有 1 筆等 shuffle &amp;amp; sort 在進入 reduce 階段之前，會先被做一個排序，因此相關的 key 會放在一起 比如第一批資料的 &amp;ldquo;A&amp;rdquo; 有 2 筆、第二批資料的 &amp;ldquo;A&amp;rdquo; 有 5 筆&amp;hellip;第一批資料的 &amp;ldquo;B&amp;rdquo; 有 1 筆、第二批資料的 &amp;ldquo;B&amp;rdquo; 有 3 筆 🔔reduce 此階段會做實際的加總，因此每一個 key 的 value 會被加總 output 最後得到的結果 參考資料 👐 system expert wiki MapReduce introduction-to-mapreduce 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#mapreduce">MapReduce</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#prerequistites">Prerequistites</a></li>
+        <li><a href="#各階段簡介">各階段簡介</a></li>
+        <li><a href="#冪等性idempotency特性">冪等性(idempotency)特性</a></li>
+        <li><a href="#範例">範例</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/">系統設計基礎(三)筆記 MapReduce</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 18, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="mapreduce">MapReduce</h2>
+<h3 id="前言">前言</h3>
+<p>MapReduce 是一個 Google 提出的軟體架構，適用於<strong>大規模資料的並列運算</strong></p>
+<h3 id="prerequistites">Prerequistites</h3>
+<ul>
+<li>File System
+<ul>
+<li>資料的儲存系統</li>
+<li>有許多不同型態，例如以垂直結構為主的目錄與資料夾、Object storage 等</li>
+</ul>
+</li>
+<li>Distributed File System
+<ul>
+<li>分散式檔案系統，透過一大群機器(cluster)互相合作，對外表現如同<strong>一個巨大的 file system</strong>，將 data 切成特定大小的 chunks (如 4 MB 或 64 MB)，會透過 <strong>central control plane</strong> 會決定應該將 chunks 存在哪一個 node，後續應該去哪一個 node 讀取 chunks</li>
+<li>主要操作方式是透過<strong>網路</strong>以定義好的通訊協定進行資料存取</li>
+<li>目前現有的產品有 Google File System (GFS)、Hadoop Distributed File System (HDFS)</li>
+</ul>
+</li>
+<li>Hadoop
+<ul>
+<li>支持 MapReduce 與資料管線的 open-source 框架，最重要的中央組件為 Hadoop Distributed File System (HDFS)</li>
+</ul>
+</li>
+</ul>
+<h3 id="各階段簡介">各階段簡介</h3>
+<h4 id="map-階段">Map 階段</h4>
+<ul>
+<li>負責 <strong>filtering</strong> 和 <strong>sorting</strong> 並且組合出一個 key value pair 結果</li>
+</ul>
+<h4 id="reduce-階段">Reduce 階段</h4>
+<ul>
+<li>負責<strong>資料整合</strong></li>
+<li>以 wordcount 為例，從 Map 傳過來的 key 若一樣，表示同一個字，因此把一樣的 key 做加總，可以得出最後的出總筆數</li>
+</ul>
+<h3 id="冪等性idempotency特性">冪等性(idempotency)特性</h3>
+<ul>
+<li>意義: <strong>當操作多次，結果應呈現一致</strong></li>
+<li>透過 pub/sub messaging system 應當有冪等性，因為 pub/sub 系統本身允許相同訊息被 consumer 接收多次</li>
+<li>舉例，增加資料庫某欄位的 integer value，就不是一個具有冪等性的操作，因為保持每次增加的操作後都不會保持跟前一個相同的數值</li>
+<li>另一舉例，將欄位值設定為 &ldquo;DONE&rdquo;，多次重複此操作，還是會顯示為 &ldquo;DONE&rdquo;，因此設定為 &ldquo;DONE&rdquo; 是一個冪等性操作</li>
+</ul>
+<h3 id="範例">範例</h3>
+<ul>
+<li><strong>input</strong>
+<ul>
+<li>要做計算的原始資料，可以是一堆文字清單等</li>
+</ul>
+</li>
+<li><strong>split</strong>
+<ul>
+<li>把 input 資料做分散處理</li>
+<li>以 hadoop 來說，當 MapReduce 工作被輸入的時候，會被<strong>切割到各個 cluster 裡面等待做處理</strong></li>
+</ul>
+</li>
+<li>🔔<strong>map</strong>
+<ul>
+<li>MapReduce 的 map 階段</li>
+<li>每一個節點有自己的一份資料要分析，會把對應切割出來的資料<strong>建立 key value 的結果</strong></li>
+<li>key 是字本身，value 是 1 代表找到一筆</li>
+</ul>
+</li>
+<li><strong>combine</strong>
+<ul>
+<li>在 map 的機器進行以下動作</li>
+<li>將一樣的 key 先做一次加總，避免傳送多次出去，例如 combine 後的結果可能是 &ldquo;A&rdquo; 有 2 筆、&ldquo;B&rdquo; 有 1 筆等</li>
+</ul>
+</li>
+<li><strong>shuffle &amp; sort</strong>
+<ul>
+<li>在進入 reduce 階段之前，會先被做一個<strong>排序</strong>，因此<strong>相關的 key 會放在一起</strong></li>
+<li>比如第一批資料的 &ldquo;A&rdquo; 有 2 筆、第二批資料的 &ldquo;A&rdquo; 有 5 筆&hellip;第一批資料的 &ldquo;B&rdquo; 有 1 筆、第二批資料的 &ldquo;B&rdquo; 有 3 筆</li>
+</ul>
+</li>
+<li>🔔<strong>reduce</strong>
+<ul>
+<li>此階段會做<strong>實際的加總</strong>，因此每一個 key 的 value 會被加總</li>
+</ul>
+</li>
+<li><strong>output</strong>
+<ul>
+<li>最後得到的結果</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1.jpg"
+	width="642"
+	height="460"
+	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_480x0_resize_q75_box.jpg 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_1024x0_resize_q75_box.jpg 1024w"
+	loading="lazy"
+	
+		alt="source: https://www.guru99.com/introduction-to-mapreduce.html"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="139"
+		data-flex-basis="334px"
+	
+></p>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li>system expert</li>
+<li><a class="link" href="https://zh.wikipedia.org/zh-tw/MapReduce"  target="_blank" rel="noopener"
+    >wiki MapReduce</a></li>
+<li><a class="link" href="https://www.guru99.com/introduction-to-mapreduce.html"  target="_blank" rel="noopener"
+    >introduction-to-mapreduce</a></li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
+        
+            <a href="/tags/mapreduce/">MapReduce</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2f%25E7%25B3%25BB%25E7%25B5%25B1%25E8%25A8%25AD%25E8%25A8%2588%25E5%259F%25BA%25E7%25A4%258E%25E4%25B8%2589%25E7%25AD%2586%25E8%25A8%2598-mapreduce%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎(二)筆記 Cache</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎(一)筆記 Security And HTTPS</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

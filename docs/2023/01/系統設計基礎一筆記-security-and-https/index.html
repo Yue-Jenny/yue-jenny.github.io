@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
-用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
-Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
-💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
-partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。'>
-<title>Kafka 簡介</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Security And HTTPS 前言 除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。
+Prerequistites IP Packet
+透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload IP Header 包含來源與目的地的 IP Address payload 就是你要傳送的資料 Man-In-The-Middle Attack (又稱呼為 MITM)
+意思是攔截 client 與 server 間傳送的訊息 💬 若 client 與 server 間傳送訊息有透過加密與 Https 可防止資料被竊取 Symmetric Encryption (對稱加密)
+加密與解密資料都使用同一把 key 🔑 缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點 優點是速度比非對稱加密快 🐇 最廣泛使用的演算法是 Advanced Ecryption Standard(AES) Asymmetric Encryption (非對稱加密)
+加密與解密資料會利用到兩把 key 🔑🔑，分別為 public key 與 private key public key 負責加密資料，只能利用相對應的 private key 解密資料 所以 public key 分享給需要加密資料的一端，而 private key 則需要 安全地保存 ㊙️ 速度會比對稱加密慢 🐢 Advanced Ecryption Standard(AES)'>
+<title>系統設計基礎(一)筆記 Security And HTTPS</title>
 
-<link rel='canonical' href='https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/'>
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/'>
 
-<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='Kafka 簡介'>
-<meta property='og:description' content='Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
-用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
-Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
-💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
-partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。'>
-<meta property='og:url' content='https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/'>
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎(一)筆記 Security And HTTPS'>
+<meta property='og:description' content='Security And HTTPS 前言 除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。
+Prerequistites IP Packet
+透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload IP Header 包含來源與目的地的 IP Address payload 就是你要傳送的資料 Man-In-The-Middle Attack (又稱呼為 MITM)
+意思是攔截 client 與 server 間傳送的訊息 💬 若 client 與 server 間傳送訊息有透過加密與 Https 可防止資料被竊取 Symmetric Encryption (對稱加密)
+加密與解密資料都使用同一把 key 🔑 缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點 優點是速度比非對稱加密快 🐇 最廣泛使用的演算法是 Advanced Ecryption Standard(AES) Asymmetric Encryption (非對稱加密)
+加密與解密資料會利用到兩把 key 🔑🔑，分別為 public key 與 private key public key 負責加密資料，只能利用相對應的 private key 解密資料 所以 public key 分享給需要加密資料的一端，而 private key 則需要 安全地保存 ㊙️ 速度會比對稱加密慢 🐢 Advanced Ecryption Standard(AES)'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/'>
 <meta property='og:site_name' content='Jenny blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Publish/Subscribe Pattern' /><meta property='article:tag' content='Kakfa' /><meta property='article:published_time' content='2023-01-20T13:38:08&#43;08:00'/><meta property='article:modified_time' content='2023-01-20T13:38:08&#43;08:00'/>
-<meta name="twitter:title" content="Kafka 簡介">
-<meta name="twitter:description" content="Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
-用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
-Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
-💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
-partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:published_time' content='2023-01-16T12:35:00&#43;08:00'/><meta property='article:modified_time' content='2023-01-16T12:35:00&#43;08:00'/>
+<meta name="twitter:title" content="系統設計基礎(一)筆記 Security And HTTPS">
+<meta name="twitter:description" content="Security And HTTPS 前言 除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。
+Prerequistites IP Packet
+透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload IP Header 包含來源與目的地的 IP Address payload 就是你要傳送的資料 Man-In-The-Middle Attack (又稱呼為 MITM)
+意思是攔截 client 與 server 間傳送的訊息 💬 若 client 與 server 間傳送訊息有透過加密與 Https 可防止資料被竊取 Symmetric Encryption (對稱加密)
+加密與解密資料都使用同一把 key 🔑 缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點 優點是速度比非對稱加密快 🐇 最廣泛使用的演算法是 Advanced Ecryption Standard(AES) Asymmetric Encryption (非對稱加密)
+加密與解密資料會利用到兩把 key 🔑🔑，分別為 public key 與 private key public key 負責加密資料，只能利用相對應的 private key 解密資料 所以 public key 分享給需要加密資料的一端，而 private key 則需要 安全地保存 ㊙️ 速度會比對稱加密慢 🐢 Advanced Ecryption Standard(AES)">
     <link rel="shortcut icon" href="/leaves.png" />
 
 
@@ -238,12 +241,13 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#kafka">Kafka</a>
+    <li><a href="#security-and-https">Security And HTTPS</a>
       <ul>
         <li><a href="#前言">前言</a></li>
         <li><a href="#prerequistites">Prerequistites</a></li>
-        <li><a href="#-功能">📌 功能</a></li>
-        <li><a href="#最重要的觀念">💫最重要的觀念💫</a></li>
+        <li><a href="#http-vs-https">Http vs Https</a></li>
+        <li><a href="#tls-連接是透過-tls-handshake-來啟動">TLS 連接是透過 TLS Handshake 來啟動</a></li>
+        <li><a href="#tcp-利用-handshake-方式來連接與斷連">TCP 利用 Handshake 方式來連接與斷連</a></li>
       </ul>
     </li>
     <li><a href="#參考資料-">參考資料 👐</a></li>
@@ -265,8 +269,8 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     
     <header class="article-category">
         
-            <a href="/categories/mq/" >
-                MQ
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
             </a>
         
     </header>
@@ -274,7 +278,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/">Kafka 簡介</a>
+            <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/">系統設計基礎(一)筆記 Security And HTTPS</a>
         </h2>
     
         
@@ -296,7 +300,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Jan 20, 2023</time>
+                <time class="article-time--published">Jan 16, 2023</time>
             </div>
         
 
@@ -311,7 +315,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
 
 
                 <time class="article-time--reading">
-                    1 minute read
+                    2 minute read
                 </time>
             </div>
         
@@ -326,243 +330,160 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     <section class="article-content">
     
     
-    <h2 id="kafka">Kafka</h2>
-<ul>
-<li>最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案</li>
-</ul>
+    <h2 id="security-and-https">Security And HTTPS</h2>
 <h3 id="前言">前言</h3>
+<p>除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。</p>
 <h3 id="prerequistites">Prerequistites</h3>
 <ul>
-<li><a class="link" href="../%e7%b3%bb%e7%b5%b1%e8%a8%ad%e8%a8%88%e5%9f%ba%e7%a4%8e%e5%9b%9b-publish/subscribe-pattern/" >Publish/Subscribe Pattern</a></li>
-</ul>
-<h3 id="-功能">📌 功能</h3>
-<ul>
 <li>
-<p><strong>高效能</strong>、<strong>容錯</strong>且具<strong>可擴展性</strong>的平台</p>
-</li>
-<li>
-<p>用於建置<strong>即時串流資料管道</strong>，並以 pub/sub pattern 來管理生產者與消費者的資料</p>
+<p>IP Packet</p>
 <ul>
-<li><strong>Kafka Connect</strong> 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。</li>
-<li>串流資料是一種<strong>小型記錄或事件</strong> (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路</li>
+<li>透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload</li>
+<li>IP Header 包含來源與目的地的 IP Address</li>
+<li>payload 就是你要傳送的資料</li>
 </ul>
 </li>
 <li>
-<p>資料取用的順序以 <strong>FIFO (First In First Out)</strong> 作為原則</p>
-<p><img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO.jpg"
-	width="428"
-	height="270"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_480x0_resize_q75_box.jpg 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_1024x0_resize_q75_box.jpg 1024w"
-	loading="lazy"
-	
-		alt="First In First Out, source:https://en.wikipedia.org/wiki/FIFO_%28computing_and_electronics%29"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="158"
-		data-flex-basis="380px"
-	
-></p>
-</li>
-</ul>
-<h3 id="最重要的觀念">💫最重要的觀念💫</h3>
-<p>如何達到高效能、容錯且可擴展的呢?</p>
-<h4 id="partition">partition</h4>
+<p>Man-In-The-Middle Attack (又稱呼為 MITM)</p>
 <ul>
-<li>
-<p>Partition 是最小的存儲單元
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01.png"
-	width="1080"
-	height="601"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="179"
-		data-flex-basis="431px"
-	
-></p>
-</li>
-<li>
-<p>一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02.png"
-	width="1080"
-	height="520"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="207"
-		data-flex-basis="498px"
-	
->
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03.png"
-	width="698"
-	height="590"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="118"
-		data-flex-basis="283px"
-	
-></p>
-</li>
-<li>
-<p>一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。</p>
-<ul>
-<li>Partition 分佈在多個 Broker 的話，Consumer 的多個實例就可以連接不同的 Broker</li>
-<li>好處
-<ul>
-<li>Topic 就可以水平擴展</li>
-<li>支持更多的 Consumer</li>
-<li>一個 Consumer 實例負責一個 Partition
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04.png"
-	width="1080"
-	height="588"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="183"
-		data-flex-basis="440px"
-	
-></li>
-</ul>
-</li>
+<li>意思是攔截 client 與 server 間傳送的訊息 💬</li>
+<li>若 client 與 server 間傳送訊息有透過<code>加密</code>與 <code>Https</code> 可防止資料被竊取</li>
 </ul>
 </li>
 <li>
-<p>數據冗餘</p>
+<p>Symmetric Encryption (對稱加密)</p>
 <ul>
-<li>一個 Partition 生成多個副本，並且把它們分散在不同的 Broker。</li>
-<li>如果一個 Broker 故障了，Consumer 可以在其他 Broker 上找到 Partition 的副本，繼續獲取消息。</li>
+<li>加密與解密資料都使用<strong>同一把 key</strong> 🔑</li>
+<li>缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點</li>
+<li>優點是速度比非對稱加密快 🐇</li>
+<li>最廣泛使用的演算法是 Advanced Ecryption Standard(AES)</li>
 </ul>
 </li>
 <li>
-<p>寫入 Partition 的方式</p>
+<p>Asymmetric Encryption (非對稱加密)</p>
 <ul>
-<li>給 Kafka 決定
-<ul>
-<li>若沒有 key 則 kafka 以 round robin 方式將訊息寫入 partition，但這樣就不保證順序性了，若需要有順序性，請參考下面一個方式
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05.png"
-	width="847"
-	height="614"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="137"
-		data-flex-basis="331px"
-	
-></li>
+<li>加密與解密資料會利用到<strong>兩把 key</strong> 🔑🔑，分別為 public key 與 private key</li>
+<li>public key 負責加密資料，只能利用相對應的 private key 解密資料</li>
+<li>所以 public key 分享給需要加密資料的一端，而 private key 則需要 <strong>安全地保存</strong> ㊙️</li>
+<li>速度會比對稱加密慢 🐢</li>
 </ul>
 </li>
-<li>使用 Partition Key 寫入特定 Partition
+<li>
+<p>Advanced Ecryption Standard(AES)</p>
 <ul>
-<li>kafka 保證使用相同的 key 會將訊息放到同一個 partition，並且保證順序性 ( in order )</li>
-<li>舉例，如果相同客戶的資訊有序地取得，表示需要放在同一個 partition，可以使用 customer id 作為 partition key，這樣同一個 customer 的資料都會放到同一個 partition
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06.png"
-	width="827"
-	height="622"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="132"
-		data-flex-basis="319px"
-	
-></li>
+<li><strong>最廣泛</strong>使用的<strong>加密標準</strong></li>
+<li>三種對稱演算法分別為 AES-128、AES-192、AES-256</li>
+</ul>
+</li>
+<li>
+<p>Transport Layer Security (TLS)</p>
+<ul>
+<li>在<strong>傳輸層</strong>的一種協定，目的是為了網路通訊時的安全，確保沒有第三方能竊聽或者竊取任何資訊</li>
+<li>衍生於另一種安全協定 Secure Socket Layer (SSL)</li>
+</ul>
+</li>
+<li>
+<p>SSL certificate</p>
+<ul>
+<li>由 certificate authority (CA) 頒發給 server 的數位憑證</li>
+<li>內容包含 server 端的 public key，因為在 TLS Handshake 過程中會使用到</li>
+<li>目的是確認</li>
+</ul>
+</li>
+</ul>
+<h3 id="http-vs-https">Http vs Https</h3>
+<h4 id="http">Http</h4>
+<ul>
+<li>全名為 HyperText Transfer Protocol</li>
+<li>一種常見的網路通訊協議</li>
+<li>流程是 client 送出 http request，而 server 送出回應</li>
+</ul>
+<h4 id="https">Https</h4>
+<ul>
+<li>全名為 HyperText Transfer Protocol <strong>Secure</strong></li>
+<li>顧名思義是為了可於網路上🔐<strong>安全地</strong>通訊而出現的一種網路通訊協議</li>
+<li>為了達到上述要求，因此 server 被要求須具備以下兩項
+<ul>
+<li>須獲得可信任的憑證(<code>SSL certificates</code>)</li>
+<li>使用 <code>Transport Layer Security (TLS)</code> 加密 client 與 server 端的數據。TLS 如何運作，請往下看。</li>
+</ul>
+</li>
+</ul>
+<h3 id="tls-連接是透過-tls-handshake-來啟動">TLS 連接是透過 TLS Handshake 來啟動</h3>
+<ul>
+<li>流程
+<ul>
+<li>client 送出 <code>client hello</code> (隨機的 bytes) 給 server</li>
+<li>server 回應 <code>server hello</code> (也是隨機的 bytes) 以及 SSL certificate</li>
+<li>client 驗證 CA 頒發的憑證，確認憑證正確屬於此 server 擁有</li>
+<li>client 接著會送出一組用 public key 加密的 <code>premaster secret</code> 給 server</li>
+<li>client 和 server 將會使用 <code>client hello</code>, <code>server hello</code>與 <code>premaster secret</code> 產生對稱加密的 <code>session keys</code>，用於後續的通訊內容的加密與解密 🔐</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="tcp-利用-handshake-方式來連接與斷連">TCP 利用 Handshake 方式來連接與斷連</h3>
+<h4 id="tcp-三次握手建立連線">TCP 三次握手(建立連線)</h4>
+<ul>
+<li>
+<p>流程</p>
+<ul>
+<li>第一次握手：
+<ul>
+<li>客戶端傳送請求 SYN 報文給服務端，傳送完畢之後，客戶端處於 SYN_Send 狀態。</li>
+</ul>
+</li>
+<li>第二次握手：
+<ul>
+<li>服務端收到請求報文之後，<strong>如果同意連線，會回傳 SYN + ACK 應答報文</strong>，服務端為SYN_Receive狀態</li>
+</ul>
+</li>
+<li>第三次握手：
+<ul>
+<li>客戶端接收到服務端的 SYN + ACK ，然後<strong>傳送確認報文作為應答</strong>，客戶端轉為Established狀態</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>
-<p>讀取 partition
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07.png"
-	width="1368"
-	height="751"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="182"
-		data-flex-basis="437px"
-	
-></p>
+<p>為什麼一定要三次?</p>
 <ul>
-<li>consumer group
+<li>為了防止已失效的連接請求報文段突然又傳送到了服務端，因而產生錯誤</li>
+</ul>
+</li>
+</ul>
+<h4 id="tcp-四次握手結束連線">TCP 四次握手(結束連線)</h4>
 <ul>
-<li>多個 consumer 組合成一個 consumer group，目的是為了<strong>水平擴展(scale out)</strong> consumer</li>
-<li>決定 consumer group 要從哪裡開始讀取資料的關鍵是 consumer offsets
+<li>流程
 <ul>
-<li>offsets 會被存在 topic name 中</li>
-<li>如果 consumer 讀取資料完畢，則會 commit offsets
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08.png"
-	width="519"
-	height="250"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="207"
-		data-flex-basis="498px"
-	
->
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09.png"
-	width="1261"
-	height="615"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="205"
-		data-flex-basis="492px"
-	
->
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10.png"
-	width="916"
-	height="214"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="428"
-		data-flex-basis="1027px"
-	
-></li>
+<li>第一次分手
+<ul>
+<li>客戶端傳送FIN=1告訴服務端，客戶端所有的資料<strong>全部發送完畢</strong>，服務端可以關閉接收了。</li>
+</ul>
+</li>
+<li>第二次分手
+<ul>
+<li>服務端接收到客戶端的釋放請求連線之後，知道客戶端沒有資料傳送給自己了，然後<strong>服務端傳送ACK=1告訴客戶端接收到你發給我的訊息</strong></li>
+</ul>
+</li>
+<li>第三次分手
+<ul>
+<li>告訴客戶端，<strong>服務端的所有資料傳送完畢</strong>，客戶端你也可以關閉接收資料連線了。</li>
+</ul>
+</li>
+<li>第四次分手
+<ul>
+<li>客戶端接收到了服務端傳送完畢的訊息之後，就<strong>傳送ACK=1，告訴服務端，客戶端已經接收到你的訊息</strong></li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-<h4 id="apache-zookeeper">apache zookeeper</h4>
-<ul>
-<li>an open-source server which enables highly reliable distributed coordination</li>
-<li>通過冗餘服務實現高可用性</li>
 </ul>
 <h2 id="參考資料-">參考資料 👐</h2>
 <ul>
-<li><a class="link" href="https://youtu.be/y9BStKvVzSs"  target="_blank" rel="noopener"
-    >Apache Kafka® 101: Partitioning</a></li>
-<li><a class="link" href="https://www.readfog.com/a/1635090175644241920"  target="_blank" rel="noopener"
-    >細說 Kafka Partition 分區</a></li>
-<li><a class="link" href="https://www.confluent.io/apache-kafka-vs-confluent/"  target="_blank" rel="noopener"
-    >Apache Kafka vs Confluent: Comparing Features &amp; Capabilities</a></li>
-<li><a class="link" href="https://aws.amazon.com/tw/msk/faqs/"  target="_blank" rel="noopener"
-    >全受管 Apache Kafka - Amazon MSK 常見問答集 - Amazon Web Services</a></li>
+<li>System expert</li>
+<li><a class="link" href="https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/"  target="_blank" rel="noopener"
+    >what-happens-in-a-tls-handshake</a></li>
 </ul>
 <p><strong>🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨</strong></p>
 
@@ -573,9 +494,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     
     <section class="article-tags">
         
-            <a href="/tags/publish/subscribe-pattern/">Publish/Subscribe Pattern</a>
-        
-            <a href="/tags/kakfa/">Kakfa</a>
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
         
     </section>
 
@@ -583,7 +502,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     </footer>
 
 
-    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2fkafka-%25E7%25B0%25A1%25E4%25BB%258B%2f" width="100%" frameborder=0></iframe>
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2f%25E7%25B3%25BB%25E7%25B5%25B1%25E8%25A8%25AD%25E8%25A8%2588%25E5%259F%25BA%25E7%25A4%258E%25E4%25B8%2580%25E7%25AD%2586%25E8%25A8%2598-security-and-https%2f" width="100%" frameborder=0></iframe>
 
     
 </article>
@@ -591,28 +510,6 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     
 
     
-
-<aside class="related-content--wrapper">
-    <h2 class="section-title">Related content</h2>
-    <div class="related-content">
-        <div class="flex article-list--tile">
-            
-                
-<article class="">
-    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">系統設計基礎(四)筆記 Publish/Subscribe Pattern</h2>
-        </div>
-    </a>
-</article>
-
-            
-        </div>
-    </div>
-</aside>
 
      
     

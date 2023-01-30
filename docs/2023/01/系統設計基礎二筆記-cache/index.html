@@ -1,30 +1,24 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
-用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
-Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
-💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
-partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。'>
-<title>Kafka 簡介</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Cache 快取 前言 快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。
+Prerequistites cache 意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快 通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求 cache hit 需要的資料能在快取中找到 🉐 cache miss 需要的資料無法在快取中找到 🈚 content delivery network (CDN) 一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看 越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency 舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN 3 個使用快取的目的 利用前端快取，減少請求到後端 減少對資料庫的請求，降低資料庫壓力 避免 long compute operation，增加系統速度 快取更新機制 write through cache 同時更新資料庫與快取的資料 write back cache 先更新快取，再以非同步的方式更新資料庫的資料 快取替換機制 Cache eviction policy Least Recently Used (LRU) 依照最近使用時間來排序 思路: 最近使用時間最接近，表示近期內使用到的可能性也越高 優先替換掉最近使用時間距離當下最遠的那組數據 Least Frequently Used (LFU) 依照使用頻率來排序 思路: 使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️ 優先替換掉使用次數最低的那組數據 First in First out (FIFO) 顧名思義，先進先出 思路: 最先進去快取的資料，越早會被淘汰 參考資料 👐 System expert 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<title>系統設計基礎(二)筆記 Cache</title>
 
-<link rel='canonical' href='https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/'>
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/'>
 
-<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='Kafka 簡介'>
-<meta property='og:description' content='Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
-用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
-Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
-💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
-partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。'>
-<meta property='og:url' content='https://yue-jenny.github.io/2023/01/kafka-%E7%B0%A1%E4%BB%8B/'>
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎(二)筆記 Cache'>
+<meta property='og:description' content='Cache 快取 前言 快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。
+Prerequistites cache 意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快 通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求 cache hit 需要的資料能在快取中找到 🉐 cache miss 需要的資料無法在快取中找到 🈚 content delivery network (CDN) 一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看 越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency 舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN 3 個使用快取的目的 利用前端快取，減少請求到後端 減少對資料庫的請求，降低資料庫壓力 避免 long compute operation，增加系統速度 快取更新機制 write through cache 同時更新資料庫與快取的資料 write back cache 先更新快取，再以非同步的方式更新資料庫的資料 快取替換機制 Cache eviction policy Least Recently Used (LRU) 依照最近使用時間來排序 思路: 最近使用時間最接近，表示近期內使用到的可能性也越高 優先替換掉最近使用時間距離當下最遠的那組數據 Least Frequently Used (LFU) 依照使用頻率來排序 思路: 使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️ 優先替換掉使用次數最低的那組數據 First in First out (FIFO) 顧名思義，先進先出 思路: 最先進去快取的資料，越早會被淘汰 參考資料 👐 System expert 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/'>
 <meta property='og:site_name' content='Jenny blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='Publish/Subscribe Pattern' /><meta property='article:tag' content='Kakfa' /><meta property='article:published_time' content='2023-01-20T13:38:08&#43;08:00'/><meta property='article:modified_time' content='2023-01-20T13:38:08&#43;08:00'/>
-<meta name="twitter:title" content="Kafka 簡介">
-<meta name="twitter:description" content="Kafka 最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案 前言 Prerequistites Publish/Subscribe Pattern 📌 功能 高效能、容錯且具可擴展性的平台
-用於建置即時串流資料管道，並以 pub/sub pattern 來管理生產者與消費者的資料
-Kafka Connect 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。 串流資料是一種小型記錄或事件 (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路 資料取用的順序以 FIFO (First In First Out) 作為原則
-💫最重要的觀念💫 如何達到高效能、容錯且可擴展的呢?
-partition Partition 是最小的存儲單元 一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。 一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='Cache' /><meta property='article:published_time' content='2023-01-17T11:04:46&#43;08:00'/><meta property='article:modified_time' content='2023-01-17T11:04:46&#43;08:00'/>
+<meta name="twitter:title" content="系統設計基礎(二)筆記 Cache">
+<meta name="twitter:description" content="Cache 快取 前言 快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。
+Prerequistites cache 意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快 通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求 cache hit 需要的資料能在快取中找到 🉐 cache miss 需要的資料無法在快取中找到 🈚 content delivery network (CDN) 一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看 越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency 舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN 3 個使用快取的目的 利用前端快取，減少請求到後端 減少對資料庫的請求，降低資料庫壓力 避免 long compute operation，增加系統速度 快取更新機制 write through cache 同時更新資料庫與快取的資料 write back cache 先更新快取，再以非同步的方式更新資料庫的資料 快取替換機制 Cache eviction policy Least Recently Used (LRU) 依照最近使用時間來排序 思路: 最近使用時間最接近，表示近期內使用到的可能性也越高 優先替換掉最近使用時間距離當下最遠的那組數據 Least Frequently Used (LFU) 依照使用頻率來排序 思路: 使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️ 優先替換掉使用次數最低的那組數據 First in First out (FIFO) 顧名思義，先進先出 思路: 最先進去快取的資料，越早會被淘汰 參考資料 👐 System expert 🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!">
     <link rel="shortcut icon" href="/leaves.png" />
 
 
@@ -238,12 +232,13 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#kafka">Kafka</a>
+    <li><a href="#cache-快取">Cache 快取</a>
       <ul>
         <li><a href="#前言">前言</a></li>
         <li><a href="#prerequistites">Prerequistites</a></li>
-        <li><a href="#-功能">📌 功能</a></li>
-        <li><a href="#最重要的觀念">💫最重要的觀念💫</a></li>
+        <li><a href="#3-個使用快取的目的">3 個使用快取的目的</a></li>
+        <li><a href="#快取更新機制">快取更新機制</a></li>
+        <li><a href="#快取替換機制-cache-eviction-policy">快取替換機制 Cache eviction policy</a></li>
       </ul>
     </li>
     <li><a href="#參考資料-">參考資料 👐</a></li>
@@ -265,8 +260,8 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     
     <header class="article-category">
         
-            <a href="/categories/mq/" >
-                MQ
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
             </a>
         
     </header>
@@ -274,7 +269,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/">Kafka 簡介</a>
+            <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/">系統設計基礎(二)筆記 Cache</a>
         </h2>
     
         
@@ -296,7 +291,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Jan 20, 2023</time>
+                <time class="article-time--published">Jan 17, 2023</time>
             </div>
         
 
@@ -326,243 +321,89 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     <section class="article-content">
     
     
-    <h2 id="kafka">Kafka</h2>
-<ul>
-<li>最先是由 LinkedIn 創立的一款分散式訊息系統 (distributed messaging system)，由 Scala 和 Java 編寫的 open-source 專案</li>
-</ul>
+    <h2 id="cache-快取">Cache 快取</h2>
 <h3 id="前言">前言</h3>
+<p>快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。<br>
+因此目標是了解👉為什麼使用、👉使用策略與👉何時使用。</p>
 <h3 id="prerequistites">Prerequistites</h3>
 <ul>
-<li><a class="link" href="../%e7%b3%bb%e7%b5%b1%e8%a8%ad%e8%a8%88%e5%9f%ba%e7%a4%8e%e5%9b%9b-publish/subscribe-pattern/" >Publish/Subscribe Pattern</a></li>
-</ul>
-<h3 id="-功能">📌 功能</h3>
+<li>cache
 <ul>
-<li>
-<p><strong>高效能</strong>、<strong>容錯</strong>且具<strong>可擴展性</strong>的平台</p>
-</li>
-<li>
-<p>用於建置<strong>即時串流資料管道</strong>，並以 pub/sub pattern 來管理生產者與消費者的資料</p>
-<ul>
-<li><strong>Kafka Connect</strong> 是 Apache Kafka 的開放原始碼元件，是一個用於將 Apache Kafka 與外部系統 (如資料庫、機碼值存放區、搜尋索引和檔案系統) 連接的架構。</li>
-<li>串流資料是一種<strong>小型記錄或事件</strong> (記錄或事件通常為幾 KB 大小的記錄) 的持續串流，這類的記錄則由數千台機器、裝置、網站和應用程式所產生。串流資料包含各式各樣的資料，例如客戶使用您的行動或 Web 應用程式產生的日誌檔、電子商務採購、遊戲中的玩家活動、來自社交網路</li>
+<li>意思是將一部分的資料儲存起來，需要使用的時候，不需要經過後端或者資料庫再拿一次，優勢是取得資料較快</li>
+<li>通常使用的情境是將常用且不經常修改的 response 儲存，不必每次都去跟後端與資料庫請求</li>
 </ul>
 </li>
-<li>
-<p>資料取用的順序以 <strong>FIFO (First In First Out)</strong> 作為原則</p>
-<p><img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO.jpg"
-	width="428"
-	height="270"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_480x0_resize_q75_box.jpg 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/FIFO_hu1f9ef358d98fa79ae89d09bc8323061c_12585_1024x0_resize_q75_box.jpg 1024w"
-	loading="lazy"
-	
-		alt="First In First Out, source:https://en.wikipedia.org/wiki/FIFO_%28computing_and_electronics%29"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="158"
-		data-flex-basis="380px"
-	
-></p>
+<li>cache hit
+<ul>
+<li>需要的資料能在快取中找到 🉐</li>
+</ul>
+</li>
+<li>cache miss
+<ul>
+<li>需要的資料無法在快取中找到 🈚</li>
+</ul>
+</li>
+<li>content delivery network (CDN)
+<ul>
+<li>一種第三方服務，扮演的角色就像快取，為什麼呢 ? 請往下看</li>
+<li>越來越多服務的據點散布全球🌏，若 server 只有在幾個國家，其他國家的使用者可能會遇到網頁轉很久等問題⌛，中間網路傳輸耗時太長導致 latency 長，此時若有散布全球的 CDN server，請求就能先傳送到 CDN server 處理，縮短 latency</li>
+<li>舉例一些 CDN 廠商，如 Cloudflare 與 Google cloud CDN</li>
+</ul>
 </li>
 </ul>
-<h3 id="最重要的觀念">💫最重要的觀念💫</h3>
-<p>如何達到高效能、容錯且可擴展的呢?</p>
-<h4 id="partition">partition</h4>
+<h3 id="3-個使用快取的目的">3 個使用快取的目的</h3>
 <ul>
-<li>
-<p>Partition 是最小的存儲單元
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01.png"
-	width="1080"
-	height="601"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/01_hu744ad90d8ee661de56063cb174dff7c8_235967_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="179"
-		data-flex-basis="431px"
-	
-></p>
+<li>利用前端快取，減少請求到後端</li>
+<li>減少對資料庫的請求，降低資料庫壓力</li>
+<li>避免 long compute operation，增加系統速度</li>
+</ul>
+<h3 id="快取更新機制">快取更新機制</h3>
+<ul>
+<li>write through cache
+<ul>
+<li><strong>同時</strong>更新資料庫與快取的資料</li>
+</ul>
 </li>
-<li>
-<p>一個 Partition 內部消息有序，一個 Topic 跨 Partition 是無序的。
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02.png"
-	width="1080"
-	height="520"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/02_hu3284de12ac4cff1966242054d24b6a5c_728647_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="207"
-		data-flex-basis="498px"
-	
->
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03.png"
-	width="698"
-	height="590"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/03_hub073a7a655e622b4ac85bdd1cd9c7c48_210484_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="118"
-		data-flex-basis="283px"
-	
-></p>
+<li>write back cache
+<ul>
+<li>先更新快取，再以<strong>非同步</strong>的方式更新資料庫的資料</li>
+</ul>
 </li>
-<li>
-<p>一個 Kafka cluster由多個 Broker（就是 Server） 構成，每個 Broker 中含有 cluster 的部分數據。</p>
+</ul>
+<h3 id="快取替換機制-cache-eviction-policy">快取替換機制 Cache eviction policy</h3>
 <ul>
-<li>Partition 分佈在多個 Broker 的話，Consumer 的多個實例就可以連接不同的 Broker</li>
-<li>好處
+<li>Least <strong>Recently</strong> Used (LRU)
 <ul>
-<li>Topic 就可以水平擴展</li>
-<li>支持更多的 Consumer</li>
-<li>一個 Consumer 實例負責一個 Partition
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04.png"
-	width="1080"
-	height="588"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/04_hu9df9c2d8a44e24fac982d8c6b378c6b4_463876_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="183"
-		data-flex-basis="440px"
-	
-></li>
+<li>依照<strong>最近使用時間</strong>來排序</li>
+<li>思路:
+<ul>
+<li>最近使用時間最接近，表示近期內使用到的可能性也越高</li>
+<li>優先替換掉最近使用時間距離當下最遠的那組數據</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>
-<p>數據冗餘</p>
+<li>Least <strong>Frequently</strong> Used (LFU)
 <ul>
-<li>一個 Partition 生成多個副本，並且把它們分散在不同的 Broker。</li>
-<li>如果一個 Broker 故障了，Consumer 可以在其他 Broker 上找到 Partition 的副本，繼續獲取消息。</li>
-</ul>
-</li>
-<li>
-<p>寫入 Partition 的方式</p>
+<li>依照<strong>使用頻率</strong>來排序</li>
+<li>思路:
 <ul>
-<li>給 Kafka 決定
-<ul>
-<li>若沒有 key 則 kafka 以 round robin 方式將訊息寫入 partition，但這樣就不保證順序性了，若需要有順序性，請參考下面一個方式
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05.png"
-	width="847"
-	height="614"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/05_hu7adb8fef5a4461cb66826d8f5528082e_158389_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="137"
-		data-flex-basis="331px"
-	
-></li>
-</ul>
-</li>
-<li>使用 Partition Key 寫入特定 Partition
-<ul>
-<li>kafka 保證使用相同的 key 會將訊息放到同一個 partition，並且保證順序性 ( in order )</li>
-<li>舉例，如果相同客戶的資訊有序地取得，表示需要放在同一個 partition，可以使用 customer id 作為 partition key，這樣同一個 customer 的資料都會放到同一個 partition
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06.png"
-	width="827"
-	height="622"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/06_huae17a34b446bfa39d9899ec7a7d45732_138399_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="132"
-		data-flex-basis="319px"
-	
-></li>
+<li>使用次數越高⬆️，表示近期內使用到的可能性也越高⬆️</li>
+<li>優先替換掉使用次數最低的那組數據</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>
-<p>讀取 partition
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07.png"
-	width="1368"
-	height="751"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/07_hud5080fe6ac86749543c5228e1a603204_275585_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="182"
-		data-flex-basis="437px"
-	
-></p>
+<li>First in First out (FIFO)
 <ul>
-<li>consumer group
-<ul>
-<li>多個 consumer 組合成一個 consumer group，目的是為了<strong>水平擴展(scale out)</strong> consumer</li>
-<li>決定 consumer group 要從哪裡開始讀取資料的關鍵是 consumer offsets
-<ul>
-<li>offsets 會被存在 topic name 中</li>
-<li>如果 consumer 讀取資料完畢，則會 commit offsets
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08.png"
-	width="519"
-	height="250"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/08_hu37fa375a3ca6eee0640a804803663223_19691_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="207"
-		data-flex-basis="498px"
-	
->
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09.png"
-	width="1261"
-	height="615"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/09_hudf56ad857977013a5721689d05bf4b0e_359612_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="205"
-		data-flex-basis="492px"
-	
->
-<img src="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10.png"
-	width="916"
-	height="214"
-	srcset="/2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_480x0_resize_box_3.png 480w, /2023/01/kafka-%E7%B0%A1%E4%BB%8B/10_hu37bf28b82deed242038d260af9cbaad5_71844_1024x0_resize_box_3.png 1024w"
-	loading="lazy"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="428"
-		data-flex-basis="1027px"
-	
-></li>
+<li>顧名思義，<strong>先進先出</strong></li>
+<li>思路: 最先進去快取的資料，越早會被淘汰</li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="apache-zookeeper">apache zookeeper</h4>
-<ul>
-<li>an open-source server which enables highly reliable distributed coordination</li>
-<li>通過冗餘服務實現高可用性</li>
 </ul>
 <h2 id="參考資料-">參考資料 👐</h2>
 <ul>
-<li><a class="link" href="https://youtu.be/y9BStKvVzSs"  target="_blank" rel="noopener"
-    >Apache Kafka® 101: Partitioning</a></li>
-<li><a class="link" href="https://www.readfog.com/a/1635090175644241920"  target="_blank" rel="noopener"
-    >細說 Kafka Partition 分區</a></li>
-<li><a class="link" href="https://www.confluent.io/apache-kafka-vs-confluent/"  target="_blank" rel="noopener"
-    >Apache Kafka vs Confluent: Comparing Features &amp; Capabilities</a></li>
-<li><a class="link" href="https://aws.amazon.com/tw/msk/faqs/"  target="_blank" rel="noopener"
-    >全受管 Apache Kafka - Amazon MSK 常見問答集 - Amazon Web Services</a></li>
+<li>System expert</li>
 </ul>
 <p><strong>🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨</strong></p>
 
@@ -573,9 +414,9 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     
     <section class="article-tags">
         
-            <a href="/tags/publish/subscribe-pattern/">Publish/Subscribe Pattern</a>
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
         
-            <a href="/tags/kakfa/">Kakfa</a>
+            <a href="/tags/cache/">Cache</a>
         
     </section>
 
@@ -583,7 +424,7 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
     </footer>
 
 
-    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2fkafka-%25E7%25B0%25A1%25E4%25BB%258B%2f" width="100%" frameborder=0></iframe>
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2f%25E7%25B3%25BB%25E7%25B5%25B1%25E8%25A8%25AD%25E8%25A8%2588%25E5%259F%25BA%25E7%25A4%258E%25E4%25BA%258C%25E7%25AD%2586%25E8%25A8%2598-cache%2f" width="100%" frameborder=0></iframe>
 
     
 </article>
@@ -599,12 +440,12 @@ partition Partition 是最小的存儲單元 一個 Partition 內部消息有序
             
                 
 <article class="">
-    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">系統設計基礎(四)筆記 Publish/Subscribe Pattern</h2>
+            <h2 class="article-title">系統設計基礎(一)筆記 Security And HTTPS</h2>
         </div>
     </a>
 </article>
