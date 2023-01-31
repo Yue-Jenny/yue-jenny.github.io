@@ -41,18 +41,85 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id=&#34;elastic-search&#34;&gt;Elastic Search&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。&lt;/li&gt;
-&lt;li&gt;因此出現了&lt;strong&gt;OpenSearch&lt;/strong&gt;，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id=&#34;logstash&#34;&gt;Logstash&lt;/h4&gt;
 &lt;h5 id=&#34;introduce&#34;&gt;Introduce&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。&lt;/p&gt;
+&lt;p&gt;一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，提供 near real-time 的數據搜尋與分析，能夠儲存複雜結構的數據&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;架構:&lt;/p&gt;
+&lt;p&gt;授權不是開放原始碼，也不向使用者提供相同的自由。因此引進了 &lt;strong&gt;OpenSearch&lt;/strong&gt; 專案，此專案是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;列舉幾項應用場景:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;網站或應用的 search box&lt;/li&gt;
+&lt;li&gt;儲存與分析 logs, metrics 等 structured 或 unstructured 文字進而找出安全漏洞&lt;/li&gt;
+&lt;li&gt;將 Elasticsearch 作為儲存引擎去自動化 workflows&lt;/li&gt;
+&lt;li&gt;將 Elasticsearch 作為 GIS 去整合與分析空間資料&lt;/li&gt;
+&lt;li&gt;將 Elasticsearch 作為生物訊息搜尋工具去儲存與處理基因資料&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;以資料流來簡易說明-elasticsearch-86current-做的事情&#34;&gt;以資料流來簡易說明 Elasticsearch 8.6(current) 做的事情&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;documents and indices&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;儲存&lt;strong&gt;已序列化&lt;/strong&gt;為 JSON 文檔的複雜數據結構&lt;/li&gt;
+&lt;li&gt;有多個 Elasticsearch 節點時，存儲的文檔分佈在集群中，並且可以從任何節點立即訪問&lt;/li&gt;
+&lt;li&gt;支援快速搜尋，因為使用了 &lt;strong&gt;“inverted index”&lt;/strong&gt; 的數據結構，每種數據都有專屬並優化過的結構，如
+&lt;ul&gt;
+&lt;li&gt;text fields are stored in inverted indices&lt;/li&gt;
+&lt;li&gt;numeric and geo fields are stored in &lt;strong&gt;BKD trees&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;支援 schema-less，當不確定如何處理文檔中的字段時使用，需啟用 “dynamic mapping”&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;search and analyze&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;支援 &lt;strong&gt;structured queries, full text queries&lt;/strong&gt; 以及結合兩種搜尋方式&lt;/li&gt;
+&lt;li&gt;除此之外，也有支援高性能地理空間與數值數據搜尋&lt;/li&gt;
+&lt;li&gt;透過 Elasticsearch’s comprehensive JSON-style query language (Query DSL) 可以去訪問這些搜尋功能&lt;/li&gt;
+&lt;li&gt;結合 JDBC 與 ODBC drivers 可以讓第三方 applications 更加廣泛地透過 SQL 與 Elasticsearch 互動&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;scalabilty and resilience&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Elasticsearch 可根據您的需求進行擴展，並且知道如何平衡多節點 cluster&lt;/li&gt;
+&lt;li&gt;運作方式
+&lt;ul&gt;
+&lt;li&gt;將 shards 分布到多個 nodes 上，利用確保&lt;strong&gt;冗餘 (redundancy)&lt;/strong&gt; 可以達到防止 hardware failures 以及增加 query capacity (讀取請求的能力)，當 nodes 數量增減，Elasticsearch 會自動遷移 shard 以重新平衡集群&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;shard 有兩種 types
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;primaries&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Each document in an index belongs to one primary shard.&lt;/li&gt;
+&lt;li&gt;數量固定。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;replicas&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;a copy of a primary shard.&lt;/li&gt;
+&lt;li&gt;為了冗餘 (redundancy)，可以達到防止 hardware failures 以及增加 query capacity (讀取請求的能力)。&lt;/li&gt;
+&lt;li&gt;數量可以更改。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;logstash&#34;&gt;Logstash&lt;/h4&gt;
+&lt;h5 id=&#34;introduce-1&#34;&gt;Introduce&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;架構&#34;&gt;架構:&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。&lt;/li&gt;
 &lt;li&gt;three stages: inputs → filters → outputs&lt;/li&gt;
@@ -143,8 +210,6 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
 &lt;h5 id=&#34;整合多種-data-source&#34;&gt;整合多種 data source&lt;/h5&gt;
 &lt;ul&gt;
 &lt;li&gt;參考&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/logstash/current/multiple-input-output-plugins.html#multiple-input-output-plugins&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -174,6 +239,55 @@
 &lt;ul&gt;
 &lt;li&gt;一種用於檢視日誌和事件的資料視覺化和探索工具。Kibana 提供易於使用的互動式圖表、預先建置的彙總和篩選條件以及地理空間支援&lt;/li&gt;
 &lt;/ul&gt;
+&lt;h5 id=&#34;introduce-2&#34;&gt;Introduce&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;一種用於檢視日誌和事件的資料視覺化和探索工具。Kibana 提供易於使用的互動式圖表、預先建置的彙總和篩選條件以及地理空間支援&lt;/li&gt;
+&lt;li&gt;透過 kibana 能做到:
+&lt;ul&gt;
+&lt;li&gt;透過搜尋與觀察你的數據進而找出安全漏洞&lt;/li&gt;
+&lt;li&gt;分析與視覺化你的數據&lt;/li&gt;
+&lt;li&gt;管理數據、監測 Elastic Stack cluster 健康程度與權限控管&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;kibana-query-language-kql&#34;&gt;Kibana Query Language (KQL)&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;only filters data, and has no role in aggregating, transforming, or sorting data&lt;/li&gt;
+&lt;li&gt;filter documents where a value for a field exists, matches a given value, or is within a given range&lt;/li&gt;
+&lt;li&gt;example
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;filter for documents where the http.request.method is GET, use the following query:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;http.request.method: GET
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;search for all documents for which http.response.bytes is less than 10000:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;http.response.bytes &amp;lt; 10000
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;filter documents where the http.request.method is not GET, use the following query:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;**NOT** http.request.method: GET
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;find documents where a single value inside the user array contains a first name of “Alice” and last name of “White”, use the following:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;user:{ first: &amp;#34;Alice&amp;#34; and last: &amp;#34;White&amp;#34; }
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;lucene-query-syntax&#34;&gt;Lucene query syntax&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;regular expressions or fuzzy term matching&lt;/li&gt;
+&lt;li&gt;Lucene syntax is not able to search nested objects or scripted fields.&lt;/li&gt;
+&lt;li&gt;example
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;find entries that have 4xx status codes and have an extension of php or html:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;status:[400 TO 499] AND (extension:php OR extension:html)
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h3 id=&#34;prometheus&#34;&gt;Prometheus&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;待續&amp;hellip;&lt;/li&gt;
@@ -181,13 +295,17 @@
 &lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/cn/what-is/elk-stack&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;what-is-elk-stack&lt;/a&gt;&lt;/li&gt;
+    &gt;what is elk stack&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/cloud/current/ec-getting-started.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Elasticsearch Service Documentation&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/tw/what-is/elasticsearch/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;AWS - what-is-elasticsearch&lt;/a&gt;&lt;/li&gt;
+    &gt;what-is-elasticsearch&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/logstash/current/pipeline.html#pipeline&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;How Logstash Works | Logstash Reference [8.6] | Elastic&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-intro.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;elasticsearch introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.elastic.co/guide/en/kibana/current/introduction.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;kibana introduction&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵&lt;/strong&gt;&lt;/p&gt;
 </description>

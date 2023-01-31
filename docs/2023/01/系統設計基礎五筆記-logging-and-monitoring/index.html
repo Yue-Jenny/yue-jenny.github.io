@@ -2,29 +2,32 @@
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Logging And Monitoring 前言 Prerequistites Logging Monitoring Alerting Elastic Search, Logstash, Kibana (ELK) Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。
-Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。 因此出現了OpenSearch，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支 Logstash Introduce 一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。
-架構:
-一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。 three stages: inputs → filters → outputs Inputs generate events, filters modify them, and outputs ship them elsewhere. 簡介 Inputs, Filters 與 Outputs Inputs 如 file, syslog, redis or beat
-參考這篇 configure Filebeat to send log lines to Logstash Filters 如 grok, mutate, drop, clone, geoip'>
+Elastic Search Introduce 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，提供 near real-time 的數據搜尋與分析，能夠儲存複雜結構的數據
+授權不是開放原始碼，也不向使用者提供相同的自由。因此引進了 OpenSearch 專案，此專案是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支
+列舉幾項應用場景:
+網站或應用的 search box 儲存與分析 logs, metrics 等 structured 或 unstructured 文字進而找出安全漏洞 將 Elasticsearch 作為儲存引擎去自動化 workflows 將 Elasticsearch 作為 GIS 去整合與分析空間資料 將 Elasticsearch 作為生物訊息搜尋工具去儲存與處理基因資料 以資料流來簡易說明 Elasticsearch 8.6(current) 做的事情 documents and indices
+儲存已序列化為 JSON 文檔的複雜數據結構 有多個 Elasticsearch 節點時，存儲的文檔分佈在集群中，並且可以從任何節點立即訪問 支援快速搜尋，因為使用了 “inverted index” 的數據結構，每種數據都有專屬並優化過的結構，如 text fields are stored in inverted indices numeric and geo fields are stored in BKD trees 支援 schema-less，當不確定如何處理文檔中的字段時使用，需啟用 “dynamic mapping” search and analyze'>
 <title>系統設計基礎(五)筆記 Logging And Monitoring</title>
 
 <link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/'>
 
 <link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎(五)筆記 Logging And Monitoring'>
 <meta property='og:description' content='Logging And Monitoring 前言 Prerequistites Logging Monitoring Alerting Elastic Search, Logstash, Kibana (ELK) Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。
-Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。 因此出現了OpenSearch，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支 Logstash Introduce 一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。
-架構:
-一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。 three stages: inputs → filters → outputs Inputs generate events, filters modify them, and outputs ship them elsewhere. 簡介 Inputs, Filters 與 Outputs Inputs 如 file, syslog, redis or beat
-參考這篇 configure Filebeat to send log lines to Logstash Filters 如 grok, mutate, drop, clone, geoip'>
+Elastic Search Introduce 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，提供 near real-time 的數據搜尋與分析，能夠儲存複雜結構的數據
+授權不是開放原始碼，也不向使用者提供相同的自由。因此引進了 OpenSearch 專案，此專案是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支
+列舉幾項應用場景:
+網站或應用的 search box 儲存與分析 logs, metrics 等 structured 或 unstructured 文字進而找出安全漏洞 將 Elasticsearch 作為儲存引擎去自動化 workflows 將 Elasticsearch 作為 GIS 去整合與分析空間資料 將 Elasticsearch 作為生物訊息搜尋工具去儲存與處理基因資料 以資料流來簡易說明 Elasticsearch 8.6(current) 做的事情 documents and indices
+儲存已序列化為 JSON 文檔的複雜數據結構 有多個 Elasticsearch 節點時，存儲的文檔分佈在集群中，並且可以從任何節點立即訪問 支援快速搜尋，因為使用了 “inverted index” 的數據結構，每種數據都有專屬並優化過的結構，如 text fields are stored in inverted indices numeric and geo fields are stored in BKD trees 支援 schema-less，當不確定如何處理文檔中的字段時使用，需啟用 “dynamic mapping” search and analyze'>
 <meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/'>
 <meta property='og:site_name' content='Jenny blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:published_time' content='2023-01-26T12:16:48&#43;08:00'/><meta property='article:modified_time' content='2023-01-26T12:16:48&#43;08:00'/>
 <meta name="twitter:title" content="系統設計基礎(五)筆記 Logging And Monitoring">
 <meta name="twitter:description" content="Logging And Monitoring 前言 Prerequistites Logging Monitoring Alerting Elastic Search, Logstash, Kibana (ELK) Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。
-Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。 因此出現了OpenSearch，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支 Logstash Introduce 一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。
-架構:
-一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。 three stages: inputs → filters → outputs Inputs generate events, filters modify them, and outputs ship them elsewhere. 簡介 Inputs, Filters 與 Outputs Inputs 如 file, syslog, redis or beat
-參考這篇 configure Filebeat to send log lines to Logstash Filters 如 grok, mutate, drop, clone, geoip">
+Elastic Search Introduce 一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，提供 near real-time 的數據搜尋與分析，能夠儲存複雜結構的數據
+授權不是開放原始碼，也不向使用者提供相同的自由。因此引進了 OpenSearch 專案，此專案是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支
+列舉幾項應用場景:
+網站或應用的 search box 儲存與分析 logs, metrics 等 structured 或 unstructured 文字進而找出安全漏洞 將 Elasticsearch 作為儲存引擎去自動化 workflows 將 Elasticsearch 作為 GIS 去整合與分析空間資料 將 Elasticsearch 作為生物訊息搜尋工具去儲存與處理基因資料 以資料流來簡易說明 Elasticsearch 8.6(current) 做的事情 documents and indices
+儲存已序列化為 JSON 文檔的複雜數據結構 有多個 Elasticsearch 節點時，存儲的文檔分佈在集群中，並且可以從任何節點立即訪問 支援快速搜尋，因為使用了 “inverted index” 的數據結構，每種數據都有專屬並優化過的結構，如 text fields are stored in inverted indices numeric and geo fields are stored in BKD trees 支援 schema-less，當不確定如何處理文檔中的字段時使用，需啟用 “dynamic mapping” search and analyze">
     <link rel="shortcut icon" href="/leaves.png" />
 
 
@@ -311,7 +314,7 @@ Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引�
 
 
                 <time class="article-time--reading">
-                    2 minute read
+                    3 minute read
                 </time>
             </div>
         
@@ -355,18 +358,85 @@ Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引�
 </li>
 </ul>
 <h4 id="elastic-search">Elastic Search</h4>
-<ul>
-<li>一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，授權不是開放原始碼，也不向使用者提供相同的自由。</li>
-<li>因此出現了<strong>OpenSearch</strong>，是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支</li>
-</ul>
-<h4 id="logstash">Logstash</h4>
 <h5 id="introduce">Introduce</h5>
 <ul>
 <li>
-<p>一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。</p>
+<p>一個建置在 Apache Lucene 上的分散式搜尋和分析引擎，提供 near real-time 的數據搜尋與分析，能夠儲存複雜結構的數據</p>
 </li>
 <li>
-<p>架構:</p>
+<p>授權不是開放原始碼，也不向使用者提供相同的自由。因此引進了 <strong>OpenSearch</strong> 專案，此專案是一個社群驅動型 ALv2 許可的開放原始碼 Elasticsearch 和 Kibana 分支</p>
+</li>
+<li>
+<p>列舉幾項應用場景:</p>
+<ul>
+<li>網站或應用的 search box</li>
+<li>儲存與分析 logs, metrics 等 structured 或 unstructured 文字進而找出安全漏洞</li>
+<li>將 Elasticsearch 作為儲存引擎去自動化 workflows</li>
+<li>將 Elasticsearch 作為 GIS 去整合與分析空間資料</li>
+<li>將 Elasticsearch 作為生物訊息搜尋工具去儲存與處理基因資料</li>
+</ul>
+</li>
+</ul>
+<h5 id="以資料流來簡易說明-elasticsearch-86current-做的事情">以資料流來簡易說明 Elasticsearch 8.6(current) 做的事情</h5>
+<ol>
+<li>
+<p>documents and indices</p>
+<ul>
+<li>儲存<strong>已序列化</strong>為 JSON 文檔的複雜數據結構</li>
+<li>有多個 Elasticsearch 節點時，存儲的文檔分佈在集群中，並且可以從任何節點立即訪問</li>
+<li>支援快速搜尋，因為使用了 <strong>“inverted index”</strong> 的數據結構，每種數據都有專屬並優化過的結構，如
+<ul>
+<li>text fields are stored in inverted indices</li>
+<li>numeric and geo fields are stored in <strong>BKD trees</strong></li>
+</ul>
+</li>
+<li>支援 schema-less，當不確定如何處理文檔中的字段時使用，需啟用 “dynamic mapping”</li>
+</ul>
+</li>
+<li>
+<p>search and analyze</p>
+<ul>
+<li>支援 <strong>structured queries, full text queries</strong> 以及結合兩種搜尋方式</li>
+<li>除此之外，也有支援高性能地理空間與數值數據搜尋</li>
+<li>透過 Elasticsearch’s comprehensive JSON-style query language (Query DSL) 可以去訪問這些搜尋功能</li>
+<li>結合 JDBC 與 ODBC drivers 可以讓第三方 applications 更加廣泛地透過 SQL 與 Elasticsearch 互動</li>
+</ul>
+</li>
+<li>
+<p>scalabilty and resilience</p>
+<ul>
+<li>Elasticsearch 可根據您的需求進行擴展，並且知道如何平衡多節點 cluster</li>
+<li>運作方式
+<ul>
+<li>將 shards 分布到多個 nodes 上，利用確保<strong>冗餘 (redundancy)</strong> 可以達到防止 hardware failures 以及增加 query capacity (讀取請求的能力)，當 nodes 數量增減，Elasticsearch 會自動遷移 shard 以重新平衡集群</li>
+</ul>
+</li>
+<li>shard 有兩種 types
+<ul>
+<li><strong>primaries</strong>:
+<ul>
+<li>Each document in an index belongs to one primary shard.</li>
+<li>數量固定。</li>
+</ul>
+</li>
+<li><strong>replicas</strong>:
+<ul>
+<li>a copy of a primary shard.</li>
+<li>為了冗餘 (redundancy)，可以達到防止 hardware failures 以及增加 query capacity (讀取請求的能力)。</li>
+<li>數量可以更改。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="logstash">Logstash</h4>
+<h5 id="introduce-1">Introduce</h5>
+<ul>
+<li>一種開放原始碼資料擷取工具，可讓您從各種來源收集資料、轉換資料並將資料傳送到所需目的地。憑藉預先建置的篩選條件和對 200 多個外掛程式的支援，Logstash 可讓使用者輕鬆擷取資料，而不管資料來源或類型如何。</li>
+</ul>
+<h5 id="架構">架構:</h5>
 <ul>
 <li>一個輸入，一個輸出，中間有個管道（不是必須的），這個管道用來收集、解析和轉換日誌的。</li>
 <li>three stages: inputs → filters → outputs</li>
@@ -457,8 +527,6 @@ Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引�
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 <h5 id="整合多種-data-source">整合多種 data source</h5>
 <ul>
 <li>參考<a class="link" href="https://www.elastic.co/guide/en/logstash/current/multiple-input-output-plugins.html#multiple-input-output-plugins"  target="_blank" rel="noopener"
@@ -488,6 +556,55 @@ Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引�
 <ul>
 <li>一種用於檢視日誌和事件的資料視覺化和探索工具。Kibana 提供易於使用的互動式圖表、預先建置的彙總和篩選條件以及地理空間支援</li>
 </ul>
+<h5 id="introduce-2">Introduce</h5>
+<ul>
+<li>一種用於檢視日誌和事件的資料視覺化和探索工具。Kibana 提供易於使用的互動式圖表、預先建置的彙總和篩選條件以及地理空間支援</li>
+<li>透過 kibana 能做到:
+<ul>
+<li>透過搜尋與觀察你的數據進而找出安全漏洞</li>
+<li>分析與視覺化你的數據</li>
+<li>管理數據、監測 Elastic Stack cluster 健康程度與權限控管</li>
+</ul>
+</li>
+</ul>
+<h5 id="kibana-query-language-kql">Kibana Query Language (KQL)</h5>
+<ul>
+<li>only filters data, and has no role in aggregating, transforming, or sorting data</li>
+<li>filter documents where a value for a field exists, matches a given value, or is within a given range</li>
+<li>example
+<ul>
+<li>
+<p>filter for documents where the http.request.method is GET, use the following query:</p>
+<pre tabindex="0"><code>http.request.method: GET
+</code></pre></li>
+<li>
+<p>search for all documents for which http.response.bytes is less than 10000:</p>
+<pre tabindex="0"><code>http.response.bytes &lt; 10000
+</code></pre></li>
+<li>
+<p>filter documents where the http.request.method is not GET, use the following query:</p>
+<pre tabindex="0"><code>**NOT** http.request.method: GET
+</code></pre></li>
+<li>
+<p>find documents where a single value inside the user array contains a first name of “Alice” and last name of “White”, use the following:</p>
+<pre tabindex="0"><code>user:{ first: &#34;Alice&#34; and last: &#34;White&#34; }
+</code></pre></li>
+</ul>
+</li>
+</ul>
+<h5 id="lucene-query-syntax">Lucene query syntax</h5>
+<ul>
+<li>regular expressions or fuzzy term matching</li>
+<li>Lucene syntax is not able to search nested objects or scripted fields.</li>
+<li>example
+<ul>
+<li>
+<p>find entries that have 4xx status codes and have an extension of php or html:</p>
+<pre tabindex="0"><code>status:[400 TO 499] AND (extension:php OR extension:html)
+</code></pre></li>
+</ul>
+</li>
+</ul>
 <h3 id="prometheus">Prometheus</h3>
 <ul>
 <li>待續&hellip;</li>
@@ -495,13 +612,17 @@ Elastic Search 一個建置在 Apache Lucene 上的分散式搜尋和分析引�
 <h2 id="參考資料-">參考資料 👐</h2>
 <ul>
 <li><a class="link" href="https://www.elastic.co/cn/what-is/elk-stack"  target="_blank" rel="noopener"
-    >what-is-elk-stack</a></li>
+    >what is elk stack</a></li>
 <li><a class="link" href="https://www.elastic.co/guide/en/cloud/current/ec-getting-started.html"  target="_blank" rel="noopener"
     >Elasticsearch Service Documentation</a></li>
 <li><a class="link" href="https://aws.amazon.com/tw/what-is/elasticsearch/"  target="_blank" rel="noopener"
-    >AWS - what-is-elasticsearch</a></li>
+    >what-is-elasticsearch</a></li>
 <li><a class="link" href="https://www.elastic.co/guide/en/logstash/current/pipeline.html#pipeline"  target="_blank" rel="noopener"
     >How Logstash Works | Logstash Reference [8.6] | Elastic</a></li>
+<li><a class="link" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-intro.html"  target="_blank" rel="noopener"
+    >elasticsearch introduction</a></li>
+<li><a class="link" href="https://www.elastic.co/guide/en/kibana/current/introduction.html"  target="_blank" rel="noopener"
+    >kibana introduction</a></li>
 </ul>
 <p><strong>🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵</strong></p>
 
