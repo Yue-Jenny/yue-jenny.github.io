@@ -247,6 +247,7 @@ Elastic Search Introduce 一個建置在 Apache Lucene 上的分散式搜尋和�
         <li><a href="#prerequistites">Prerequistites</a></li>
         <li><a href="#elastic-search-logstash-kibana-elk">Elastic Search, Logstash, Kibana (ELK)</a></li>
         <li><a href="#prometheus">Prometheus</a></li>
+        <li><a href="#grafana">Grafana</a></li>
       </ul>
     </li>
     <li><a href="#參考資料-">參考資料 👐</a></li>
@@ -314,7 +315,7 @@ Elastic Search Introduce 一個建置在 Apache Lucene 上的分散式搜尋和�
 
 
                 <time class="article-time--reading">
-                    3 minute read
+                    5 minute read
                 </time>
             </div>
         
@@ -606,8 +607,153 @@ Elastic Search Introduce 一個建置在 Apache Lucene 上的分散式搜尋和�
 </li>
 </ul>
 <h3 id="prometheus">Prometheus</h3>
+<h4 id="介紹">介紹</h4>
 <ul>
-<li>待續&hellip;</li>
+<li>open-source systems monitoring and alerting toolkit</li>
+<li><strong>Cloud Native Computing Foundation (CNCF)</strong> in 2016 as the second hosted project
+<ul>
+<li>NOTE: 第一個被 CNCF hosted 的 project 是 kubernetes</li>
+</ul>
+</li>
+<li>collects and stores its metrics as <strong>time series</strong> data</li>
+</ul>
+<h4 id="優點">優點</h4>
+<ul>
+<li>recording any purely <strong>numeric time series</strong></li>
+<li>support for <strong>multi-dimensional</strong> data collection and querying</li>
+<li>Prometheus server is <strong>standalone</strong>, not depending on network storage or other remote services</li>
+</ul>
+<h4 id="缺點">缺點</h4>
+<ul>
+<li>不適合需要 100% accuracy 的服務</li>
+</ul>
+<h4 id="功能">功能</h4>
+<ul>
+<li>a multi-dimensional <a class="link" href="https://prometheus.io/docs/concepts/data_model/"  target="_blank" rel="noopener"
+    >data model</a> with time series data identified by metric name and key/value pairs</li>
+<li><strong>PromQL</strong>, a <a class="link" href="https://prometheus.io/docs/prometheus/latest/querying/basics/"  target="_blank" rel="noopener"
+    >flexible query language</a> to leverage this dimensionality</li>
+<li>no reliance on distributed storage; single server nodes are autonomous</li>
+<li>time series collection happens via a <strong>pull model</strong> over HTTP</li>
+<li><a class="link" href="https://prometheus.io/docs/instrumenting/pushing/"  target="_blank" rel="noopener"
+    >pushing time series</a> is supported via an intermediary gateway</li>
+<li>targets are discovered via service discovery or static configuration</li>
+<li>multiple modes of graphing and dashboarding support</li>
+</ul>
+<h5 id="metrics-介紹"><strong><strong>metrics 介紹</strong></strong></h5>
+<ul>
+<li>metrics are <strong>numeric measurements</strong></li>
+<li>Metrics play an important role in understanding <strong>why your application is working in a certain way.</strong></li>
+<li>支援四種 metrics types, <a class="link" href="https://prometheus.io/docs/tutorials/understanding_metric_types/"  target="_blank" rel="noopener"
+    >這篇有更詳細的介紹</a>
+<ul>
+<li>
+<p><strong>Counter</strong> - only increase or reset</p>
+</li>
+<li>
+<p><strong>Gauge</strong> - 使用情境如計算 number of pods in a cluster, number of events in an queue</p>
+</li>
+<li>
+<p><strong>Histogram</strong> - 使用情境可以是<strong>任何需要計算</strong>的值，如 API requests 所花費的時間，Histogram 會將數據存在 buckets 中，會先定義 buckets - lower or equal 0.3 , le 0.5, le 0.7, le 1, and le 1.2，接著計算完每次 request 所花費的時間後可以將對應到 bucket 的 count 加一，如下圖</p>
+<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/histogram.png"
+	width="871"
+	height="424"
+	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/histogram_hu647b5cc5950a58e113463ff58cc8a41c_18276_480x0_resize_box_3.png 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/histogram_hu647b5cc5950a58e113463ff58cc8a41c_18276_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="histogram"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="205"
+		data-flex-basis="493px"
+	
+></p>
+</li>
+<li>
+<p><strong>Summary</strong> - Histogram 的替代方案，因為更便宜，但付出的代價是 lose more data，原理是計算 metrics 的層級是 application level，所以當同一個 process 有諸多 instances 的話會無法計算</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="components"><strong><strong>Components</strong></strong></h4>
+<ul>
+<li>the main <a class="link" href="https://github.com/prometheus/prometheus"  target="_blank" rel="noopener"
+    >Prometheus server</a> which scrapes and stores time series data</li>
+<li><a class="link" href="https://prometheus.io/docs/instrumenting/clientlibs/"  target="_blank" rel="noopener"
+    >client libraries</a> for instrumenting application code</li>
+<li>a <a class="link" href="https://github.com/prometheus/pushgateway"  target="_blank" rel="noopener"
+    >push gateway</a> for supporting short-lived jobs</li>
+<li>special-purpose <a class="link" href="https://prometheus.io/docs/instrumenting/exporters/"  target="_blank" rel="noopener"
+    >exporters</a> for services like HAProxy, StatsD, Graphite, etc.</li>
+<li>an <a class="link" href="https://github.com/prometheus/alertmanager"  target="_blank" rel="noopener"
+    >alertmanager</a> to handle alerts</li>
+<li>various support tools</li>
+</ul>
+<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/prometheus-arch.png"
+	width="1351"
+	height="811"
+	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/prometheus-arch_hu39e4c960c6daf3c3c2461dd22ee1ec3a_115281_480x0_resize_box_3.png 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/prometheus-arch_hu39e4c960c6daf3c3c2461dd22ee1ec3a_115281_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="source: https://prometheus.io/docs/introduction/overview/"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="166"
+		data-flex-basis="399px"
+	
+></p>
+<h3 id="grafana">Grafana</h3>
+<h4 id="介紹-1">介紹</h4>
+<ul>
+<li>Grafana Labs 開發的 open-source 專案之一，還有其他專案，如 Grafana Loki (Like Prometheus, but for logs!), Grafana k6 (load testing tool)…</li>
+<li>query, visualize, alert on, and explore your metrics, logs, and traces wherever they are stored.</li>
+</ul>
+<h4 id="功能-1">功能</h4>
+<h5 id="explore-metrics-logs-and-traces">Explore metrics, logs, and traces</h5>
+<ul>
+<li>以 <strong>RBAC ( Role-based access Control )</strong> 來決定誰能夠 explore 這些數據</li>
+<li>利用以下功能來查詢到更多數據趨勢與細節，細節參考<a class="link" href="https://grafana.com/docs/grafana/latest/explore/"  target="_blank" rel="noopener"
+    >這篇</a>
+<ul>
+<li>query management in explore</li>
+<li>logs integration in explore</li>
+<li>trace integration in explore</li>
+<li>inspector in explore: 目的是 <strong>troubleshoot 你的 queries</strong>，可以將數據導出至 csv 檔案，logs 導出至 txt 檔案</li>
+</ul>
+</li>
+</ul>
+<h5 id="alerts">Alerts</h5>
+<ul>
+<li>參考<a class="link" href="https://grafana.com/docs/grafana/latest/alerting/alerting-rules/"  target="_blank" rel="noopener"
+    >這篇</a>去建立 alert rules，包含設定 threshold, interval, duration</li>
+<li>「 缺少數據」也能被設定 alert 行為</li>
+</ul>
+<h5 id="annotations">Annotations</h5>
+<ul>
+<li><strong>Hover</strong> over events to see the full event metadata and tags.</li>
+<li>參考<a class="link" href="https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/"  target="_blank" rel="noopener"
+    >這篇</a>可進行 Add annotation, Add region annotation, Edit annotation, Delete annotation, Built-in query, Query by tag 等功能</li>
+</ul>
+<p><img src="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/grafana.png"
+	width="746"
+	height="293"
+	srcset="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/grafana_hua8009842305b5769221fa691144c8887_40516_480x0_resize_box_3.png 480w, /2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/grafana_hua8009842305b5769221fa691144c8887_40516_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="hover 可以看相關的 metadata 與 tags, sources: https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="254"
+		data-flex-basis="611px"
+	
+></p>
+<h4 id="grafana-provides-many-ways-to-authenticate-users">Grafana provides many ways to authenticate users</h4>
+<ul>
+<li>預設是提供 password authentication，其他<a class="link" href="https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/"  target="_blank" rel="noopener"
+    >詳細請看這篇</a></li>
 </ul>
 <h2 id="參考資料-">參考資料 👐</h2>
 <ul>
@@ -623,6 +769,10 @@ Elastic Search Introduce 一個建置在 Apache Lucene 上的分散式搜尋和�
     >elasticsearch introduction</a></li>
 <li><a class="link" href="https://www.elastic.co/guide/en/kibana/current/introduction.html"  target="_blank" rel="noopener"
     >kibana introduction</a></li>
+<li><a class="link" href="https://prometheus.io/docs/introduction/overview/"  target="_blank" rel="noopener"
+    >Overview | Prometheus</a></li>
+<li><a class="link" href="https://grafana.com/docs/grafana/latest/"  target="_blank" rel="noopener"
+    >Grafana documentation | Grafana documentation</a></li>
 </ul>
 <p><strong>🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵</strong></p>
 
