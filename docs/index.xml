@@ -6,12 +6,182 @@
         <description>Recent content on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 26 Jan 2023 12:16:48 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>系統設計基礎(五)筆記 Logging And Monitoring</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/</link>
+        <lastBuildDate>Thu, 02 Feb 2023 10:55:49 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>系統設計基礎筆記(六) Rate Limiting</title>
+        <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/</link>
+        <pubDate>Thu, 02 Feb 2023 10:55:49 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/</guid>
+        <description>&lt;h2 id=&#34;rate-limiting&#34;&gt;Rate Limiting&lt;/h2&gt;
+&lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;DDOS
+&lt;ul&gt;
+&lt;li&gt;分散式阻斷服務攻擊（distributed denial-of-service attack）亦稱洪水攻擊&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;DoS
+&lt;ul&gt;
+&lt;li&gt;阻斷服務攻擊（英語：denial-of-service attack）&lt;/li&gt;
+&lt;li&gt;預防方式是使用 rate limit, 可以限制 IP, 使用者帳戶, 區域等等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;rate-limiting-1&#34;&gt;Rate Limiting&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;意思就是限流&lt;/li&gt;
+&lt;li&gt;根據維基百科，定義是「控制計算機發送或接收的&lt;strong&gt;請求之頻率&lt;/strong&gt;」&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;rate-limiting-for-multiple-server&#34;&gt;Rate Limiting for Multiple Server&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;use &lt;strong&gt;Redis&lt;/strong&gt; to implement rate limiting for multiple servers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;application-layer-如何實現-rate-limit&#34;&gt;Application Layer 如何實現 Rate Limit&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;實現方式
+&lt;ul&gt;
+&lt;li&gt;在 Node.js 裡，有一個用來做限流的 express middleware 叫做 &lt;a class=&#34;link&#34; href=&#34;https://www.npmjs.com/package/express-rate-limit&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;express-rate-limit&lt;/a&gt;，可&lt;a class=&#34;link&#34; href=&#34;https://ithelp.ithome.com.tw/m/articles/10268910&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;看這篇&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;缺點
+&lt;ul&gt;
+&lt;li&gt;在 API server 裡面自己用 middleware 做限流，雖然這樣做感覺很方便，但也會讓 API server 無法完全專注在業務邏輯上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;aws-waf-web-application-firewall&#34;&gt;AWS WAF (Web Application Firewall)&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;目的是保護您的 Web 應用程式免受常見 Web 入侵程式的危害&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;運作方式&#34;&gt;運作方式&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/AWS-WAF.png&#34;
+	width=&#34;2360&#34;
+	height=&#34;699&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/AWS-WAF_hu506d3f345407d576fe677b6871abeb83_162306_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/AWS-WAF_hu506d3f345407d576fe677b6871abeb83_162306_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;source: https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;337&#34;
+		data-flex-basis=&#34;810px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;關於-aws-waf-components&#34;&gt;關於 AWS WAF components&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Web ACLs&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;目的是保護 AWS resources，藉由建立一組 web ACL 並新增 rules 去定義保護策略&lt;/li&gt;
+&lt;li&gt;屬於 AWS WAF resource&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Rules&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;顧名思義，定義檢查標準 (inspection criteria)，當有 matching requests，可以做的事情如允許通過、計算他們或者執行 CAPTCHA puzzles 去檢查是否為機器人&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不屬於&lt;/strong&gt; AWS WAF resource&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Rule groups&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可以組合自己的 rule groups，也可以直接在 web ACL 中定義規則&lt;/li&gt;
+&lt;li&gt;屬於 AWS WAF resource&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;關於-web-acl-capacity-units-wcu&#34;&gt;關於 Web ACL capacity units (WCU)&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;strong&gt;WCU 來計算與控制運行規則、規則組和 Web ACL 所需的&lt;/strong&gt;操作資源
+&lt;ul&gt;
+&lt;li&gt;For example, a size constraint rule statement uses fewer WCUs than a statement that inspects against a regex pattern set.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;AWS WAF 會管理 &lt;strong&gt;Rule capacity, Rule group capacity, Web ACL capacity&lt;/strong&gt;，詳情可以參考&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;這篇&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;關於-resources-that-you-can-protect-with-aws-waf&#34;&gt;關於 Resources that you can protect with AWS WAF&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 AWS WAF web ACL 去保護&lt;strong&gt;全球或區域性&lt;/strong&gt;的 resource types，只需要將 web ACL 連結到你想要保護的 resources 上，官方提供 &lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Amazon CloudFront 以及 Regional resources 特別說明&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;Note: &lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/tw/cloudfront/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Amazon CloudFront&lt;/a&gt; 是一項&lt;strong&gt;內容交付網路(CDN)&lt;/strong&gt; 服務，可協助您以高速效能、安全和開發人員易用性快速、可靠地分發靜態和動態內容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;限制
+&lt;ul&gt;
+&lt;li&gt;一個 web ACL 可以連結多個 AWS resources，一個 AWS resource 僅連結一個 web ACL&lt;/li&gt;
+&lt;li&gt;一個 web ACL 可以連結多個 CloudFront distributions，且已連結到 CloudFront distribution 的 web ACL &lt;strong&gt;不能&lt;/strong&gt;再去連結其他 AWS resource type&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;使用情境舉例-3-點&#34;&gt;使用情境，舉例 3 點&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/waf-rules.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;篩選 Web 流量&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;建立規則以根據各種條件篩選 Web 請求，例如 IP 地址、HTTP 標頭和內文，或自訂 URI。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/waf-atp.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;防止帳戶接管詐騙&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;監控應用程式的登入頁面，偵測以盜用憑證對使用者帳戶進行的未經授權存取。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/APIReference/Welcome.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;使用 API 管理 AWS WAF&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;自動建立和維護規則，並將這些規則併入開發和設計程序中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;比較-aws-waf-aws-shield-與-aws-firewall-manager&#34;&gt;比較 AWS WAF, AWS Shield 與 AWS Firewall Manager&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;AWS WAF&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;monitor requests that are forwarded to your web applications and control access to your content.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;AWS Shield&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;help protect against &lt;strong&gt;DDoS&lt;/strong&gt; attacks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;AWS Firewall Manager&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;set up your firewall rules and apply the rules automatically across accounts and resources, even as new resources are added.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;What are AWS WAF, AWS Shield, and AWS Firewall Manager?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;How AWS WAF works&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://aws.amazon.com/tw/cloudfront/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;低延遲內容交付網路 (CDN) - Amazon CloudFront - Amazon Web Services&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.npmjs.com/package/express-rate-limit&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;express-rate-limit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>系統設計基礎筆記(五) Logging And Monitoring</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/</link>
         <pubDate>Thu, 26 Jan 2023 12:16:48 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/</guid>
         <description>&lt;h2 id=&#34;logging-and-monitoring&#34;&gt;Logging And Monitoring&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 &lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
@@ -24,10 +194,10 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Elasticsearch 的核心是搜索引擎、採集管道Logstash 和可視化工具Kibana。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/elk-stack-3-elks-stacked.jpg&#34;
 	width=&#34;493&#34;
 	height=&#34;360&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/elk-stack-3-elks-stacked_hue327090e74217d99738d852fa79149e2_16530_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;source: https://www.elastic.co/cn/what-is/elk-stack&#34;
@@ -125,10 +295,10 @@
 &lt;li&gt;three stages: inputs → filters → outputs&lt;/li&gt;
 &lt;li&gt;Inputs generate events, filters modify them, and outputs ship them elsewhere.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/logstash.png&#34;
 	width=&#34;1089&#34;
 	height=&#34;243&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/logstash_hub2b30e6314ca55e2737e9d92e183e05d_35396_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;logstash, source: https://www.elastic.co/guide/en/logstash/current/first-event.html&#34;
@@ -337,10 +507,10 @@
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;Histogram&lt;/strong&gt; - 使用情境可以是&lt;strong&gt;任何需要計算&lt;/strong&gt;的值，如 API requests 所花費的時間，Histogram 會將數據存在 buckets 中，會先定義 buckets - lower or equal 0.3 , le 0.5, le 0.7, le 1, and le 1.2，接著計算完每次 request 所花費的時間後可以將對應到 bucket 的 count 加一，如下圖&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/histogram.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/histogram.png&#34;
 	width=&#34;871&#34;
 	height=&#34;424&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/histogram_hu647b5cc5950a58e113463ff58cc8a41c_18276_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/histogram_hu647b5cc5950a58e113463ff58cc8a41c_18276_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/histogram_hu647b5cc5950a58e113463ff58cc8a41c_18276_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/histogram_hu647b5cc5950a58e113463ff58cc8a41c_18276_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;histogram&#34;
@@ -372,10 +542,10 @@
     &gt;alertmanager&lt;/a&gt; to handle alerts&lt;/li&gt;
 &lt;li&gt;various support tools&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/prometheus-arch.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/prometheus-arch.png&#34;
 	width=&#34;1351&#34;
 	height=&#34;811&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/prometheus-arch_hu39e4c960c6daf3c3c2461dd22ee1ec3a_115281_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/prometheus-arch_hu39e4c960c6daf3c3c2461dd22ee1ec3a_115281_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/prometheus-arch_hu39e4c960c6daf3c3c2461dd22ee1ec3a_115281_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/prometheus-arch_hu39e4c960c6daf3c3c2461dd22ee1ec3a_115281_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;source: https://prometheus.io/docs/introduction/overview/&#34;
@@ -418,10 +588,10 @@
 &lt;li&gt;參考&lt;a class=&#34;link&#34; href=&#34;https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;這篇&lt;/a&gt;可進行 Add annotation, Add region annotation, Edit annotation, Delete annotation, Built-in query, Query by tag 等功能&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/grafana.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/grafana.png&#34;
 	width=&#34;746&#34;
 	height=&#34;293&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/grafana_hua8009842305b5769221fa691144c8887_40516_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%94%E7%AD%86%E8%A8%98-logging-and-monitoring/grafana_hua8009842305b5769221fa691144c8887_40516_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/grafana_hua8009842305b5769221fa691144c8887_40516_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/grafana_hua8009842305b5769221fa691144c8887_40516_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;hover 可以看相關的 metadata 與 tags, sources: https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/&#34;
@@ -707,11 +877,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(四)筆記 Publish/Subscribe Pattern</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/</link>
+        <title>系統設計基礎筆記(四) Publish/Subscribe Pattern</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/</link>
         <pubDate>Wed, 18 Jan 2023 20:13:18 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/</guid>
         <description>&lt;h2 id=&#34;publishsubscribe-pattern&#34;&gt;Publish/Subscribe Pattern&lt;/h2&gt;
 &lt;h3 id=&#34;publishsubscribe-pattern-pubsub-簡介&#34;&gt;Publish/Subscribe Pattern (Pub/Sub) 簡介&lt;/h3&gt;
 &lt;ul&gt;
@@ -728,10 +898,10 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/publish-subscribe.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/publish-subscribe.png&#34;
 	width=&#34;1531&#34;
 	height=&#34;543&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_1024x0_resize_box_3.png 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/publish-subscribe_hu398db46b8eff78fda80a450631206aab_25455_1024x0_resize_box_3.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;source:https://learn.microsoft.com/en-us/azure/architecture/patterns/publisher-subscriber&#34;
@@ -755,10 +925,10 @@
 &lt;li&gt;最先是由 LinkedIn 創立的一款&lt;strong&gt;分散式訊息系統 (distributed messaging system)&lt;/strong&gt;，由 Scala 和 Java 編寫的 open-source 專案，&lt;a class=&#34;link&#34; href=&#34;https://kafka.apache.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;點我看更多👀&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/Overview_of_Apache_Kafka.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka.jpg&#34;
 	width=&#34;416&#34;
 	height=&#34;309&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E5%9B%9B%E7%AD%86%E8%A8%98-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/Overview_of_Apache_Kafka_hue991647147ca2d95c15c545730161e7a_23969_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Kafka 概覽。source: wiki&#34;
@@ -792,11 +962,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(三)筆記 MapReduce</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/</link>
+        <title>系統設計基礎筆記(三) MapReduce</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%89-mapreduce/</link>
         <pubDate>Wed, 18 Jan 2023 10:32:40 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%89-mapreduce/</guid>
         <description>&lt;h2 id=&#34;mapreduce&#34;&gt;MapReduce&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 &lt;p&gt;MapReduce 是一個 Google 提出的軟體架構，適用於&lt;strong&gt;大規模資料的並列運算&lt;/strong&gt;&lt;/p&gt;
@@ -881,10 +1051,10 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1.jpg&#34;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%89-mapreduce/061114_0930_Introductio1.jpg&#34;
 	width=&#34;642&#34;
 	height=&#34;460&#34;
-	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%89%E7%AD%86%E8%A8%98-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%89-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_480x0_resize_q75_box.jpg 480w, https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%89-mapreduce/061114_0930_Introductio1_hu4f185708e50b3a3419973268adc34821_28898_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;source: https://www.guru99.com/introduction-to-mapreduce.html&#34;
@@ -907,11 +1077,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(二)筆記 Cache</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/</link>
+        <title>系統設計基礎筆記(二) Cache</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%8C-cache/</link>
         <pubDate>Tue, 17 Jan 2023 11:04:46 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%BA%8C%E7%AD%86%E8%A8%98-cache/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%8C-cache/</guid>
         <description>&lt;h2 id=&#34;cache-快取&#34;&gt;Cache 快取&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 &lt;p&gt;快取對於系統層面上相當重要，用的好、用的巧，有助於整體系統的順暢度。&lt;br&gt;
@@ -1000,11 +1170,11 @@
 </description>
         </item>
         <item>
-        <title>系統設計基礎(一)筆記 Security And HTTPS</title>
-        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/</link>
+        <title>系統設計基礎筆記(一) Security And HTTPS</title>
+        <link>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%80-security-and-https/</link>
         <pubDate>Mon, 16 Jan 2023 12:35:00 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E4%B8%80%E7%AD%86%E8%A8%98-security-and-https/</guid>
+        <guid>https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%80-security-and-https/</guid>
         <description>&lt;h2 id=&#34;security-and-https&#34;&gt;Security And HTTPS&lt;/h2&gt;
 &lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
 &lt;p&gt;除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。&lt;/p&gt;

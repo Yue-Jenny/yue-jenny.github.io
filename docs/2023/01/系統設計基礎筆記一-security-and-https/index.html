@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Security And HTTPS 前言 除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。
+Prerequistites IP Packet
+透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload IP Header 包含來源與目的地的 IP Address payload 就是你要傳送的資料 Man-In-The-Middle Attack (又稱呼為 MITM)
+意思是攔截 client 與 server 間傳送的訊息 💬 若 client 與 server 間傳送訊息有透過加密與 Https 可防止資料被竊取 Symmetric Encryption (對稱加密)
+加密與解密資料都使用同一把 key 🔑 缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點 優點是速度比非對稱加密快 🐇 最廣泛使用的演算法是 Advanced Ecryption Standard(AES) Asymmetric Encryption (非對稱加密)
+加密與解密資料會利用到兩把 key 🔑🔑，分別為 public key 與 private key public key 負責加密資料，只能利用相對應的 private key 解密資料 所以 public key 分享給需要加密資料的一端，而 private key 則需要 安全地保存 ㊙️ 速度會比對稱加密慢 🐢 Advanced Ecryption Standard(AES)'>
+<title>系統設計基礎筆記(一) Security And HTTPS</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%80-security-and-https/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎筆記(一) Security And HTTPS'>
+<meta property='og:description' content='Security And HTTPS 前言 除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。
+Prerequistites IP Packet
+透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload IP Header 包含來源與目的地的 IP Address payload 就是你要傳送的資料 Man-In-The-Middle Attack (又稱呼為 MITM)
+意思是攔截 client 與 server 間傳送的訊息 💬 若 client 與 server 間傳送訊息有透過加密與 Https 可防止資料被竊取 Symmetric Encryption (對稱加密)
+加密與解密資料都使用同一把 key 🔑 缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點 優點是速度比非對稱加密快 🐇 最廣泛使用的演算法是 Advanced Ecryption Standard(AES) Asymmetric Encryption (非對稱加密)
+加密與解密資料會利用到兩把 key 🔑🔑，分別為 public key 與 private key public key 負責加密資料，只能利用相對應的 private key 解密資料 所以 public key 分享給需要加密資料的一端，而 private key 則需要 安全地保存 ㊙️ 速度會比對稱加密慢 🐢 Advanced Ecryption Standard(AES)'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%80-security-and-https/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:published_time' content='2023-01-16T12:35:00&#43;08:00'/><meta property='article:modified_time' content='2023-01-16T12:35:00&#43;08:00'/>
+<meta name="twitter:title" content="系統設計基礎筆記(一) Security And HTTPS">
+<meta name="twitter:description" content="Security And HTTPS 前言 除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。
+Prerequistites IP Packet
+透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload IP Header 包含來源與目的地的 IP Address payload 就是你要傳送的資料 Man-In-The-Middle Attack (又稱呼為 MITM)
+意思是攔截 client 與 server 間傳送的訊息 💬 若 client 與 server 間傳送訊息有透過加密與 Https 可防止資料被竊取 Symmetric Encryption (對稱加密)
+加密與解密資料都使用同一把 key 🔑 缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點 優點是速度比非對稱加密快 🐇 最廣泛使用的演算法是 Advanced Ecryption Standard(AES) Asymmetric Encryption (非對稱加密)
+加密與解密資料會利用到兩把 key 🔑🔑，分別為 public key 與 private key public key 負責加密資料，只能利用相對應的 private key 解密資料 所以 public key 分享給需要加密資料的一端，而 private key 則需要 安全地保存 ㊙️ 速度會比對稱加密慢 🐢 Advanced Ecryption Standard(AES)">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#security-and-https">Security And HTTPS</a>
+      <ul>
+        <li><a href="#前言">前言</a></li>
+        <li><a href="#prerequistites">Prerequistites</a></li>
+        <li><a href="#http-vs-https">Http vs Https</a></li>
+        <li><a href="#tls-連接是透過-tls-handshake-來啟動">TLS 連接是透過 TLS Handshake 來啟動</a></li>
+        <li><a href="#tcp-利用-handshake-方式來連接與斷連">TCP 利用 Handshake 方式來連接與斷連</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%80-security-and-https/">系統設計基礎筆記(一) Security And HTTPS</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jan 16, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="security-and-https">Security And HTTPS</h2>
+<h3 id="前言">前言</h3>
+<p>除了了解前/後端語言與框架如何使用外，也希望能對 Http/Https 的原理與安全機制有所了解。</p>
+<h3 id="prerequistites">Prerequistites</h3>
+<ul>
+<li>
+<p>IP Packet</p>
+<ul>
+<li>透過 IP 傳送的最小數據的單位，通常會包含 IP Header 與 payload</li>
+<li>IP Header 包含來源與目的地的 IP Address</li>
+<li>payload 就是你要傳送的資料</li>
+</ul>
+</li>
+<li>
+<p>Man-In-The-Middle Attack (又稱呼為 MITM)</p>
+<ul>
+<li>意思是攔截 client 與 server 間傳送的訊息 💬</li>
+<li>若 client 與 server 間傳送訊息有透過<code>加密</code>與 <code>Https</code> 可防止資料被竊取</li>
+</ul>
+</li>
+<li>
+<p>Symmetric Encryption (對稱加密)</p>
+<ul>
+<li>加密與解密資料都使用<strong>同一把 key</strong> 🔑</li>
+<li>缺點是安全性會有所疑慮，key 通常會被分享到一個點或多個點</li>
+<li>優點是速度比非對稱加密快 🐇</li>
+<li>最廣泛使用的演算法是 Advanced Ecryption Standard(AES)</li>
+</ul>
+</li>
+<li>
+<p>Asymmetric Encryption (非對稱加密)</p>
+<ul>
+<li>加密與解密資料會利用到<strong>兩把 key</strong> 🔑🔑，分別為 public key 與 private key</li>
+<li>public key 負責加密資料，只能利用相對應的 private key 解密資料</li>
+<li>所以 public key 分享給需要加密資料的一端，而 private key 則需要 <strong>安全地保存</strong> ㊙️</li>
+<li>速度會比對稱加密慢 🐢</li>
+</ul>
+</li>
+<li>
+<p>Advanced Ecryption Standard(AES)</p>
+<ul>
+<li><strong>最廣泛</strong>使用的<strong>加密標準</strong></li>
+<li>三種對稱演算法分別為 AES-128、AES-192、AES-256</li>
+</ul>
+</li>
+<li>
+<p>Transport Layer Security (TLS)</p>
+<ul>
+<li>在<strong>傳輸層</strong>的一種協定，目的是為了網路通訊時的安全，確保沒有第三方能竊聽或者竊取任何資訊</li>
+<li>衍生於另一種安全協定 Secure Socket Layer (SSL)</li>
+</ul>
+</li>
+<li>
+<p>SSL certificate</p>
+<ul>
+<li>由 certificate authority (CA) 頒發給 server 的數位憑證</li>
+<li>內容包含 server 端的 public key，因為在 TLS Handshake 過程中會使用到</li>
+<li>目的是確認</li>
+</ul>
+</li>
+</ul>
+<h3 id="http-vs-https">Http vs Https</h3>
+<h4 id="http">Http</h4>
+<ul>
+<li>全名為 HyperText Transfer Protocol</li>
+<li>一種常見的網路通訊協議</li>
+<li>流程是 client 送出 http request，而 server 送出回應</li>
+</ul>
+<h4 id="https">Https</h4>
+<ul>
+<li>全名為 HyperText Transfer Protocol <strong>Secure</strong></li>
+<li>顧名思義是為了可於網路上🔐<strong>安全地</strong>通訊而出現的一種網路通訊協議</li>
+<li>為了達到上述要求，因此 server 被要求須具備以下兩項
+<ul>
+<li>須獲得可信任的憑證(<code>SSL certificates</code>)</li>
+<li>使用 <code>Transport Layer Security (TLS)</code> 加密 client 與 server 端的數據。TLS 如何運作，請往下看。</li>
+</ul>
+</li>
+</ul>
+<h3 id="tls-連接是透過-tls-handshake-來啟動">TLS 連接是透過 TLS Handshake 來啟動</h3>
+<ul>
+<li>流程
+<ul>
+<li>client 送出 <code>client hello</code> (隨機的 bytes) 給 server</li>
+<li>server 回應 <code>server hello</code> (也是隨機的 bytes) 以及 SSL certificate</li>
+<li>client 驗證 CA 頒發的憑證，確認憑證正確屬於此 server 擁有</li>
+<li>client 接著會送出一組用 public key 加密的 <code>premaster secret</code> 給 server</li>
+<li>client 和 server 將會使用 <code>client hello</code>, <code>server hello</code>與 <code>premaster secret</code> 產生對稱加密的 <code>session keys</code>，用於後續的通訊內容的加密與解密 🔐</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="tcp-利用-handshake-方式來連接與斷連">TCP 利用 Handshake 方式來連接與斷連</h3>
+<h4 id="tcp-三次握手建立連線">TCP 三次握手(建立連線)</h4>
+<ul>
+<li>
+<p>流程</p>
+<ul>
+<li>第一次握手：
+<ul>
+<li>客戶端傳送請求 SYN 報文給服務端，傳送完畢之後，客戶端處於 SYN_Send 狀態。</li>
+</ul>
+</li>
+<li>第二次握手：
+<ul>
+<li>服務端收到請求報文之後，<strong>如果同意連線，會回傳 SYN + ACK 應答報文</strong>，服務端為SYN_Receive狀態</li>
+</ul>
+</li>
+<li>第三次握手：
+<ul>
+<li>客戶端接收到服務端的 SYN + ACK ，然後<strong>傳送確認報文作為應答</strong>，客戶端轉為Established狀態</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>為什麼一定要三次?</p>
+<ul>
+<li>為了防止已失效的連接請求報文段突然又傳送到了服務端，因而產生錯誤</li>
+</ul>
+</li>
+</ul>
+<h4 id="tcp-四次握手結束連線">TCP 四次握手(結束連線)</h4>
+<ul>
+<li>流程
+<ul>
+<li>第一次分手
+<ul>
+<li>客戶端傳送FIN=1告訴服務端，客戶端所有的資料<strong>全部發送完畢</strong>，服務端可以關閉接收了。</li>
+</ul>
+</li>
+<li>第二次分手
+<ul>
+<li>服務端接收到客戶端的釋放請求連線之後，知道客戶端沒有資料傳送給自己了，然後<strong>服務端傳送ACK=1告訴客戶端接收到你發給我的訊息</strong></li>
+</ul>
+</li>
+<li>第三次分手
+<ul>
+<li>告訴客戶端，<strong>服務端的所有資料傳送完畢</strong>，客戶端你也可以關閉接收資料連線了。</li>
+</ul>
+</li>
+<li>第四次分手
+<ul>
+<li>客戶端接收到了服務端傳送完畢的訊息之後，就<strong>傳送ACK=1，告訴服務端，客戶端已經接收到你的訊息</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li>System expert</li>
+<li><a class="link" href="https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/"  target="_blank" rel="noopener"
+    >what-happens-in-a-tls-handshake</a></li>
+</ul>
+<p><strong>🍀 最後，若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵!✨</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f01%2f%25E7%25B3%25BB%25E7%25B5%25B1%25E8%25A8%25AD%25E8%25A8%2588%25E5%259F%25BA%25E7%25A4%258E%25E7%25AD%2586%25E8%25A8%2598%25E4%25B8%2580-security-and-https%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

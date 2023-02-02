@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Rate Limiting Prerequistites DDOS 分散式阻斷服務攻擊（distributed denial-of-service attack）亦稱洪水攻擊 DoS 阻斷服務攻擊（英語：denial-of-service attack） 預防方式是使用 rate limit, 可以限制 IP, 使用者帳戶, 區域等等。 Rate Limiting 意思就是限流 根據維基百科，定義是「控制計算機發送或接收的請求之頻率」 Rate Limiting for Multiple Server use Redis to implement rate limiting for multiple servers Application Layer 如何實現 Rate Limit 實現方式 在 Node.js 裡，有一個用來做限流的 express middleware 叫做 express-rate-limit，可看這篇 缺點 在 API server 裡面自己用 middleware 做限流，雖然這樣做感覺很方便，但也會讓 API server 無法完全專注在業務邏輯上 AWS WAF (Web Application Firewall) 目的是保護您的 Web 應用程式免受常見 Web 入侵程式的危害 運作方式 關於 AWS WAF components Web ACLs'>
+<title>系統設計基礎筆記(六) Rate Limiting</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎筆記(六) Rate Limiting'>
+<meta property='og:description' content='Rate Limiting Prerequistites DDOS 分散式阻斷服務攻擊（distributed denial-of-service attack）亦稱洪水攻擊 DoS 阻斷服務攻擊（英語：denial-of-service attack） 預防方式是使用 rate limit, 可以限制 IP, 使用者帳戶, 區域等等。 Rate Limiting 意思就是限流 根據維基百科，定義是「控制計算機發送或接收的請求之頻率」 Rate Limiting for Multiple Server use Redis to implement rate limiting for multiple servers Application Layer 如何實現 Rate Limit 實現方式 在 Node.js 裡，有一個用來做限流的 express middleware 叫做 express-rate-limit，可看這篇 缺點 在 API server 裡面自己用 middleware 做限流，雖然這樣做感覺很方便，但也會讓 API server 無法完全專注在業務邏輯上 AWS WAF (Web Application Firewall) 目的是保護您的 Web 應用程式免受常見 Web 入侵程式的危害 運作方式 關於 AWS WAF components Web ACLs'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='Rate Limiting' /><meta property='article:published_time' content='2023-02-02T10:55:49&#43;08:00'/><meta property='article:modified_time' content='2023-02-02T10:55:49&#43;08:00'/>
+<meta name="twitter:title" content="系統設計基礎筆記(六) Rate Limiting">
+<meta name="twitter:description" content="Rate Limiting Prerequistites DDOS 分散式阻斷服務攻擊（distributed denial-of-service attack）亦稱洪水攻擊 DoS 阻斷服務攻擊（英語：denial-of-service attack） 預防方式是使用 rate limit, 可以限制 IP, 使用者帳戶, 區域等等。 Rate Limiting 意思就是限流 根據維基百科，定義是「控制計算機發送或接收的請求之頻率」 Rate Limiting for Multiple Server use Redis to implement rate limiting for multiple servers Application Layer 如何實現 Rate Limit 實現方式 在 Node.js 裡，有一個用來做限流的 express middleware 叫做 express-rate-limit，可看這篇 缺點 在 API server 裡面自己用 middleware 做限流，雖然這樣做感覺很方便，但也會讓 API server 無法完全專注在業務邏輯上 AWS WAF (Web Application Firewall) 目的是保護您的 Web 應用程式免受常見 Web 入侵程式的危害 運作方式 關於 AWS WAF components Web ACLs">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#rate-limiting">Rate Limiting</a>
+      <ul>
+        <li><a href="#prerequistites">Prerequistites</a></li>
+        <li><a href="#rate-limiting-1">Rate Limiting</a></li>
+        <li><a href="#rate-limiting-for-multiple-server">Rate Limiting for Multiple Server</a></li>
+      </ul>
+    </li>
+    <li><a href="#application-layer-如何實現-rate-limit">Application Layer 如何實現 Rate Limit</a></li>
+    <li><a href="#aws-waf-web-application-firewall">AWS WAF (Web Application Firewall)</a>
+      <ul>
+        <li><a href="#運作方式">運作方式</a></li>
+        <li><a href="#使用情境舉例-3-點">使用情境，舉例 3 點</a></li>
+        <li><a href="#比較-aws-waf-aws-shield-與-aws-firewall-manager">比較 AWS WAF, AWS Shield 與 AWS Firewall Manager</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/">系統設計基礎筆記(六) Rate Limiting</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 02, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="rate-limiting">Rate Limiting</h2>
+<h3 id="prerequistites">Prerequistites</h3>
+<ul>
+<li>DDOS
+<ul>
+<li>分散式阻斷服務攻擊（distributed denial-of-service attack）亦稱洪水攻擊</li>
+</ul>
+</li>
+<li>DoS
+<ul>
+<li>阻斷服務攻擊（英語：denial-of-service attack）</li>
+<li>預防方式是使用 rate limit, 可以限制 IP, 使用者帳戶, 區域等等。</li>
+</ul>
+</li>
+</ul>
+<h3 id="rate-limiting-1">Rate Limiting</h3>
+<ul>
+<li>意思就是限流</li>
+<li>根據維基百科，定義是「控制計算機發送或接收的<strong>請求之頻率</strong>」</li>
+</ul>
+<h3 id="rate-limiting-for-multiple-server">Rate Limiting for Multiple Server</h3>
+<ul>
+<li>use <strong>Redis</strong> to implement rate limiting for multiple servers</li>
+</ul>
+<h2 id="application-layer-如何實現-rate-limit">Application Layer 如何實現 Rate Limit</h2>
+<ul>
+<li>實現方式
+<ul>
+<li>在 Node.js 裡，有一個用來做限流的 express middleware 叫做 <a class="link" href="https://www.npmjs.com/package/express-rate-limit"  target="_blank" rel="noopener"
+    >express-rate-limit</a>，可<a class="link" href="https://ithelp.ithome.com.tw/m/articles/10268910"  target="_blank" rel="noopener"
+    >看這篇</a></li>
+</ul>
+</li>
+<li>缺點
+<ul>
+<li>在 API server 裡面自己用 middleware 做限流，雖然這樣做感覺很方便，但也會讓 API server 無法完全專注在業務邏輯上</li>
+</ul>
+</li>
+</ul>
+<h2 id="aws-waf-web-application-firewall">AWS WAF (Web Application Firewall)</h2>
+<ul>
+<li>目的是保護您的 Web 應用程式免受常見 Web 入侵程式的危害</li>
+</ul>
+<h3 id="運作方式">運作方式</h3>
+<p><img src="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/AWS-WAF.png"
+	width="2360"
+	height="699"
+	srcset="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/AWS-WAF_hu506d3f345407d576fe677b6871abeb83_162306_480x0_resize_box_3.png 480w, /2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/AWS-WAF_hu506d3f345407d576fe677b6871abeb83_162306_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="source: https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="337"
+		data-flex-basis="810px"
+	
+></p>
+<h4 id="關於-aws-waf-components">關於 AWS WAF components</h4>
+<ul>
+<li>
+<p><strong>Web ACLs</strong></p>
+<ul>
+<li>目的是保護 AWS resources，藉由建立一組 web ACL 並新增 rules 去定義保護策略</li>
+<li>屬於 AWS WAF resource</li>
+</ul>
+</li>
+<li>
+<p><strong>Rules</strong></p>
+<ul>
+<li>顧名思義，定義檢查標準 (inspection criteria)，當有 matching requests，可以做的事情如允許通過、計算他們或者執行 CAPTCHA puzzles 去檢查是否為機器人</li>
+<li><strong>不屬於</strong> AWS WAF resource</li>
+</ul>
+</li>
+<li>
+<p><strong>Rule groups</strong></p>
+<ul>
+<li>可以組合自己的 rule groups，也可以直接在 web ACL 中定義規則</li>
+<li>屬於 AWS WAF resource</li>
+</ul>
+</li>
+</ul>
+<h4 id="關於-web-acl-capacity-units-wcu">關於 Web ACL capacity units (WCU)</h4>
+<ul>
+<li>使用 <strong>WCU 來計算與控制運行規則、規則組和 Web ACL 所需的</strong>操作資源
+<ul>
+<li>For example, a size constraint rule statement uses fewer WCUs than a statement that inspects against a regex pattern set.</li>
+</ul>
+</li>
+<li>AWS WAF 會管理 <strong>Rule capacity, Rule group capacity, Web ACL capacity</strong>，詳情可以參考<a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html"  target="_blank" rel="noopener"
+    >這篇</a></li>
+</ul>
+<h4 id="關於-resources-that-you-can-protect-with-aws-waf">關於 Resources that you can protect with AWS WAF</h4>
+<ul>
+<li>使用 AWS WAF web ACL 去保護<strong>全球或區域性</strong>的 resource types，只需要將 web ACL 連結到你想要保護的 resources 上，官方提供 <a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html"  target="_blank" rel="noopener"
+    >Amazon CloudFront 以及 Regional resources 特別說明</a>
+<ul>
+<li>Note: <a class="link" href="https://aws.amazon.com/tw/cloudfront/"  target="_blank" rel="noopener"
+    >Amazon CloudFront</a> 是一項<strong>內容交付網路(CDN)</strong> 服務，可協助您以高速效能、安全和開發人員易用性快速、可靠地分發靜態和動態內容。</li>
+</ul>
+</li>
+<li>限制
+<ul>
+<li>一個 web ACL 可以連結多個 AWS resources，一個 AWS resource 僅連結一個 web ACL</li>
+<li>一個 web ACL 可以連結多個 CloudFront distributions，且已連結到 CloudFront distribution 的 web ACL <strong>不能</strong>再去連結其他 AWS resource type</li>
+</ul>
+</li>
+</ul>
+<h3 id="使用情境舉例-3-點">使用情境，舉例 3 點</h3>
+<ul>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-rules.html"  target="_blank" rel="noopener"
+    >篩選 Web 流量</a>
+<ul>
+<li>建立規則以根據各種條件篩選 Web 請求，例如 IP 地址、HTTP 標頭和內文，或自訂 URI。</li>
+</ul>
+</li>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-atp.html"  target="_blank" rel="noopener"
+    >防止帳戶接管詐騙</a>
+<ul>
+<li>監控應用程式的登入頁面，偵測以盜用憑證對使用者帳戶進行的未經授權存取。</li>
+</ul>
+</li>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/APIReference/Welcome.html"  target="_blank" rel="noopener"
+    >使用 API 管理 AWS WAF</a>
+<ul>
+<li>自動建立和維護規則，並將這些規則併入開發和設計程序中。</li>
+</ul>
+</li>
+</ul>
+<h3 id="比較-aws-waf-aws-shield-與-aws-firewall-manager">比較 AWS WAF, AWS Shield 與 AWS Firewall Manager</h3>
+<ul>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html"  target="_blank" rel="noopener"
+    >AWS WAF</a>
+<ul>
+<li>monitor requests that are forwarded to your web applications and control access to your content.</li>
+</ul>
+</li>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html"  target="_blank" rel="noopener"
+    >AWS Shield</a>
+<ul>
+<li>help protect against <strong>DDoS</strong> attacks.</li>
+</ul>
+</li>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html"  target="_blank" rel="noopener"
+    >AWS Firewall Manager</a>
+<ul>
+<li>set up your firewall rules and apply the rules automatically across accounts and resources, even as new resources are added.</li>
+</ul>
+</li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/what-is-aws-waf.html"  target="_blank" rel="noopener"
+    >What are AWS WAF, AWS Shield, and AWS Firewall Manager?</a></li>
+<li><a class="link" href="https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works.html"  target="_blank" rel="noopener"
+    >How AWS WAF works</a></li>
+<li><a class="link" href="https://aws.amazon.com/tw/cloudfront/"  target="_blank" rel="noopener"
+    >低延遲內容交付網路 (CDN) - Amazon CloudFront - Amazon Web Services</a></li>
+<li><a class="link" href="https://www.npmjs.com/package/express-rate-limit"  target="_blank" rel="noopener"
+    >express-rate-limit</a></li>
+</ul>
+<p><strong>🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
+        
+            <a href="/tags/rate-limiting/">Rate Limiting</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f02%2f%25E7%25B3%25BB%25E7%25B5%25B1%25E8%25A8%25AD%25E8%25A8%2588%25E5%259F%25BA%25E7%25A4%258E%25E7%25AD%2586%25E8%25A8%2598%25E5%2585%25AD-rate-limiting%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(五) Logging And Monitoring</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(四) Publish/Subscribe Pattern</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%89-mapreduce/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(三) MapReduce</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%8C-cache/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(二) Cache</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%80-security-and-https/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(一) Security And HTTPS</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
