@@ -6,7 +6,58 @@
         <description>Recent content in System Design Fundamental on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 02 Feb 2023 10:55:49 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/system-design-fundamental/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 04 Feb 2023 10:30:09 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/system-design-fundamental/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Configuration</title>
+        <link>https://yue-jenny.github.io/2023/02/configuration/</link>
+        <pubDate>Sat, 04 Feb 2023 10:30:09 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/02/configuration/</guid>
+        <description>&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
+&lt;h3 id=&#34;static-configuration-vs-dynamic-configuration&#34;&gt;Static Configuration V.S Dynamic Configuration&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Static Configuration
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;以 YAML 或 JSON 為主的設定檔&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;YAML:
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-YAML&#34; data-lang=&#34;YAML&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;---
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;receipt&lt;/span&gt;:     &lt;span style=&#34;color:#ae81ff&#34;&gt;Oz-Ware Purchase Invoice&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;date&lt;/span&gt;:        &lt;span style=&#34;color:#e6db74&#34;&gt;2012-08-06&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;customer&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;given&lt;/span&gt;:   &lt;span style=&#34;color:#ae81ff&#34;&gt;Dorothy&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;family&lt;/span&gt;:  &lt;span style=&#34;color:#ae81ff&#34;&gt;Gale&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;JSON
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;streetAddress&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;21 2nd Street&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;city&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;New York&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;state&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;NY&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;postalCode&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;10021&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;需要跟 source code 結合&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;需要 &lt;strong&gt;re-deploy&lt;/strong&gt; 應用才能更新設定&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Dynamic Configuration
+&lt;ul&gt;
+&lt;li&gt;UI 介面去控制設定&lt;/li&gt;
+&lt;li&gt;需要去實作此 feature&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>系統設計基礎筆記(六) Rate Limiting</title>
         <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/</link>
         <pubDate>Thu, 02 Feb 2023 10:55:49 +0800</pubDate>
