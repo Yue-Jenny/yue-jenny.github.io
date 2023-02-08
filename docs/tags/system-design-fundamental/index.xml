@@ -7,11 +7,11 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Mon, 06 Feb 2023 23:24:44 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/system-design-fundamental/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>系統設計基礎筆記(七) Pulling And Streaming</title>
-        <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%83-pulling-and-streaming/</link>
+        <title>系統設計基礎筆記(八) Pulling And Streaming</title>
+        <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AB-pulling-and-streaming/</link>
         <pubDate>Mon, 06 Feb 2023 23:24:44 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%83-pulling-and-streaming/</guid>
+        <guid>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AB-pulling-and-streaming/</guid>
         <description>&lt;h2 id=&#34;pulling-and-streaming&#34;&gt;Pulling And Streaming&lt;/h2&gt;
 &lt;h3 id=&#34;prerequistites&#34;&gt;Prerequistites&lt;/h3&gt;
 &lt;ul&gt;
@@ -45,11 +45,11 @@
 </description>
         </item>
         <item>
-        <title>Configuration</title>
-        <link>https://yue-jenny.github.io/2023/02/configuration/</link>
+        <title>系統設計基礎筆記(七) Configuration</title>
+        <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%83-configuration/</link>
         <pubDate>Sat, 04 Feb 2023 10:30:09 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/02/configuration/</guid>
+        <guid>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%83-configuration/</guid>
         <description>&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
 &lt;h3 id=&#34;static-configuration-vs-dynamic-configuration&#34;&gt;Static Configuration V.S Dynamic Configuration&lt;/h3&gt;
 &lt;ul&gt;
