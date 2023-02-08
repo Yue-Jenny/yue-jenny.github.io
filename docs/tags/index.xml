@@ -6,20 +6,28 @@
         <description>Recent content in Tags on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 04 Feb 2023 10:30:09 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Configuration</title>
-        <link>https://yue-jenny.github.io/tags/configuration/</link>
-        <pubDate>Sat, 04 Feb 2023 10:30:09 +0800</pubDate>
+        <lastBuildDate>Mon, 06 Feb 2023 23:24:44 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Pulling And Streaming</title>
+        <link>https://yue-jenny.github.io/tags/pulling-and-streaming/</link>
+        <pubDate>Mon, 06 Feb 2023 23:24:44 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/tags/configuration/</guid>
+        <guid>https://yue-jenny.github.io/tags/pulling-and-streaming/</guid>
         <description></description>
         </item>
         <item>
         <title>System Design Fundamental</title>
         <link>https://yue-jenny.github.io/tags/system-design-fundamental/</link>
-        <pubDate>Sat, 04 Feb 2023 10:30:09 +0800</pubDate>
+        <pubDate>Mon, 06 Feb 2023 23:24:44 +0800</pubDate>
         
         <guid>https://yue-jenny.github.io/tags/system-design-fundamental/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Configuration</title>
+        <link>https://yue-jenny.github.io/tags/configuration/</link>
+        <pubDate>Sat, 04 Feb 2023 10:30:09 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/tags/configuration/</guid>
         <description></description>
         </item>
         <item>

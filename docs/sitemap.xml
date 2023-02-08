@@ -3,7 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yue-jenny.github.io/categories/</loc>
-    <lastmod>2023-02-04T10:30:09+08:00</lastmod>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/</loc>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/post/</loc>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/pulling-and-streaming/</loc>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/2023/02/pulling-and-streaming/</loc>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/system-design-fundamental/</loc>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/system-design-fundamental/</loc>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-02-06T23:24:44+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
@@ -13,31 +48,6 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/2023/02/configuration/</loc>
-    <lastmod>2023-02-04T10:30:09+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-02-04T10:30:09+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/post/</loc>
-    <lastmod>2023-02-04T10:30:09+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/system-design-fundamental/</loc>
-    <lastmod>2023-02-04T10:30:09+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/categories/system-design-fundamental/</loc>
-    <lastmod>2023-02-04T10:30:09+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2023-02-04T10:30:09+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
