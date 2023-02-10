@@ -6,7 +6,146 @@
         <description>Recent content on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 06 Feb 2023 23:24:44 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 10 Feb 2023 09:58:46 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>系統設計基礎筆記(九) Peer-To-Peer Networks</title>
+        <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/</link>
+        <pubDate>Fri, 10 Feb 2023 09:58:46 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/</guid>
+        <description>&lt;h2 id=&#34;peer-to-peer-networks&#34;&gt;Peer-To-Peer Networks&lt;/h2&gt;
+&lt;h3 id=&#34;p2p-network&#34;&gt;P2P network&lt;/h3&gt;
+&lt;h4 id=&#34;介紹&#34;&gt;介紹&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/p2p.png&#34;
+	width=&#34;200&#34;
+	height=&#34;207&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/p2p_hu64920a50441050d30b3b9472de4aa1e5_12577_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/p2p_hu64920a50441050d30b3b9472de4aa1e5_12577_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;P2P network&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;96&#34;
+		data-flex-basis=&#34;231px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;對等式網路，又稱對等技術，依靠使用者群（peers）交換資訊的網際網路體系&lt;/li&gt;
+&lt;li&gt;目標就是讓所有的客戶端都能提供資源，包括頻寬，儲存空間和計算能力。因此，當有節點加入且對系統請求增多，整個系統的容量也增大。這是具有一組固定伺服器的Client-Server結構不能實現的，因為在上述這種結構中，客戶端的增加意味著所有使用者&lt;strong&gt;更慢&lt;/strong&gt;的資料傳輸。&lt;/li&gt;
+&lt;li&gt;根據中央化程度，可以區分為&lt;strong&gt;一般型P2P、特殊型P2P與混合型P2P&lt;/strong&gt;，使用一般型P2P技術的網路系統有&lt;strong&gt;比特幣、Gnutella或自由網&lt;/strong&gt;等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;好處&#34;&gt;好處&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;不會因為單點故障就導致整體服務無法運作&lt;/li&gt;
+&lt;li&gt;不會讓單點遇到效能瓶頸&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;gossip-protocol&#34;&gt;Gossip Protocol&lt;/h3&gt;
+&lt;h4 id=&#34;簡介&#34;&gt;簡介&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;又稱作 epidemic protocol，是 P2P network 的核心技術&lt;/li&gt;
+&lt;li&gt;Gossip protocol 的實際應用如 Cassandra / Redis Cluster / Consul 等集群架構
+&lt;ul&gt;
+&lt;li&gt;consul 用於管理 membership 與傳播消息，有興趣可點&lt;a class=&#34;link&#34; href=&#34;https://developer.hashicorp.com/consul/docs/architecture/gossip&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;這邊&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;廣度優先遍歷(Breadth-First Search, BFS)&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;假設 A 得到某些資訊，更新了自身的資訊，A 需要將資訊告訴 B、C 等，然後 B、C 告訴其他的 D、E、F、G，一直遍歷。如果節點 B 收到 A 的消息，發現自己早就知道這個消息就直接忽略，從而可以防止圖重複遍歷。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;執行過程&#34;&gt;執行過程&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Gossip 過程是&lt;strong&gt;異步&lt;/strong&gt;的，也就是說發消息的節點不會關注對方是否收到，即&lt;strong&gt;不等待響應&lt;/strong&gt;；不管對方有沒有收到，它都會每隔1 秒向周圍節點發消息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/gossip.png&#34;
+	width=&#34;631&#34;
+	height=&#34;518&#34;
+	srcset=&#34;https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/gossip_hu7b8d06cb578bd73d02d564beeee187d5_97088_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/gossip_hu7b8d06cb578bd73d02d564beeee187d5_97088_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;source:https://zhuanlan.zhihu.com/p/41228196&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;121&#34;
+		data-flex-basis=&#34;292px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;通信模式&#34;&gt;&lt;strong&gt;通信模式&lt;/strong&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Push:
+&lt;ul&gt;
+&lt;li&gt;節點 A 將數據 (key,value,version) 及對應的版本號推送給節點 B，節點 B 更新 A 中比自己新的數據&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Pull:
+&lt;ul&gt;
+&lt;li&gt;A 僅將數據 key, version 推送給 B，B 將本地比 A 新的數據（Key, value, version）推送給 A，A 更新本地&lt;/li&gt;
+&lt;li&gt;對 A 來說是 pull&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Push/Pull:
+&lt;ul&gt;
+&lt;li&gt;與 Pull 類似，步驟上多一步，A 再將本地比 B 新的數據推送給 B，B 則更新本地&lt;/li&gt;
+&lt;li&gt;收斂速度&lt;strong&gt;最快&lt;/strong&gt;，收斂速度是指所有節點的資訊達到一致的速度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;優點&#34;&gt;優點&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;擴展性 (scalability)
+&lt;ul&gt;
+&lt;li&gt;允許任意節點的增加和減少&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;容錯 (Fault tolerance)
+&lt;ul&gt;
+&lt;li&gt;任何節點的故障和重啟都不會影響 Gossip 消息的傳播&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;去中心化 (decentralization)
+&lt;ul&gt;
+&lt;li&gt;所有節點都可以是對等的，任何一個節點無需知道整個狀況，只要網路相通，任意一個節點就可以把消息散播到全網&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;一致性收斂
+&lt;ul&gt;
+&lt;li&gt;消息會以一傳十、十傳百一樣的指數級速度在網路中快速傳播，因此系統狀態的不一致可以在很快的時間內收斂到一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;簡易實現&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;缺點&#34;&gt;缺點&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;latency
+&lt;ul&gt;
+&lt;li&gt;節點只會隨機向&lt;strong&gt;少數幾個節點&lt;/strong&gt;發送消息，消息最終是通過多個輪次的散播而到達全網&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;消息冗餘
+&lt;ul&gt;
+&lt;li&gt;節點會&lt;strong&gt;定期隨機&lt;/strong&gt;選擇周圍節點發送消息，而收到消息的節點也會重複該步驟，因此就&lt;strong&gt;不可避免的存在消息重複發送給同一節點的情況&lt;/strong&gt;，造成了消息的冗餘，同時也&lt;strong&gt;增加了收到消息的節點的處理壓力&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;由於是定期發送，即使收到了消息的節點還會反複收到重複消息，加重了消息的冗餘。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://zh.wikipedia.org/zh-tw/%E5%B0%8D%E7%AD%89%E7%B6%B2%E8%B7%AF&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;對等網路 - 维基百科，自由的百科全书&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://ithelp.ithome.com.tw/articles/10216158&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Day20|P2P網路(1)：P2P網路基礎知識 - iT 邦幫忙::一起幫忙解決難題，拯救 IT 人的一天&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://yuanchieh.page/posts/2020/2020-10-26-gossip-protocol-%E4%BB%8B%E7%B4%B9%E4%B8%8A/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Gossip Protocol 介紹 (上) - 從 Cassandra 內部實作認識 Gossip Protocol 的使用&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/41228196&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;P2P 网络核心技术：Gossip 协议&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>系統設計基礎筆記(八) Pulling And Streaming</title>
         <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AB-pulling-and-streaming/</link>
         <pubDate>Mon, 06 Feb 2023 23:24:44 +0800</pubDate>

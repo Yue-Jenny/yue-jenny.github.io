@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Peer-To-Peer Networks P2P network 介紹 對等式網路，又稱對等技術，依靠使用者群（peers）交換資訊的網際網路體系 目標就是讓所有的客戶端都能提供資源，包括頻寬，儲存空間和計算能力。因此，當有節點加入且對系統請求增多，整個系統的容量也增大。這是具有一組固定伺服器的Client-Server結構不能實現的，因為在上述這種結構中，客戶端的增加意味著所有使用者更慢的資料傳輸。 根據中央化程度，可以區分為一般型P2P、特殊型P2P與混合型P2P，使用一般型P2P技術的網路系統有比特幣、Gnutella或自由網等。 好處 不會因為單點故障就導致整體服務無法運作 不會讓單點遇到效能瓶頸 Gossip Protocol 簡介 又稱作 epidemic protocol，是 P2P network 的核心技術 Gossip protocol 的實際應用如 Cassandra / Redis Cluster / Consul 等集群架構 consul 用於管理 membership 與傳播消息，有興趣可點這邊 廣度優先遍歷(Breadth-First Search, BFS) 假設 A 得到某些資訊，更新了自身的資訊，A 需要將資訊告訴 B、C 等，然後 B、C 告訴其他的 D、E、F、G，一直遍歷。如果節點 B 收到 A 的消息，發現自己早就知道這個消息就直接忽略，從而可以防止圖重複遍歷。 執行過程 Gossip 過程是異步的，也就是說發消息的節點不會關注對方是否收到，即不等待響應；不管對方有沒有收到，它都會每隔1 秒向周圍節點發消息 通信模式 Push: 節點 A 將數據 (key,value,version) 及對應的版本號推送給節點 B，節點 B 更新 A 中比自己新的數據 Pull: A 僅將數據 key, version 推送給 B，B 將本地比 A 新的數據（Key, value, version）推送給 A，A 更新本地 對 A 來說是 pull Push/Pull: 與 Pull 類似，步驟上多一步，A 再將本地比 B 新的數據推送給 B，B 則更新本地 收斂速度最快，收斂速度是指所有節點的資訊達到一致的速度 優點 擴展性 (scalability) 允許任意節點的增加和減少 容錯 (Fault tolerance) 任何節點的故障和重啟都不會影響 Gossip 消息的傳播 去中心化 (decentralization) 所有節點都可以是對等的，任何一個節點無需知道整個狀況，只要網路相通，任意一個節點就可以把消息散播到全網 一致性收斂 消息會以一傳十、十傳百一樣的指數級速度在網路中快速傳播，因此系統狀態的不一致可以在很快的時間內收斂到一致 簡易實現 缺點 latency 節點只會隨機向少數幾個節點發送消息，消息最終是通過多個輪次的散播而到達全網 消息冗餘 節點會定期隨機選擇周圍節點發送消息，而收到消息的節點也會重複該步驟，因此就不可避免的存在消息重複發送給同一節點的情況，造成了消息的冗餘，同時也增加了收到消息的節點的處理壓力。 由於是定期發送，即使收到了消息的節點還會反複收到重複消息，加重了消息的冗餘。 參考資料 👐 對等網路 - 维基百科，自由的百科全书 Day20|P2P網路(1)：P2P網路基礎知識 - iT 邦幫忙::一起幫忙解決難題，拯救 IT 人的一天 Gossip Protocol 介紹 (上) - 從 Cassandra 內部實作認識 Gossip Protocol 的使用 P2P 网络核心技术：Gossip 协议 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵'>
+<title>系統設計基礎筆記(九) Peer-To-Peer Networks</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎筆記(九) Peer-To-Peer Networks'>
+<meta property='og:description' content='Peer-To-Peer Networks P2P network 介紹 對等式網路，又稱對等技術，依靠使用者群（peers）交換資訊的網際網路體系 目標就是讓所有的客戶端都能提供資源，包括頻寬，儲存空間和計算能力。因此，當有節點加入且對系統請求增多，整個系統的容量也增大。這是具有一組固定伺服器的Client-Server結構不能實現的，因為在上述這種結構中，客戶端的增加意味著所有使用者更慢的資料傳輸。 根據中央化程度，可以區分為一般型P2P、特殊型P2P與混合型P2P，使用一般型P2P技術的網路系統有比特幣、Gnutella或自由網等。 好處 不會因為單點故障就導致整體服務無法運作 不會讓單點遇到效能瓶頸 Gossip Protocol 簡介 又稱作 epidemic protocol，是 P2P network 的核心技術 Gossip protocol 的實際應用如 Cassandra / Redis Cluster / Consul 等集群架構 consul 用於管理 membership 與傳播消息，有興趣可點這邊 廣度優先遍歷(Breadth-First Search, BFS) 假設 A 得到某些資訊，更新了自身的資訊，A 需要將資訊告訴 B、C 等，然後 B、C 告訴其他的 D、E、F、G，一直遍歷。如果節點 B 收到 A 的消息，發現自己早就知道這個消息就直接忽略，從而可以防止圖重複遍歷。 執行過程 Gossip 過程是異步的，也就是說發消息的節點不會關注對方是否收到，即不等待響應；不管對方有沒有收到，它都會每隔1 秒向周圍節點發消息 通信模式 Push: 節點 A 將數據 (key,value,version) 及對應的版本號推送給節點 B，節點 B 更新 A 中比自己新的數據 Pull: A 僅將數據 key, version 推送給 B，B 將本地比 A 新的數據（Key, value, version）推送給 A，A 更新本地 對 A 來說是 pull Push/Pull: 與 Pull 類似，步驟上多一步，A 再將本地比 B 新的數據推送給 B，B 則更新本地 收斂速度最快，收斂速度是指所有節點的資訊達到一致的速度 優點 擴展性 (scalability) 允許任意節點的增加和減少 容錯 (Fault tolerance) 任何節點的故障和重啟都不會影響 Gossip 消息的傳播 去中心化 (decentralization) 所有節點都可以是對等的，任何一個節點無需知道整個狀況，只要網路相通，任意一個節點就可以把消息散播到全網 一致性收斂 消息會以一傳十、十傳百一樣的指數級速度在網路中快速傳播，因此系統狀態的不一致可以在很快的時間內收斂到一致 簡易實現 缺點 latency 節點只會隨機向少數幾個節點發送消息，消息最終是通過多個輪次的散播而到達全網 消息冗餘 節點會定期隨機選擇周圍節點發送消息，而收到消息的節點也會重複該步驟，因此就不可避免的存在消息重複發送給同一節點的情況，造成了消息的冗餘，同時也增加了收到消息的節點的處理壓力。 由於是定期發送，即使收到了消息的節點還會反複收到重複消息，加重了消息的冗餘。 參考資料 👐 對等網路 - 维基百科，自由的百科全书 Day20|P2P網路(1)：P2P網路基礎知識 - iT 邦幫忙::一起幫忙解決難題，拯救 IT 人的一天 Gossip Protocol 介紹 (上) - 從 Cassandra 內部實作認識 Gossip Protocol 的使用 P2P 网络核心技术：Gossip 协议 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵'>
+<meta property='og:url' content='https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='Peer-To-Peer Networks' /><meta property='article:published_time' content='2023-02-10T09:58:46&#43;08:00'/><meta property='article:modified_time' content='2023-02-10T09:58:46&#43;08:00'/>
+<meta name="twitter:title" content="系統設計基礎筆記(九) Peer-To-Peer Networks">
+<meta name="twitter:description" content="Peer-To-Peer Networks P2P network 介紹 對等式網路，又稱對等技術，依靠使用者群（peers）交換資訊的網際網路體系 目標就是讓所有的客戶端都能提供資源，包括頻寬，儲存空間和計算能力。因此，當有節點加入且對系統請求增多，整個系統的容量也增大。這是具有一組固定伺服器的Client-Server結構不能實現的，因為在上述這種結構中，客戶端的增加意味著所有使用者更慢的資料傳輸。 根據中央化程度，可以區分為一般型P2P、特殊型P2P與混合型P2P，使用一般型P2P技術的網路系統有比特幣、Gnutella或自由網等。 好處 不會因為單點故障就導致整體服務無法運作 不會讓單點遇到效能瓶頸 Gossip Protocol 簡介 又稱作 epidemic protocol，是 P2P network 的核心技術 Gossip protocol 的實際應用如 Cassandra / Redis Cluster / Consul 等集群架構 consul 用於管理 membership 與傳播消息，有興趣可點這邊 廣度優先遍歷(Breadth-First Search, BFS) 假設 A 得到某些資訊，更新了自身的資訊，A 需要將資訊告訴 B、C 等，然後 B、C 告訴其他的 D、E、F、G，一直遍歷。如果節點 B 收到 A 的消息，發現自己早就知道這個消息就直接忽略，從而可以防止圖重複遍歷。 執行過程 Gossip 過程是異步的，也就是說發消息的節點不會關注對方是否收到，即不等待響應；不管對方有沒有收到，它都會每隔1 秒向周圍節點發消息 通信模式 Push: 節點 A 將數據 (key,value,version) 及對應的版本號推送給節點 B，節點 B 更新 A 中比自己新的數據 Pull: A 僅將數據 key, version 推送給 B，B 將本地比 A 新的數據（Key, value, version）推送給 A，A 更新本地 對 A 來說是 pull Push/Pull: 與 Pull 類似，步驟上多一步，A 再將本地比 B 新的數據推送給 B，B 則更新本地 收斂速度最快，收斂速度是指所有節點的資訊達到一致的速度 優點 擴展性 (scalability) 允許任意節點的增加和減少 容錯 (Fault tolerance) 任何節點的故障和重啟都不會影響 Gossip 消息的傳播 去中心化 (decentralization) 所有節點都可以是對等的，任何一個節點無需知道整個狀況，只要網路相通，任意一個節點就可以把消息散播到全網 一致性收斂 消息會以一傳十、十傳百一樣的指數級速度在網路中快速傳播，因此系統狀態的不一致可以在很快的時間內收斂到一致 簡易實現 缺點 latency 節點只會隨機向少數幾個節點發送消息，消息最終是通過多個輪次的散播而到達全網 消息冗餘 節點會定期隨機選擇周圍節點發送消息，而收到消息的節點也會重複該步驟，因此就不可避免的存在消息重複發送給同一節點的情況，造成了消息的冗餘，同時也增加了收到消息的節點的處理壓力。 由於是定期發送，即使收到了消息的節點還會反複收到重複消息，加重了消息的冗餘。 參考資料 👐 對等網路 - 维基百科，自由的百科全书 Day20|P2P網路(1)：P2P網路基礎知識 - iT 邦幫忙::一起幫忙解決難題，拯救 IT 人的一天 Gossip Protocol 介紹 (上) - 從 Cassandra 內部實作認識 Gossip Protocol 的使用 P2P 网络核心技术：Gossip 协议 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵">
+    <link rel="shortcut icon" href="/leaves.png" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/leaves_hu675f65375b241d91fcdc6b1f3cf7e6d0_3967072_300x0_resize_box_3.png" width="300"
+                            height="156" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🍀 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#peer-to-peer-networks">Peer-To-Peer Networks</a>
+      <ul>
+        <li><a href="#p2p-network">P2P network</a></li>
+        <li><a href="#gossip-protocol">Gossip Protocol</a></li>
+      </ul>
+    </li>
+    <li><a href="#參考資料-">參考資料 👐</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design-fundamental/" >
+                System Design Fundamental
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/">系統設計基礎筆記(九) Peer-To-Peer Networks</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 10, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="peer-to-peer-networks">Peer-To-Peer Networks</h2>
+<h3 id="p2p-network">P2P network</h3>
+<h4 id="介紹">介紹</h4>
+<p><img src="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/p2p.png"
+	width="200"
+	height="207"
+	srcset="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/p2p_hu64920a50441050d30b3b9472de4aa1e5_12577_480x0_resize_box_3.png 480w, /2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/p2p_hu64920a50441050d30b3b9472de4aa1e5_12577_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="P2P network"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="96"
+		data-flex-basis="231px"
+	
+></p>
+<ul>
+<li>對等式網路，又稱對等技術，依靠使用者群（peers）交換資訊的網際網路體系</li>
+<li>目標就是讓所有的客戶端都能提供資源，包括頻寬，儲存空間和計算能力。因此，當有節點加入且對系統請求增多，整個系統的容量也增大。這是具有一組固定伺服器的Client-Server結構不能實現的，因為在上述這種結構中，客戶端的增加意味著所有使用者<strong>更慢</strong>的資料傳輸。</li>
+<li>根據中央化程度，可以區分為<strong>一般型P2P、特殊型P2P與混合型P2P</strong>，使用一般型P2P技術的網路系統有<strong>比特幣、Gnutella或自由網</strong>等。</li>
+</ul>
+<h4 id="好處">好處</h4>
+<ul>
+<li>不會因為單點故障就導致整體服務無法運作</li>
+<li>不會讓單點遇到效能瓶頸</li>
+</ul>
+<h3 id="gossip-protocol">Gossip Protocol</h3>
+<h4 id="簡介">簡介</h4>
+<ul>
+<li>又稱作 epidemic protocol，是 P2P network 的核心技術</li>
+<li>Gossip protocol 的實際應用如 Cassandra / Redis Cluster / Consul 等集群架構
+<ul>
+<li>consul 用於管理 membership 與傳播消息，有興趣可點<a class="link" href="https://developer.hashicorp.com/consul/docs/architecture/gossip"  target="_blank" rel="noopener"
+    >這邊</a></li>
+</ul>
+</li>
+<li><strong>廣度優先遍歷(Breadth-First Search, BFS)</strong>
+<ul>
+<li>假設 A 得到某些資訊，更新了自身的資訊，A 需要將資訊告訴 B、C 等，然後 B、C 告訴其他的 D、E、F、G，一直遍歷。如果節點 B 收到 A 的消息，發現自己早就知道這個消息就直接忽略，從而可以防止圖重複遍歷。</li>
+</ul>
+</li>
+</ul>
+<h4 id="執行過程">執行過程</h4>
+<ul>
+<li>Gossip 過程是<strong>異步</strong>的，也就是說發消息的節點不會關注對方是否收到，即<strong>不等待響應</strong>；不管對方有沒有收到，它都會每隔1 秒向周圍節點發消息</li>
+</ul>
+<p><img src="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/gossip.png"
+	width="631"
+	height="518"
+	srcset="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/gossip_hu7b8d06cb578bd73d02d564beeee187d5_97088_480x0_resize_box_3.png 480w, /2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/gossip_hu7b8d06cb578bd73d02d564beeee187d5_97088_1024x0_resize_box_3.png 1024w"
+	loading="lazy"
+	
+		alt="source:https://zhuanlan.zhihu.com/p/41228196"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="121"
+		data-flex-basis="292px"
+	
+></p>
+<h4 id="通信模式"><strong>通信模式</strong></h4>
+<ul>
+<li>Push:
+<ul>
+<li>節點 A 將數據 (key,value,version) 及對應的版本號推送給節點 B，節點 B 更新 A 中比自己新的數據</li>
+</ul>
+</li>
+<li>Pull:
+<ul>
+<li>A 僅將數據 key, version 推送給 B，B 將本地比 A 新的數據（Key, value, version）推送給 A，A 更新本地</li>
+<li>對 A 來說是 pull</li>
+</ul>
+</li>
+<li>Push/Pull:
+<ul>
+<li>與 Pull 類似，步驟上多一步，A 再將本地比 B 新的數據推送給 B，B 則更新本地</li>
+<li>收斂速度<strong>最快</strong>，收斂速度是指所有節點的資訊達到一致的速度</li>
+</ul>
+</li>
+</ul>
+<h4 id="優點">優點</h4>
+<ul>
+<li>擴展性 (scalability)
+<ul>
+<li>允許任意節點的增加和減少</li>
+</ul>
+</li>
+<li>容錯 (Fault tolerance)
+<ul>
+<li>任何節點的故障和重啟都不會影響 Gossip 消息的傳播</li>
+</ul>
+</li>
+<li>去中心化 (decentralization)
+<ul>
+<li>所有節點都可以是對等的，任何一個節點無需知道整個狀況，只要網路相通，任意一個節點就可以把消息散播到全網</li>
+</ul>
+</li>
+<li>一致性收斂
+<ul>
+<li>消息會以一傳十、十傳百一樣的指數級速度在網路中快速傳播，因此系統狀態的不一致可以在很快的時間內收斂到一致</li>
+</ul>
+</li>
+<li>簡易實現</li>
+</ul>
+<h4 id="缺點">缺點</h4>
+<ul>
+<li>latency
+<ul>
+<li>節點只會隨機向<strong>少數幾個節點</strong>發送消息，消息最終是通過多個輪次的散播而到達全網</li>
+</ul>
+</li>
+<li>消息冗餘
+<ul>
+<li>節點會<strong>定期隨機</strong>選擇周圍節點發送消息，而收到消息的節點也會重複該步驟，因此就<strong>不可避免的存在消息重複發送給同一節點的情況</strong>，造成了消息的冗餘，同時也<strong>增加了收到消息的節點的處理壓力</strong>。</li>
+<li>由於是定期發送，即使收到了消息的節點還會反複收到重複消息，加重了消息的冗餘。</li>
+</ul>
+</li>
+</ul>
+<h2 id="參考資料-">參考資料 👐</h2>
+<ul>
+<li><a class="link" href="https://zh.wikipedia.org/zh-tw/%E5%B0%8D%E7%AD%89%E7%B6%B2%E8%B7%AF"  target="_blank" rel="noopener"
+    >對等網路 - 维基百科，自由的百科全书</a></li>
+<li><a class="link" href="https://ithelp.ithome.com.tw/articles/10216158"  target="_blank" rel="noopener"
+    >Day20|P2P網路(1)：P2P網路基礎知識 - iT 邦幫忙::一起幫忙解決難題，拯救 IT 人的一天</a></li>
+<li><a class="link" href="https://yuanchieh.page/posts/2020/2020-10-26-gossip-protocol-%E4%BB%8B%E7%B4%B9%E4%B8%8A/"  target="_blank" rel="noopener"
+    >Gossip Protocol 介紹 (上) - 從 Cassandra 內部實作認識 Gossip Protocol 的使用</a></li>
+<li><a class="link" href="https://zhuanlan.zhihu.com/p/41228196"  target="_blank" rel="noopener"
+    >P2P 网络核心技术：Gossip 协议</a></li>
+</ul>
+<p><strong>🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/system-design-fundamental/">System Design Fundamental</a>
+        
+            <a href="/tags/peer-to-peer-networks/">Peer-To-Peer Networks</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2f2023%2f02%2f%25E7%25B3%25BB%25E7%25B5%25B1%25E8%25A8%25AD%25E8%25A8%2588%25E5%259F%25BA%25E7%25A4%258E%25E7%25AD%2586%25E8%25A8%2598%25E4%25B9%259D-peer-to-peer-networks%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AB-pulling-and-streaming/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(八) Pulling And Streaming</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B8%83-configuration/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(七) Configuration</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%85%AD-rate-limiting/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(六) Rate Limiting</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%BA%94-logging-and-monitoring/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(五) Logging And Monitoring</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/2023/01/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%9B%9B-publish/subscribe-pattern/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">系統設計基礎筆記(四) Publish/Subscribe Pattern</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
