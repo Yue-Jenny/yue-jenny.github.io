@@ -6,7 +6,37 @@
         <description>Recent content in Posts on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 10 Feb 2023 09:58:46 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 14 Feb 2023 15:00:24 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>系統設計基礎筆記(十) Replication And Sharding</title>
+        <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%8D%81-replication-and-sharding/</link>
+        <pubDate>Tue, 14 Feb 2023 15:00:24 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%8D%81-replication-and-sharding/</guid>
+        <description>&lt;h2 id=&#34;replication-and-sharding&#34;&gt;Replication And Sharding&lt;/h2&gt;
+&lt;h3 id=&#34;前言&#34;&gt;前言&lt;/h3&gt;
+&lt;h3 id=&#34;replication&#34;&gt;Replication&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;目的是建立一個&lt;strong&gt;高可用&lt;/strong&gt;的資料庫架構&lt;/li&gt;
+&lt;li&gt;可以選擇&lt;strong&gt;同步或非同步&lt;/strong&gt;的方式進行 main 與 replication 資料庫的同步方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;sharding&#34;&gt;Sharding&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;目的是為了建立&lt;strong&gt;高吞吐量&lt;/strong&gt;的資料庫架構&lt;/li&gt;
+&lt;li&gt;達成 sharding 的策略有
+&lt;ul&gt;
+&lt;li&gt;hashing strategy&lt;/li&gt;
+&lt;li&gt;使用不同 table (需要確認資料夠 unitform) 存取&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;system experts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>系統設計基礎筆記(九) Peer-To-Peer Networks</title>
         <link>https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E4%B9%9D-peer-to-peer-networks/</link>
         <pubDate>Fri, 10 Feb 2023 09:58:46 +0800</pubDate>

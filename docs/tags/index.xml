@@ -6,20 +6,28 @@
         <description>Recent content in Tags on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 10 Feb 2023 09:58:46 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Peer-To-Peer Networks</title>
-        <link>https://yue-jenny.github.io/tags/peer-to-peer-networks/</link>
-        <pubDate>Fri, 10 Feb 2023 09:58:46 +0800</pubDate>
+        <lastBuildDate>Tue, 14 Feb 2023 15:00:24 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Replication And Sharding</title>
+        <link>https://yue-jenny.github.io/tags/replication-and-sharding/</link>
+        <pubDate>Tue, 14 Feb 2023 15:00:24 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/tags/peer-to-peer-networks/</guid>
+        <guid>https://yue-jenny.github.io/tags/replication-and-sharding/</guid>
         <description></description>
         </item>
         <item>
         <title>System Design Fundamental</title>
         <link>https://yue-jenny.github.io/tags/system-design-fundamental/</link>
-        <pubDate>Fri, 10 Feb 2023 09:58:46 +0800</pubDate>
+        <pubDate>Tue, 14 Feb 2023 15:00:24 +0800</pubDate>
         
         <guid>https://yue-jenny.github.io/tags/system-design-fundamental/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Peer-To-Peer Networks</title>
+        <link>https://yue-jenny.github.io/tags/peer-to-peer-networks/</link>
+        <pubDate>Fri, 10 Feb 2023 09:58:46 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/tags/peer-to-peer-networks/</guid>
         <description></description>
         </item>
         <item>
