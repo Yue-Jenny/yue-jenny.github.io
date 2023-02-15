@@ -22,9 +22,11 @@
 &lt;h3 id=&#34;sharding&#34;&gt;Sharding&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;目的是為了建立&lt;strong&gt;高吞吐量&lt;/strong&gt;的資料庫架構&lt;/li&gt;
+&lt;li&gt;透過將資料切片，存在不同的節點，可減少對一個節點太多次存取資料造成的負擔，換句話說，即能增加吞吐量&lt;/li&gt;
 &lt;li&gt;達成 sharding 的策略有
 &lt;ul&gt;
-&lt;li&gt;hashing strategy&lt;/li&gt;
+&lt;li&gt;hashing strategy，此部分相關議題為 &lt;a class=&#34;link&#34; href=&#34;https://dev.to/arslan_ah/how-to-use-consistent-hashing-in-a-system-design-interview-33ge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Consistent Hashing&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;使用不同 table (需要確認資料夠 unitform) 存取&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
@@ -32,6 +34,8 @@
 &lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;system experts&lt;/li&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://dev.to/arslan_ah/how-to-use-consistent-hashing-in-a-system-design-interview-33ge&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;How to Use Consistent Hashing in a System Design Interview?&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵&lt;/strong&gt;&lt;/p&gt;
 </description>

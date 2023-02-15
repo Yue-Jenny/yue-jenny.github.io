@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Replication And Sharding 前言 Replication 目的是建立一個高可用的資料庫架構 可以選擇同步或非同步的方式進行 main 與 replication 資料庫的同步方式 Sharding 目的是為了建立高吞吐量的資料庫架構 達成 sharding 的策略有 hashing strategy 使用不同 table (需要確認資料夠 unitform) 存取 參考資料 👐 system experts 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Replication And Sharding 前言 Replication 目的是建立一個高可用的資料庫架構 可以選擇同步或非同步的方式進行 main 與 replication 資料庫的同步方式 Sharding 目的是為了建立高吞吐量的資料庫架構 透過將資料切片，存在不同的節點，可減少對一個節點太多次存取資料造成的負擔，換句話說，即能增加吞吐量 達成 sharding 的策略有 hashing strategy，此部分相關議題為 Consistent Hashing 使用不同 table (需要確認資料夠 unitform) 存取 參考資料 👐 system experts How to Use Consistent Hashing in a System Design Interview? 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵'>
 <title>系統設計基礎筆記(十) Replication And Sharding</title>
 
 <link rel='canonical' href='https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%8D%81-replication-and-sharding/'>
 
 <link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='系統設計基礎筆記(十) Replication And Sharding'>
-<meta property='og:description' content='Replication And Sharding 前言 Replication 目的是建立一個高可用的資料庫架構 可以選擇同步或非同步的方式進行 main 與 replication 資料庫的同步方式 Sharding 目的是為了建立高吞吐量的資料庫架構 達成 sharding 的策略有 hashing strategy 使用不同 table (需要確認資料夠 unitform) 存取 參考資料 👐 system experts 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵'>
+<meta property='og:description' content='Replication And Sharding 前言 Replication 目的是建立一個高可用的資料庫架構 可以選擇同步或非同步的方式進行 main 與 replication 資料庫的同步方式 Sharding 目的是為了建立高吞吐量的資料庫架構 透過將資料切片，存在不同的節點，可減少對一個節點太多次存取資料造成的負擔，換句話說，即能增加吞吐量 達成 sharding 的策略有 hashing strategy，此部分相關議題為 Consistent Hashing 使用不同 table (需要確認資料夠 unitform) 存取 參考資料 👐 system experts How to Use Consistent Hashing in a System Design Interview? 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵'>
 <meta property='og:url' content='https://yue-jenny.github.io/2023/02/%E7%B3%BB%E7%B5%B1%E8%A8%AD%E8%A8%88%E5%9F%BA%E7%A4%8E%E7%AD%86%E8%A8%98%E5%8D%81-replication-and-sharding/'>
 <meta property='og:site_name' content='Jenny blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='Replication And Sharding' /><meta property='article:published_time' content='2023-02-14T15:00:24&#43;08:00'/><meta property='article:modified_time' content='2023-02-14T15:00:24&#43;08:00'/>
 <meta name="twitter:title" content="系統設計基礎筆記(十) Replication And Sharding">
-<meta name="twitter:description" content="Replication And Sharding 前言 Replication 目的是建立一個高可用的資料庫架構 可以選擇同步或非同步的方式進行 main 與 replication 資料庫的同步方式 Sharding 目的是為了建立高吞吐量的資料庫架構 達成 sharding 的策略有 hashing strategy 使用不同 table (需要確認資料夠 unitform) 存取 參考資料 👐 system experts 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵">
+<meta name="twitter:description" content="Replication And Sharding 前言 Replication 目的是建立一個高可用的資料庫架構 可以選擇同步或非同步的方式進行 main 與 replication 資料庫的同步方式 Sharding 目的是為了建立高吞吐量的資料庫架構 透過將資料切片，存在不同的節點，可減少對一個節點太多次存取資料造成的負擔，換句話說，即能增加吞吐量 達成 sharding 的策略有 hashing strategy，此部分相關議題為 Consistent Hashing 使用不同 table (需要確認資料夠 unitform) 存取 參考資料 👐 system experts How to Use Consistent Hashing in a System Design Interview? 🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵">
     <link rel="shortcut icon" href="/leaves.png" />
 
 
@@ -323,9 +323,11 @@
 <h3 id="sharding">Sharding</h3>
 <ul>
 <li>目的是為了建立<strong>高吞吐量</strong>的資料庫架構</li>
+<li>透過將資料切片，存在不同的節點，可減少對一個節點太多次存取資料造成的負擔，換句話說，即能增加吞吐量</li>
 <li>達成 sharding 的策略有
 <ul>
-<li>hashing strategy</li>
+<li>hashing strategy，此部分相關議題為 <a class="link" href="https://dev.to/arslan_ah/how-to-use-consistent-hashing-in-a-system-design-interview-33ge"  target="_blank" rel="noopener"
+    >Consistent Hashing</a></li>
 <li>使用不同 table (需要確認資料夠 unitform) 存取</li>
 </ul>
 </li>
@@ -333,6 +335,8 @@
 <h2 id="參考資料-">參考資料 👐</h2>
 <ul>
 <li>system experts</li>
+<li><a class="link" href="https://dev.to/arslan_ah/how-to-use-consistent-hashing-in-a-system-design-interview-33ge"  target="_blank" rel="noopener"
+    >How to Use Consistent Hashing in a System Design Interview?</a></li>
 </ul>
 <p><strong>🍀 若喜歡我的分享，可以幫我拍拍手👏，是對我最大的鼓勵</strong></p>
 
