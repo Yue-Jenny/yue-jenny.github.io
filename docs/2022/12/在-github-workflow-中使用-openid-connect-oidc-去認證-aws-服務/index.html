@@ -13,7 +13,7 @@
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='AWS' /><meta property='article:tag' content='OIDC' /><meta property='article:tag' content='Github workflows' /><meta property='article:published_time' content='2022-12-29T14:32:24&#43;08:00'/><meta property='article:modified_time' content='2022-12-29T14:32:24&#43;08:00'/>
 <meta name="twitter:title" content="在 Github workflow 中使用 OpenID Connect (OIDC) 去認證 AWS 服務">
 <meta name="twitter:description" content="OpenID Connect (OIDC) 介紹 前言 OIDC 全名為 OpenID Connect，是一種可以 access AWS resources，但不需要存取 AWS credentials 當作 long-lived GitHub secrets 的驗證方式。 官方建議的驗證方式。 OIDC 優點 - 很好的安全實踐 (good security practices) No cloud secrets 不需要以 cloud credentials 當作 long-lived GitHub secrets 在 cloud provider 設定好 OIDC trust，github workflows 就可以利用 OIDC 從 cloud provider 取得一組 short-lived access token Authentication and authorization management 透過 cloud provider 的 authentication (authN) 與 authorization (authZ) 工具能夠控制取得 cloud resources 能更小粒度地控制 workflows 如何使用 credentials Rotating credentials cloud provider 提供一組 short-lived access token 給一個 job，使用完畢後會自動過期。 OIDC 的運作方式與信任機制 運作方式 主要是兩個角色的互動，分別為 Cloud Provider 與 Github OIDC Provider 互動過程 : In your cloud provider, create an OIDC trust between your cloud role and your GitHub workflow(s) that need access to the cloud.">
-    <link rel="shortcut icon" href="/leaves.png" />
+    <link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
 
 
 <style>
