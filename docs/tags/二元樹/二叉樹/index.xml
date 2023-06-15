@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>二元樹/二叉樹 on Jenny blog</title>
+        <link>https://yue-jenny.github.io/tags/%E4%BA%8C%E5%85%83%E6%A8%B9/%E4%BA%8C%E5%8F%89%E6%A8%B9/</link>
+        <description>Recent content in 二元樹/二叉樹 on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language><atom:link href="https://yue-jenny.github.io/tags/%E4%BA%8C%E5%85%83%E6%A8%B9/%E4%BA%8C%E5%8F%89%E6%A8%B9/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>常見的二元樹（二叉樹）遍歷方式</title>
+        <link>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</link>
+        <pubDate>Thu, 15 Jun 2023 11:14:41 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;二元樹&#34;&gt;二元樹&lt;/h2&gt;
+&lt;p&gt;二元樹是一種常見的資料結構，由節點和指向左右子節點的指標組成。&lt;br&gt;
+遍歷二元樹是指按照一定的順序訪問二元樹中的所有節點。&lt;br&gt;
+常見的二元樹遍歷方式有三種：前序遍歷、中序遍歷和後序遍歷。&lt;/p&gt;
+&lt;p&gt;下面會逐一介紹它們的形式。&lt;/p&gt;
+&lt;h2 id=&#34;前序遍歷preorder-traversal&#34;&gt;前序遍歷（Preorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;前序遍歷&lt;strong&gt;先訪問根節點&lt;/strong&gt;，然後按照先左後右的順序遞歸地遍歷左子樹和右子樹。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地前序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地前序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;中序遍歷inorder-traversal&#34;&gt;中序遍歷（Inorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;中序遍歷先按照先左後右的順序遞歸地遍歷左子樹，然後&lt;strong&gt;中間過程中訪問根節點&lt;/strong&gt;，最後遞歸地遍歷右子樹。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;遞歸地中序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地中序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;後序遍歷postorder-traversal&#34;&gt;後序遍歷（Postorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;後序遍歷先按照先左後右的順序遞歸地遍歷左子樹和右子樹，然後&lt;strong&gt;最後訪問根節點&lt;/strong&gt;。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;遞歸地後序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地後序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;總結&#34;&gt;總結&lt;/h2&gt;
+&lt;p&gt;需要注意的是，以上&lt;strong&gt;三種遍歷方式都是深度優先搜索&lt;/strong&gt;（DFS）的一種形式，因為它們在遍歷時會盡可能深地訪問子節點。&lt;/p&gt;
+&lt;p&gt;此外，還有一種廣度優先搜索（BFS）的遍歷方式，即層序遍歷，它按照從上到下、從左到右的順序逐層遍歷二元樹的節點。&lt;/p&gt;
+&lt;p&gt;｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/&#34; &gt;點這邊看，如何實現二叉樹中序遍歷&lt;/a&gt;&lt;br&gt;
+｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/&#34; &gt;點這邊看，如何實現二叉樹前序遍歷&lt;/a&gt;&lt;br&gt;
+｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/&#34; &gt;點這邊看，如何實現二叉樹後序遍歷&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>常見的二元樹（二叉樹）遍歷方式</title>
+        <link>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</link>
+        <pubDate>Thu, 15 Jun 2023 11:14:41 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;二元樹&#34;&gt;二元樹&lt;/h2&gt;
+&lt;p&gt;二元樹是一種常見的資料結構，由節點和指向左右子節點的指標組成。&lt;br&gt;
+遍歷二元樹是指按照一定的順序訪問二元樹中的所有節點。&lt;br&gt;
+常見的二元樹遍歷方式有三種：前序遍歷、中序遍歷和後序遍歷。&lt;/p&gt;
+&lt;p&gt;下面會逐一介紹它們的形式。&lt;/p&gt;
+&lt;h2 id=&#34;前序遍歷preorder-traversal&#34;&gt;前序遍歷（Preorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;前序遍歷&lt;strong&gt;先訪問根節點&lt;/strong&gt;，然後按照先左後右的順序遞歸地遍歷左子樹和右子樹。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地前序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地前序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;中序遍歷inorder-traversal&#34;&gt;中序遍歷（Inorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;中序遍歷先按照先左後右的順序遞歸地遍歷左子樹，然後&lt;strong&gt;中間過程中訪問根節點&lt;/strong&gt;，最後遞歸地遍歷右子樹。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;遞歸地中序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地中序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;後序遍歷postorder-traversal&#34;&gt;後序遍歷（Postorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;後序遍歷先按照先左後右的順序遞歸地遍歷左子樹和右子樹，然後&lt;strong&gt;最後訪問根節點&lt;/strong&gt;。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;遞歸地後序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地後序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;總結&#34;&gt;總結&lt;/h2&gt;
+&lt;p&gt;需要注意的是，以上&lt;strong&gt;三種遍歷方式都是深度優先搜索&lt;/strong&gt;（DFS）的一種形式，因為它們在遍歷時會盡可能深地訪問子節點。&lt;/p&gt;
+&lt;p&gt;此外，還有一種廣度優先搜索（BFS）的遍歷方式，即層序遍歷，它按照從上到下、從左到右的順序逐層遍歷二元樹的節點。&lt;/p&gt;
+&lt;p&gt;｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/&#34; &gt;點這邊看，如何實現二叉樹中序遍歷&lt;/a&gt;&lt;br&gt;
+｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/&#34; &gt;點這邊看，如何實現二叉樹前序遍歷&lt;/a&gt;&lt;br&gt;
+｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/&#34; &gt;點這邊看，如何實現二叉樹後序遍歷&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

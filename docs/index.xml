@@ -6,7 +6,254 @@
         <description>Recent content on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 15 Jun 2023 10:16:59 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 15 Jun 2023 22:01:04 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>二元樹（二叉樹）的後序遍歷（Postorder Traversal）</title>
+        <link>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/</link>
+        <pubDate>Thu, 15 Jun 2023 22:01:04 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/</guid>
+        <description>&lt;h2 id=&#34;主題&#34;&gt;主題&lt;/h2&gt;
+&lt;p&gt;後序遍歷（Postorder Traversal）是二叉樹遍歷的一種方式。&lt;br&gt;
+其中節點的順序是先訪問左子樹，然後訪問右子樹，最後訪問根節點。&lt;/p&gt;
+&lt;p&gt;以下是後序遍歷的過程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;檢查當前節點是否為空。如果是空節點，則返回上一層。&lt;/li&gt;
+&lt;li&gt;從當前節點開始，先遞歸地後序遍歷左子樹。&lt;/li&gt;
+&lt;li&gt;接著，遞歸地後序遍歷右子樹。&lt;/li&gt;
+&lt;li&gt;最後，訪問當前節點。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;這個遍歷過程可以使用遞歸或堆疊來實現。&lt;/p&gt;
+&lt;p&gt;以下是一個使用遞歸的後序遍歷的範例：
+假設有以下二叉樹：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;       A
+      / \
+     B   C
+    / \   \
+   D   E   F
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;後序遍歷的結果將是：D, E, B, F, C, A。&lt;/p&gt;
+&lt;p&gt;過程如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;從根節點 A 開始：
+&lt;ul&gt;
+&lt;li&gt;遞歸地後序遍歷左子樹 B。
+&lt;ul&gt;
+&lt;li&gt;遞歸地後序遍歷左子樹 D。
+&lt;ul&gt;
+&lt;li&gt;D 為葉子節點，訪問 D。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;遞歸地後序遍歷右子樹 E。
+&lt;ul&gt;
+&lt;li&gt;E 為葉子節點，訪問 E。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;訪問 B。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;遞歸地後序遍歷右子樹 C。
+&lt;ul&gt;
+&lt;li&gt;遞歸地後序遍歷右子樹 F。
+&lt;ul&gt;
+&lt;li&gt;F 為葉子節點，訪問 F。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;訪問 C。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;訪問 A。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因此，後序遍歷的結果為 D, E, B, F, C, A。&lt;/p&gt;
+&lt;h2 id=&#34;實作&#34;&gt;實作&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 定義二元樹節點的結構
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;constructor&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 後序遍歷函數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;postOrderTraversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;traversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 後序遍歷函數，使用遞迴（recursion）來實作。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;traversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 遍歷左子樹
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;traversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 遍歷右子樹
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;traversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存根節點的值
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 建立二元樹
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *           4
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *          /  \
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *        2     6
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *       / \    / \
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *      1   3  5   7
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *     / \ / \/ \ / \
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *    n  n n nn n n  n
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;), &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;), &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫後序遍歷函數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;postOrderTraversalResult&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;postOrderTraversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;postOrderTraversalResult&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 輸出：[1, 3, 2, 5, 7, 6, 4]
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>二元樹（二叉樹）的前序遍歷（Preorder Traversal）</title>
+        <link>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/</link>
+        <pubDate>Thu, 15 Jun 2023 16:18:30 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/</guid>
+        <description>&lt;h2 id=&#34;前序遍歷preorder-traversal&#34;&gt;前序遍歷（Preorder Traversal）&lt;/h2&gt;
+&lt;p&gt;前序遍歷（Preorder traversal）是一種二叉樹遍歷的方式。&lt;/p&gt;
+&lt;p&gt;在前序遍歷中，首先訪問根節點，然後遞歸地遍歷左子樹，最後遞歸地遍歷右子樹。具體步驟如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;訪問當前節點（根節點）。&lt;/li&gt;
+&lt;li&gt;遞歸地對當前節點的左子樹進行前序遍歷。&lt;/li&gt;
+&lt;li&gt;遞歸地對當前節點的右子樹進行前序遍歷。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;下面是一個前序遍歷的示例，我們以二叉樹的形式展示：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;     A
+    / \
+   B   C
+  / \   \
+ D   E   F
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;前序遍歷的結果是：A -&amp;gt; B -&amp;gt; D -&amp;gt; E -&amp;gt; C -&amp;gt; F&lt;/p&gt;
+&lt;p&gt;解釋過程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;首先訪問根節點 A。&lt;/li&gt;
+&lt;li&gt;然後遞歸地遍歷左子樹，訪問節點 B。&lt;/li&gt;
+&lt;li&gt;繼續遞歸地遍歷左子樹，訪問節點 D。&lt;/li&gt;
+&lt;li&gt;由於節點 D 是葉節點，沒有左子樹或右子樹，因此返回到節點 B。&lt;/li&gt;
+&lt;li&gt;繼續遍歷節點 B 的右子樹，訪問節點 E。&lt;/li&gt;
+&lt;li&gt;由於節點 E 是葉節點，沒有左子樹或右子樹，因此返回到節點 B。&lt;/li&gt;
+&lt;li&gt;返回到根節點 A，開始遍歷右子樹。&lt;/li&gt;
+&lt;li&gt;遍歷右子樹，訪問節點 C。&lt;/li&gt;
+&lt;li&gt;由於節點 C 的左子樹為空，直接遍歷右子樹，訪問節點 F。&lt;/li&gt;
+&lt;li&gt;由於節點 F 是葉節點，沒有左子樹或右子樹，遍歷完成。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因此，前序遍歷的結果是 A -&amp;gt; B -&amp;gt; D -&amp;gt; E -&amp;gt; C -&amp;gt; F。&lt;/p&gt;
+&lt;h2 id=&#34;實作&#34;&gt;實作&lt;/h2&gt;
+&lt;p&gt;以下是以 JavaScript 實現前序遍歷（Preorder Traversal）的程式碼：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 定義二元樹節點的結構
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;constructor&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 前序遍歷函數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;preorderTraversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;traverse&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 輔助函數，用於遞歸遍歷節點
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;traverse&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;node&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;node&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 訪問當前節點的值
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;node&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 遞歸遍歷左子樹
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;traverse&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;node&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 遞歸遍歷右子樹
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;traverse&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;node&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;result&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 創建二叉樹
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *           4
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *          /  \
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *        2     6
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *       / \    / \
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *      1   3  5   7
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *     / \ / \/ \ / \
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *    n  n n nn n n n
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;), &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;), &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;TreeNode&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 執行前序遍歷
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;preOrderTraversalResult&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;preorderTraversal&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;preOrderTraversalResult&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 輸出：[4, 2, 1, 3, 6, 5, 7]
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>常見的二元樹（二叉樹）遍歷方式</title>
+        <link>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</link>
+        <pubDate>Thu, 15 Jun 2023 11:14:41 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</guid>
+        <description>&lt;h2 id=&#34;二元樹&#34;&gt;二元樹&lt;/h2&gt;
+&lt;p&gt;二元樹是一種常見的資料結構，由節點和指向左右子節點的指標組成。&lt;br&gt;
+遍歷二元樹是指按照一定的順序訪問二元樹中的所有節點。&lt;br&gt;
+常見的二元樹遍歷方式有三種：前序遍歷、中序遍歷和後序遍歷。&lt;/p&gt;
+&lt;p&gt;下面會逐一介紹它們的形式。&lt;/p&gt;
+&lt;h2 id=&#34;前序遍歷preorder-traversal&#34;&gt;前序遍歷（Preorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;前序遍歷&lt;strong&gt;先訪問根節點&lt;/strong&gt;，然後按照先左後右的順序遞歸地遍歷左子樹和右子樹。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地前序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地前序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;中序遍歷inorder-traversal&#34;&gt;中序遍歷（Inorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;中序遍歷先按照先左後右的順序遞歸地遍歷左子樹，然後&lt;strong&gt;中間過程中訪問根節點&lt;/strong&gt;，最後遞歸地遍歷右子樹。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;遞歸地中序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地中序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;後序遍歷postorder-traversal&#34;&gt;後序遍歷（Postorder Traversal）：&lt;/h2&gt;
+&lt;p&gt;後序遍歷先按照先左後右的順序遞歸地遍歷左子樹和右子樹，然後&lt;strong&gt;最後訪問根節點&lt;/strong&gt;。具體形式如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;遞歸地後序遍歷&lt;strong&gt;左子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;遞歸地後序遍歷&lt;strong&gt;右子樹&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;訪問&lt;strong&gt;當前節點&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;總結&#34;&gt;總結&lt;/h2&gt;
+&lt;p&gt;需要注意的是，以上&lt;strong&gt;三種遍歷方式都是深度優先搜索&lt;/strong&gt;（DFS）的一種形式，因為它們在遍歷時會盡可能深地訪問子節點。&lt;/p&gt;
+&lt;p&gt;此外，還有一種廣度優先搜索（BFS）的遍歷方式，即層序遍歷，它按照從上到下、從左到右的順序逐層遍歷二元樹的節點。&lt;/p&gt;
+&lt;p&gt;｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/&#34; &gt;點這邊看，如何實現二叉樹中序遍歷&lt;/a&gt;&lt;br&gt;
+｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/&#34; &gt;點這邊看，如何實現二叉樹前序遍歷&lt;/a&gt;&lt;br&gt;
+｜&lt;a class=&#34;link&#34; href=&#34;https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/&#34; &gt;點這邊看，如何實現二叉樹後序遍歷&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>二元樹（二叉樹）的中序遍歷（In-order traversal）</title>
         <link>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/</link>
         <pubDate>Thu, 15 Jun 2023 10:16:59 +0800</pubDate>
