@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://yue-jenny.github.io/</loc>
+    <lastmod>2023-06-15T22:01:04+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
     <loc>https://yue-jenny.github.io/tags/binary-tree/</loc>
     <lastmod>2023-06-15T22:01:04+08:00</lastmod>
     <changefreq>daily</changefreq>
@@ -13,11 +18,6 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/categories/data-structure/</loc>
-    <lastmod>2023-06-15T22:01:04+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/</loc>
     <lastmod>2023-06-15T22:01:04+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
