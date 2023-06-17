@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='題目連結 game-of-life
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='題目連結 289 Game of Life
 題目說明 這道題目是一個模擬遊戲，稱為康威生命遊戲（Conway&amp;rsquo;s Game of Life）。遊戲的主要元素是一個由細胞組成的網格，每個細胞可以是活著的（用1表示）或死亡的（用0表示）。
 遊戲的規則非常簡單，每個細胞與其周圍的八個鄰居（水平、垂直和對角線方向）進行交互作用，根據以下四條規則來決定下一個時刻的狀態：
 如果一個活細胞周圍的活細胞少於兩個，則該細胞會因為人口不足而死亡。 如果一個活細胞周圍有兩個或三個活細胞，則該細胞在下一代中繼續存活。 如果一個活細胞周圍的活細胞超過三個，則該細胞會因為人口過剩而死亡。 如果一個死細胞周圍正好有三個活細胞，則該細胞會因為繁殖而成為活細胞。 下一個時刻的網格狀態是通過同時應用上述規則到當前時刻的每個細胞上來生成的，出生和死亡是同時發生的。題目給定了當前網格的狀態 board，要求返回下一個時刻的狀態。
@@ -16,13 +16,13 @@
 這種方式可以讓我們在遍歷並更新狀態時，仍然可以正確計數周圍原來的生命體數量。
 在完成狀態更新後，程式碼再次遍歷每一個生命體，將之前設置的中間狀態轉換回最終的生或死狀態。
 這樣，我們就完成了生命遊戲的一次迭代。
-實作 /** * @param {number[][]} board * @return {void} Do not return anything, modify board in-place instead. */ let die = 2; let live = 3; var gameOfLife = function (board) { let rowslength = board.length; let colsLength = board[0].'>
+實作 /** * @param {number[][]} board * @return {void} Do not return anything, modify board in-place instead. */ let die = 2; let live = 3; var gameOfLife = function (board) { let rowslength = board.'>
 <title>289 Game of Life</title>
 
 <link rel='canonical' href='https://yue-jenny.github.io/leetcode/289-game-of-life/'>
 
 <link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='289 Game of Life'>
-<meta property='og:description' content='題目連結 game-of-life
+<meta property='og:description' content='題目連結 289 Game of Life
 題目說明 這道題目是一個模擬遊戲，稱為康威生命遊戲（Conway&amp;rsquo;s Game of Life）。遊戲的主要元素是一個由細胞組成的網格，每個細胞可以是活著的（用1表示）或死亡的（用0表示）。
 遊戲的規則非常簡單，每個細胞與其周圍的八個鄰居（水平、垂直和對角線方向）進行交互作用，根據以下四條規則來決定下一個時刻的狀態：
 如果一個活細胞周圍的活細胞少於兩個，則該細胞會因為人口不足而死亡。 如果一個活細胞周圍有兩個或三個活細胞，則該細胞在下一代中繼續存活。 如果一個活細胞周圍的活細胞超過三個，則該細胞會因為人口過剩而死亡。 如果一個死細胞周圍正好有三個活細胞，則該細胞會因為繁殖而成為活細胞。 下一個時刻的網格狀態是通過同時應用上述規則到當前時刻的每個細胞上來生成的，出生和死亡是同時發生的。題目給定了當前網格的狀態 board，要求返回下一個時刻的狀態。
@@ -37,12 +37,12 @@
 這種方式可以讓我們在遍歷並更新狀態時，仍然可以正確計數周圍原來的生命體數量。
 在完成狀態更新後，程式碼再次遍歷每一個生命體，將之前設置的中間狀態轉換回最終的生或死狀態。
 這樣，我們就完成了生命遊戲的一次迭代。
-實作 /** * @param {number[][]} board * @return {void} Do not return anything, modify board in-place instead. */ let die = 2; let live = 3; var gameOfLife = function (board) { let rowslength = board.length; let colsLength = board[0].'>
+實作 /** * @param {number[][]} board * @return {void} Do not return anything, modify board in-place instead. */ let die = 2; let live = 3; var gameOfLife = function (board) { let rowslength = board.'>
 <meta property='og:url' content='https://yue-jenny.github.io/leetcode/289-game-of-life/'>
 <meta property='og:site_name' content='Jenny blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Leetcode' /><meta property='article:tag' content='Leetcode' /><meta property='article:published_time' content='2023-06-16T15:22:12&#43;08:00'/><meta property='article:modified_time' content='2023-06-16T15:22:12&#43;08:00'/>
 <meta name="twitter:title" content="289 Game of Life">
-<meta name="twitter:description" content="題目連結 game-of-life
+<meta name="twitter:description" content="題目連結 289 Game of Life
 題目說明 這道題目是一個模擬遊戲，稱為康威生命遊戲（Conway&amp;rsquo;s Game of Life）。遊戲的主要元素是一個由細胞組成的網格，每個細胞可以是活著的（用1表示）或死亡的（用0表示）。
 遊戲的規則非常簡單，每個細胞與其周圍的八個鄰居（水平、垂直和對角線方向）進行交互作用，根據以下四條規則來決定下一個時刻的狀態：
 如果一個活細胞周圍的活細胞少於兩個，則該細胞會因為人口不足而死亡。 如果一個活細胞周圍有兩個或三個活細胞，則該細胞在下一代中繼續存活。 如果一個活細胞周圍的活細胞超過三個，則該細胞會因為人口過剩而死亡。 如果一個死細胞周圍正好有三個活細胞，則該細胞會因為繁殖而成為活細胞。 下一個時刻的網格狀態是通過同時應用上述規則到當前時刻的每個細胞上來生成的，出生和死亡是同時發生的。題目給定了當前網格的狀態 board，要求返回下一個時刻的狀態。
@@ -57,7 +57,7 @@
 這種方式可以讓我們在遍歷並更新狀態時，仍然可以正確計數周圍原來的生命體數量。
 在完成狀態更新後，程式碼再次遍歷每一個生命體，將之前設置的中間狀態轉換回最終的生或死狀態。
 這樣，我們就完成了生命遊戲的一次迭代。
-實作 /** * @param {number[][]} board * @return {void} Do not return anything, modify board in-place instead. */ let die = 2; let live = 3; var gameOfLife = function (board) { let rowslength = board.length; let colsLength = board[0].">
+實作 /** * @param {number[][]} board * @return {void} Do not return anything, modify board in-place instead. */ let die = 2; let live = 3; var gameOfLife = function (board) { let rowslength = board.">
 <link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
 
 
@@ -376,7 +376,7 @@
     
     <h2 id="題目連結">題目連結</h2>
 <p><a class="link" href="https://leetcode.com/problems/game-of-life/"  target="_blank" rel="noopener"
-    >game-of-life</a></p>
+    >289 Game of Life</a></p>
 <h2 id="題目說明">題目說明</h2>
 <p>這道題目是一個模擬遊戲，稱為康威生命遊戲（Conway&rsquo;s Game of Life）。遊戲的主要元素是一個由細胞組成的網格，每個細胞可以是活著的（用1表示）或死亡的（用0表示）。</p>
 <p>遊戲的規則非常簡單，每個細胞與其周圍的八個鄰居（水平、垂直和對角線方向）進行交互作用，根據以下四條規則來決定下一個時刻的狀態：</p>

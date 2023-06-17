@@ -14,7 +14,7 @@
         <guid>https://yue-jenny.github.io/leetcode/289-game-of-life/</guid>
         <description>&lt;h2 id=&#34;題目連結&#34;&gt;題目連結&lt;/h2&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/game-of-life/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;game-of-life&lt;/a&gt;&lt;/p&gt;
+    &gt;289 Game of Life&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;題目說明&#34;&gt;題目說明&lt;/h2&gt;
 &lt;p&gt;這道題目是一個模擬遊戲，稱為康威生命遊戲（Conway&amp;rsquo;s Game of Life）。遊戲的主要元素是一個由細胞組成的網格，每個細胞可以是活著的（用1表示）或死亡的（用0表示）。&lt;/p&gt;
 &lt;p&gt;遊戲的規則非常簡單，每個細胞與其周圍的八個鄰居（水平、垂直和對角線方向）進行交互作用，根據以下四條規則來決定下一個時刻的狀態：&lt;/p&gt;
