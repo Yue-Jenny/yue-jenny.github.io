@@ -13,7 +13,7 @@
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='System Design Fundamental' /><meta property='article:tag' content='Rate Limiting' /><meta property='article:published_time' content='2023-02-02T10:55:49&#43;08:00'/><meta property='article:modified_time' content='2023-02-02T10:55:49&#43;08:00'/>
 <meta name="twitter:title" content="系統設計基礎筆記(六) Rate Limiting">
 <meta name="twitter:description" content="Rate Limiting Prerequistites DDOS 分散式阻斷服務攻擊（distributed denial-of-service attack）亦稱洪水攻擊 DoS 阻斷服務攻擊（英語：denial-of-service attack） 預防方式是使用 rate limit, 可以限制 IP, 使用者帳戶, 區域等等。 Rate Limiting 意思就是限流 根據維基百科，定義是「控制計算機發送或接收的請求之頻率」 Rate Limiting for Multiple Server use Redis to implement rate limiting for multiple servers Application Layer 如何實現 Rate Limit 實現方式 在 Node.js 裡，有一個用來做限流的 express middleware 叫做 express-rate-limit，可看這篇 缺點 在 API server 裡面自己用 middleware 做限流，雖然這樣做感覺很方便，但也會讓 API server 無法完全專注在業務邏輯上 AWS WAF (Web Application Firewall) 目的是保護您的 Web 應用程式免受常見 Web 入侵程式的危害 運作方式 關於 AWS WAF components Web ACLs">
-    <link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
+<link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
 
 
 <style>

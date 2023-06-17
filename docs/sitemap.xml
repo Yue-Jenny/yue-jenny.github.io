@@ -3,16 +3,41 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-06-15T22:01:04+08:00</lastmod>
+    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/tags/binary-tree/</loc>
-    <lastmod>2023-06-15T22:01:04+08:00</lastmod>
+    <loc>https://yue-jenny.github.io/leetcode/289-game-of-life/</loc>
+    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/categories/</loc>
+    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/leetcode/</loc>
+    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/leetcode/</loc>
+    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/leetcode/</loc>
+    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/binary-tree/</loc>
     <lastmod>2023-06-15T22:01:04+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -28,11 +53,6 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/post/</loc>
-    <lastmod>2023-06-15T22:01:04+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2023-06-15T22:01:04+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
