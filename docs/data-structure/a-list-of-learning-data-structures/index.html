@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='介紹 當你想要學習資料結構時，以下是一些建議的學習列表：
+陣列 (Array): 學習如何使用陣列存儲和訪問資料，以及陣列的基本操作，如插入、刪除和搜尋。
+串列 (Linked List): 學習如何使用串列結構來組織和存儲資料，並理解串列的插入、刪除和搜尋操作。
+堆疊 (Stack): 學習堆疊的概念和操作，包括推入 (push) 和彈出 (pop) 元素，以及堆疊的應用場景。
+佇列 (Queue): 學習佇列的概念和操作，包括入列 (enqueue) 和出列 (dequeue) 元素，以及佇列的應用場景。
+樹 (Tree): 學習樹的基本結構、遍歷方法 (如前序、中序和後序遍歷)，以及二元樹、二元搜索樹和平衡樹等特殊類型的樹。
+圖 (Graph): 學習圖的基本結構和表示方法，以及圖的遍歷、搜索和最短路徑算法，如深度優先搜索 (DFS) 和廣度優先搜索 (BFS)。
+哈希表 (Hash Table): 學習哈希表的原理和實現，理解哈希函數、碰撞解決方法和哈希表的查找和插入操作。
+堆積 (Heap): 學習堆積的概念和操作，包括最大堆和最小堆，以及堆排序和優先級佇列的應用。
+鏈接 (Hashing): 學習散列的概念和操作，包括散列函數、碰撞解決方法和散列表的查找和插入操作。
+圖算法 (Graph Algorithms): 學習常見的圖算法，如最短路徑算法 (如Dijkstra和Bellman-Ford)、最小生成樹算法 (如Prim和Kruskal) 和拓撲排序。
+字典樹 (Trie): 學習字典樹的概念和操作，特別適用於字串搜索和自動補全等應用。
+平衡樹 (Balanced Tree): 學習平衡樹的概念和實現，如紅黑樹和AVL樹，了解平衡樹的插入、刪除和查找操作。
+圖示演算法 (Graphical Algorithms): 學習用於圖示設計和模擬的算法，如迭代深化深度優先搜索 (IDDFS)。
+雜湊圖 (Hashgraph): 學習分佈式共識機制的一種形式，可以實現高性能和安全性的分佈式資料結構。
+高級資料結構 (Advanced Data Structures): 學習一些高級的資料結構，如B&#43;樹、約瑟夫問題、線段樹、樹狀數組等。'>
+<title>當你想要學習資料結構時，以下是一些建議的學習列表</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/data-structure/a-list-of-learning-data-structures/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='當你想要學習資料結構時，以下是一些建議的學習列表'>
+<meta property='og:description' content='介紹 當你想要學習資料結構時，以下是一些建議的學習列表：
+陣列 (Array): 學習如何使用陣列存儲和訪問資料，以及陣列的基本操作，如插入、刪除和搜尋。
+串列 (Linked List): 學習如何使用串列結構來組織和存儲資料，並理解串列的插入、刪除和搜尋操作。
+堆疊 (Stack): 學習堆疊的概念和操作，包括推入 (push) 和彈出 (pop) 元素，以及堆疊的應用場景。
+佇列 (Queue): 學習佇列的概念和操作，包括入列 (enqueue) 和出列 (dequeue) 元素，以及佇列的應用場景。
+樹 (Tree): 學習樹的基本結構、遍歷方法 (如前序、中序和後序遍歷)，以及二元樹、二元搜索樹和平衡樹等特殊類型的樹。
+圖 (Graph): 學習圖的基本結構和表示方法，以及圖的遍歷、搜索和最短路徑算法，如深度優先搜索 (DFS) 和廣度優先搜索 (BFS)。
+哈希表 (Hash Table): 學習哈希表的原理和實現，理解哈希函數、碰撞解決方法和哈希表的查找和插入操作。
+堆積 (Heap): 學習堆積的概念和操作，包括最大堆和最小堆，以及堆排序和優先級佇列的應用。
+鏈接 (Hashing): 學習散列的概念和操作，包括散列函數、碰撞解決方法和散列表的查找和插入操作。
+圖算法 (Graph Algorithms): 學習常見的圖算法，如最短路徑算法 (如Dijkstra和Bellman-Ford)、最小生成樹算法 (如Prim和Kruskal) 和拓撲排序。
+字典樹 (Trie): 學習字典樹的概念和操作，特別適用於字串搜索和自動補全等應用。
+平衡樹 (Balanced Tree): 學習平衡樹的概念和實現，如紅黑樹和AVL樹，了解平衡樹的插入、刪除和查找操作。
+圖示演算法 (Graphical Algorithms): 學習用於圖示設計和模擬的算法，如迭代深化深度優先搜索 (IDDFS)。
+雜湊圖 (Hashgraph): 學習分佈式共識機制的一種形式，可以實現高性能和安全性的分佈式資料結構。
+高級資料結構 (Advanced Data Structures): 學習一些高級的資料結構，如B&#43;樹、約瑟夫問題、線段樹、樹狀數組等。'>
+<meta property='og:url' content='https://yue-jenny.github.io/data-structure/a-list-of-learning-data-structures/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Data-Structure' /><meta property='article:tag' content='Data structure' /><meta property='article:published_time' content='2023-06-17T10:21:51&#43;08:00'/><meta property='article:modified_time' content='2023-06-17T10:21:51&#43;08:00'/>
+<meta name="twitter:title" content="當你想要學習資料結構時，以下是一些建議的學習列表">
+<meta name="twitter:description" content="介紹 當你想要學習資料結構時，以下是一些建議的學習列表：
+陣列 (Array): 學習如何使用陣列存儲和訪問資料，以及陣列的基本操作，如插入、刪除和搜尋。
+串列 (Linked List): 學習如何使用串列結構來組織和存儲資料，並理解串列的插入、刪除和搜尋操作。
+堆疊 (Stack): 學習堆疊的概念和操作，包括推入 (push) 和彈出 (pop) 元素，以及堆疊的應用場景。
+佇列 (Queue): 學習佇列的概念和操作，包括入列 (enqueue) 和出列 (dequeue) 元素，以及佇列的應用場景。
+樹 (Tree): 學習樹的基本結構、遍歷方法 (如前序、中序和後序遍歷)，以及二元樹、二元搜索樹和平衡樹等特殊類型的樹。
+圖 (Graph): 學習圖的基本結構和表示方法，以及圖的遍歷、搜索和最短路徑算法，如深度優先搜索 (DFS) 和廣度優先搜索 (BFS)。
+哈希表 (Hash Table): 學習哈希表的原理和實現，理解哈希函數、碰撞解決方法和哈希表的查找和插入操作。
+堆積 (Heap): 學習堆積的概念和操作，包括最大堆和最小堆，以及堆排序和優先級佇列的應用。
+鏈接 (Hashing): 學習散列的概念和操作，包括散列函數、碰撞解決方法和散列表的查找和插入操作。
+圖算法 (Graph Algorithms): 學習常見的圖算法，如最短路徑算法 (如Dijkstra和Bellman-Ford)、最小生成樹算法 (如Prim和Kruskal) 和拓撲排序。
+字典樹 (Trie): 學習字典樹的概念和操作，特別適用於字串搜索和自動補全等應用。
+平衡樹 (Balanced Tree): 學習平衡樹的概念和實現，如紅黑樹和AVL樹，了解平衡樹的插入、刪除和查找操作。
+圖示演算法 (Graphical Algorithms): 學習用於圖示設計和模擬的算法，如迭代深化深度優先搜索 (IDDFS)。
+雜湊圖 (Hashgraph): 學習分佈式共識機制的一種形式，可以實現高性能和安全性的分佈式資料結構。
+高級資料結構 (Advanced Data Structures): 學習一些高級的資料結構，如B&#43;樹、約瑟夫問題、線段樹、樹狀數組等。">
+<link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/sea_hu957e28357e69ed5691794c4cadc2dc7b_134542_300x0_resize_box_3.png" width="300"
+                            height="225" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🐳</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🐳 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#介紹">介紹</a></li>
+    <li><a href="#總結">總結</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/data-structure/" >
+                Data structure
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/data-structure/a-list-of-learning-data-structures/">當你想要學習資料結構時，以下是一些建議的學習列表</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 17, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="介紹">介紹</h2>
+<p>當你想要學習資料結構時，以下是一些建議的學習列表：</p>
+<ol>
+<li>
+<p>陣列 (Array): 學習如何使用陣列存儲和訪問資料，以及<strong>陣列的基本操作，如插入、刪除和搜尋</strong>。</p>
+</li>
+<li>
+<p>串列 (Linked List): 學習如何使用串列結構來組織和存儲資料，並理解<strong>串列的插入、刪除和搜尋操作</strong>。</p>
+</li>
+<li>
+<p>堆疊 (Stack): 學習堆疊的概念和操作，包括<strong>推入 (push) 和彈出 (pop) 元素</strong>，以及堆疊的應用場景。</p>
+</li>
+<li>
+<p>佇列 (Queue): 學習佇列的概念和操作，包括<strong>入列 (enqueue) 和出列 (dequeue) 元素</strong>，以及佇列的應用場景。</p>
+</li>
+<li>
+<p>樹 (Tree): 學習樹的基本結構、<strong>遍歷方法 (如前序、中序和後序遍歷)</strong>，以及<strong>二元樹、二元搜索樹和平衡樹等</strong>特殊類型的樹。</p>
+</li>
+<li>
+<p>圖 (Graph): 學習圖的基本結構和表示方法，以及<strong>圖的遍歷、搜索和最短路徑算法</strong>，如深度優先搜索 (DFS) 和廣度優先搜索 (BFS)。</p>
+</li>
+<li>
+<p>哈希表 (Hash Table): 學習哈希表的原理和實現，理解哈希函數、<strong>碰撞解決方法</strong>和哈希表的查找和插入操作。</p>
+</li>
+<li>
+<p>堆積 (Heap): 學習堆積的概念和操作，包括<strong>最大堆和最小堆</strong>，以及<strong>堆排序</strong>和<strong>優先級佇列</strong>的應用。</p>
+</li>
+<li>
+<p>鏈接 (Hashing): 學習散列的概念和操作，包括<strong>散列函數、碰撞解決方法和散列表的查找和插入操作</strong>。</p>
+</li>
+<li>
+<p>圖算法 (Graph Algorithms): 學習常見的圖算法，如<strong>最短路徑算法 (如Dijkstra和Bellman-Ford)、最小生成樹算法 (如Prim和Kruskal) 和拓撲排序</strong>。</p>
+</li>
+<li>
+<p>字典樹 (Trie): 學習字典樹的概念和操作，特別適用於<strong>字串搜索和自動補全</strong>等應用。</p>
+</li>
+<li>
+<p>平衡樹 (Balanced Tree): 學習平衡樹的概念和實現，如<strong>紅黑樹和AVL樹</strong>，了解<strong>平衡樹的插入、刪除和查找操作</strong>。</p>
+</li>
+<li>
+<p>圖示演算法 (Graphical Algorithms): 學習用於圖示設計和模擬的算法，如<strong>迭代深化深度優先搜索 (IDDFS)</strong>。</p>
+</li>
+<li>
+<p>雜湊圖 (Hashgraph): 學習分佈式共識機制的一種形式，可以實現高性能和安全性的<strong>分佈式資料結構</strong>。</p>
+</li>
+<li>
+<p>高級資料結構 (Advanced Data Structures): 學習一些高級的資料結構，如<strong>B+樹、約瑟夫問題、線段樹、樹狀數組</strong>等。</p>
+</li>
+</ol>
+<h2 id="總結">總結</h2>
+<p>這些只是一些常見的資料結構，你可以根據自己的興趣和需求進一步深入學習。<br>
+此外，建議你閱讀相關的教科書或參考網上的資源，並通過編寫程式來實踐這些資料結構，以加深你的理解和熟練程度。</p>
+<p><strong>最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/data-structure/">Data structure</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fdata-structure%2fa-list-of-learning-data-structures%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

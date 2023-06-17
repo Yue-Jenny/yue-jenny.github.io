@@ -3,16 +3,41 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/leetcode/289-game-of-life/</loc>
-    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
+    <lastmod>2023-06-17T10:21:51+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/categories/</loc>
+    <lastmod>2023-06-17T10:21:51+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/data-structure/</loc>
+    <lastmod>2023-06-17T10:21:51+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/data-structure/</loc>
+    <lastmod>2023-06-17T10:21:51+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/data-structure/</loc>
+    <lastmod>2023-06-17T10:21:51+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-06-17T10:21:51+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/data-structure/a-list-of-learning-data-structures/</loc>
+    <lastmod>2023-06-17T10:21:51+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/leetcode/289-game-of-life/</loc>
     <lastmod>2023-06-16T15:22:12+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -32,17 +57,7 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
-    <lastmod>2023-06-16T15:22:12+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
     <loc>https://yue-jenny.github.io/tags/binary-tree/</loc>
-    <lastmod>2023-06-15T22:01:04+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/categories/data-structure/</loc>
     <lastmod>2023-06-15T22:01:04+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

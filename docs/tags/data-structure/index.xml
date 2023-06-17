@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Data structure on Jenny blog</title>
+        <link>https://yue-jenny.github.io/tags/data-structure/</link>
+        <description>Recent content in Data structure on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 17 Jun 2023 10:21:51 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/data-structure/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>當你想要學習資料結構時，以下是一些建議的學習列表</title>
+        <link>https://yue-jenny.github.io/data-structure/a-list-of-learning-data-structures/</link>
+        <pubDate>Sat, 17 Jun 2023 10:21:51 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/data-structure/a-list-of-learning-data-structures/</guid>
+        <description>&lt;h2 id=&#34;介紹&#34;&gt;介紹&lt;/h2&gt;
+&lt;p&gt;當你想要學習資料結構時，以下是一些建議的學習列表：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;陣列 (Array): 學習如何使用陣列存儲和訪問資料，以及&lt;strong&gt;陣列的基本操作，如插入、刪除和搜尋&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;串列 (Linked List): 學習如何使用串列結構來組織和存儲資料，並理解&lt;strong&gt;串列的插入、刪除和搜尋操作&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;堆疊 (Stack): 學習堆疊的概念和操作，包括&lt;strong&gt;推入 (push) 和彈出 (pop) 元素&lt;/strong&gt;，以及堆疊的應用場景。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;佇列 (Queue): 學習佇列的概念和操作，包括&lt;strong&gt;入列 (enqueue) 和出列 (dequeue) 元素&lt;/strong&gt;，以及佇列的應用場景。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;樹 (Tree): 學習樹的基本結構、&lt;strong&gt;遍歷方法 (如前序、中序和後序遍歷)&lt;/strong&gt;，以及&lt;strong&gt;二元樹、二元搜索樹和平衡樹等&lt;/strong&gt;特殊類型的樹。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;圖 (Graph): 學習圖的基本結構和表示方法，以及&lt;strong&gt;圖的遍歷、搜索和最短路徑算法&lt;/strong&gt;，如深度優先搜索 (DFS) 和廣度優先搜索 (BFS)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;哈希表 (Hash Table): 學習哈希表的原理和實現，理解哈希函數、&lt;strong&gt;碰撞解決方法&lt;/strong&gt;和哈希表的查找和插入操作。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;堆積 (Heap): 學習堆積的概念和操作，包括&lt;strong&gt;最大堆和最小堆&lt;/strong&gt;，以及&lt;strong&gt;堆排序&lt;/strong&gt;和&lt;strong&gt;優先級佇列&lt;/strong&gt;的應用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;鏈接 (Hashing): 學習散列的概念和操作，包括&lt;strong&gt;散列函數、碰撞解決方法和散列表的查找和插入操作&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;圖算法 (Graph Algorithms): 學習常見的圖算法，如&lt;strong&gt;最短路徑算法 (如Dijkstra和Bellman-Ford)、最小生成樹算法 (如Prim和Kruskal) 和拓撲排序&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;字典樹 (Trie): 學習字典樹的概念和操作，特別適用於&lt;strong&gt;字串搜索和自動補全&lt;/strong&gt;等應用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;平衡樹 (Balanced Tree): 學習平衡樹的概念和實現，如&lt;strong&gt;紅黑樹和AVL樹&lt;/strong&gt;，了解&lt;strong&gt;平衡樹的插入、刪除和查找操作&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;圖示演算法 (Graphical Algorithms): 學習用於圖示設計和模擬的算法，如&lt;strong&gt;迭代深化深度優先搜索 (IDDFS)&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;雜湊圖 (Hashgraph): 學習分佈式共識機制的一種形式，可以實現高性能和安全性的&lt;strong&gt;分佈式資料結構&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;高級資料結構 (Advanced Data Structures): 學習一些高級的資料結構，如&lt;strong&gt;B+樹、約瑟夫問題、線段樹、樹狀數組&lt;/strong&gt;等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;總結&#34;&gt;總結&lt;/h2&gt;
+&lt;p&gt;這些只是一些常見的資料結構，你可以根據自己的興趣和需求進一步深入學習。&lt;br&gt;
+此外，建議你閱讀相關的教科書或參考網上的資源，並通過編寫程式來實踐這些資料結構，以加深你的理解和熟練程度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
