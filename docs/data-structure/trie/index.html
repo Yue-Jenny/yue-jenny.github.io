@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='介紹 Trie（也稱為字典樹或前綴樹）是一種特殊的資料結構，用於高效地存儲和檢索字符串集合。
+該結構的名稱來自於英文單詞「retrieval」的前三個字母。
+Trie 使用一種樹狀結構來組織和存儲字符串。
+每個節點代表一個字元，從根節點到葉節點的路徑形成一個字符串。
+在 Trie 中，共享相同前綴的字符串共用相同的前綴節點，從而實現高效的儲存和檢索。
+Trie 的主要優點是： 前綴匹配：Trie 可以非常快速地進行前綴匹配，這使得它在許多字符串檢索的應用中非常有用。例如，你可以使用 Trie 在一個大型字典中快速查詢以特定前綴開始的單詞。 空間效率：儘管 Trie 在存儲字符串集合時可能需要較多的內存，但當字符串共享相同前綴時，Trie 可以有效地壓縮存儲空間，減少重複數據的存儲。 插入和查詢效率：Trie 的插入和查詢操作的時間複雜度都是 O(m)，其中 m 是字符串的平均長度。這使得 Trie 在需要高效的插入和查詢操作的情況下非常有用。 Trie 的基本結構由節點和指向子節點的指針組成。每個節點包含一個字符和一個指向下一級節點的指針數組（通常是一個數組，索引對應於字符集中的字符）。
+此外，每個節點還可以包含其他有關字符串的訊息，例如計數器或標記，以滿足特定的應用需求。
+基本的插入和查詢操作 Trie 的插入操作非常簡單，只需按照字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符，則創建相應的節點。當達到字符串的結尾時，可以在終止節點中標記該字符串的結束。
+Trie 的查詢操作也很簡單，只需按照要查詢的字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符或到達了 Trie 的結尾，則可以確定該字符串不在 Trie 中。否則，繼續遞歸查找直到字符串的結尾。
+除了基本的插入和查詢操作，Trie 還可以進行前綴匹配、模式匹配和字典排序等操作。
+總之，Trie 是一種非常有用的資料結構，特別適合處理字符串集合和字典應用。
+它提供了高效的插入、查詢和前綴匹配功能，同時具有優秀的空間壓縮性能。
+實作 class TrieNode { constructor() { this.children = {}; this.isEndOfWord = false; } } class Trie { constructor() { this.root = new TrieNode(); } insert(word) { let current = this.'>
+<title>字典樹或前綴樹 Trie</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/data-structure/trie/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='字典樹或前綴樹 Trie'>
+<meta property='og:description' content='介紹 Trie（也稱為字典樹或前綴樹）是一種特殊的資料結構，用於高效地存儲和檢索字符串集合。
+該結構的名稱來自於英文單詞「retrieval」的前三個字母。
+Trie 使用一種樹狀結構來組織和存儲字符串。
+每個節點代表一個字元，從根節點到葉節點的路徑形成一個字符串。
+在 Trie 中，共享相同前綴的字符串共用相同的前綴節點，從而實現高效的儲存和檢索。
+Trie 的主要優點是： 前綴匹配：Trie 可以非常快速地進行前綴匹配，這使得它在許多字符串檢索的應用中非常有用。例如，你可以使用 Trie 在一個大型字典中快速查詢以特定前綴開始的單詞。 空間效率：儘管 Trie 在存儲字符串集合時可能需要較多的內存，但當字符串共享相同前綴時，Trie 可以有效地壓縮存儲空間，減少重複數據的存儲。 插入和查詢效率：Trie 的插入和查詢操作的時間複雜度都是 O(m)，其中 m 是字符串的平均長度。這使得 Trie 在需要高效的插入和查詢操作的情況下非常有用。 Trie 的基本結構由節點和指向子節點的指針組成。每個節點包含一個字符和一個指向下一級節點的指針數組（通常是一個數組，索引對應於字符集中的字符）。
+此外，每個節點還可以包含其他有關字符串的訊息，例如計數器或標記，以滿足特定的應用需求。
+基本的插入和查詢操作 Trie 的插入操作非常簡單，只需按照字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符，則創建相應的節點。當達到字符串的結尾時，可以在終止節點中標記該字符串的結束。
+Trie 的查詢操作也很簡單，只需按照要查詢的字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符或到達了 Trie 的結尾，則可以確定該字符串不在 Trie 中。否則，繼續遞歸查找直到字符串的結尾。
+除了基本的插入和查詢操作，Trie 還可以進行前綴匹配、模式匹配和字典排序等操作。
+總之，Trie 是一種非常有用的資料結構，特別適合處理字符串集合和字典應用。
+它提供了高效的插入、查詢和前綴匹配功能，同時具有優秀的空間壓縮性能。
+實作 class TrieNode { constructor() { this.children = {}; this.isEndOfWord = false; } } class Trie { constructor() { this.root = new TrieNode(); } insert(word) { let current = this.'>
+<meta property='og:url' content='https://yue-jenny.github.io/data-structure/trie/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Data-Structure' /><meta property='article:tag' content='Data structure' /><meta property='article:published_time' content='2023-06-19T14:00:41&#43;08:00'/><meta property='article:modified_time' content='2023-06-19T14:00:41&#43;08:00'/>
+<meta name="twitter:title" content="字典樹或前綴樹 Trie">
+<meta name="twitter:description" content="介紹 Trie（也稱為字典樹或前綴樹）是一種特殊的資料結構，用於高效地存儲和檢索字符串集合。
+該結構的名稱來自於英文單詞「retrieval」的前三個字母。
+Trie 使用一種樹狀結構來組織和存儲字符串。
+每個節點代表一個字元，從根節點到葉節點的路徑形成一個字符串。
+在 Trie 中，共享相同前綴的字符串共用相同的前綴節點，從而實現高效的儲存和檢索。
+Trie 的主要優點是： 前綴匹配：Trie 可以非常快速地進行前綴匹配，這使得它在許多字符串檢索的應用中非常有用。例如，你可以使用 Trie 在一個大型字典中快速查詢以特定前綴開始的單詞。 空間效率：儘管 Trie 在存儲字符串集合時可能需要較多的內存，但當字符串共享相同前綴時，Trie 可以有效地壓縮存儲空間，減少重複數據的存儲。 插入和查詢效率：Trie 的插入和查詢操作的時間複雜度都是 O(m)，其中 m 是字符串的平均長度。這使得 Trie 在需要高效的插入和查詢操作的情況下非常有用。 Trie 的基本結構由節點和指向子節點的指針組成。每個節點包含一個字符和一個指向下一級節點的指針數組（通常是一個數組，索引對應於字符集中的字符）。
+此外，每個節點還可以包含其他有關字符串的訊息，例如計數器或標記，以滿足特定的應用需求。
+基本的插入和查詢操作 Trie 的插入操作非常簡單，只需按照字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符，則創建相應的節點。當達到字符串的結尾時，可以在終止節點中標記該字符串的結束。
+Trie 的查詢操作也很簡單，只需按照要查詢的字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符或到達了 Trie 的結尾，則可以確定該字符串不在 Trie 中。否則，繼續遞歸查找直到字符串的結尾。
+除了基本的插入和查詢操作，Trie 還可以進行前綴匹配、模式匹配和字典排序等操作。
+總之，Trie 是一種非常有用的資料結構，特別適合處理字符串集合和字典應用。
+它提供了高效的插入、查詢和前綴匹配功能，同時具有優秀的空間壓縮性能。
+實作 class TrieNode { constructor() { this.children = {}; this.isEndOfWord = false; } } class Trie { constructor() { this.root = new TrieNode(); } insert(word) { let current = this.">
+<link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/sea_hu957e28357e69ed5691794c4cadc2dc7b_134542_300x0_resize_box_3.png" width="300"
+                            height="225" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🐳</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🐳 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#介紹">介紹</a>
+      <ul>
+        <li><a href="#trie-的主要優點是">Trie 的主要優點是：</a></li>
+        <li><a href="#基本的插入和查詢操作">基本的插入和查詢操作</a></li>
+      </ul>
+    </li>
+    <li><a href="#實作">實作</a>
+      <ul>
+        <li><a href="#說明">說明</a></li>
+      </ul>
+    </li>
+    <li><a href="#總結">總結</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/data-structure/" >
+                Data structure
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/data-structure/trie/">字典樹或前綴樹 Trie</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 19, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="介紹">介紹</h2>
+<p>Trie（也稱為字典樹或前綴樹）是一種特殊的資料結構，用於高效地存儲和檢索字符串集合。<br>
+該結構的名稱來自於英文單詞「retrieval」的前三個字母。</p>
+<p>Trie 使用一種<strong>樹狀結構</strong>來組織和存儲字符串。<br>
+<strong>每個節點代表一個字元</strong>，從根節點到葉節點的路徑形成一個字符串。<br>
+在 Trie 中，<strong>共享相同前綴的字符串</strong>共用相同的前綴節點，從而實現高效的儲存和檢索。</p>
+<h3 id="trie-的主要優點是">Trie 的主要優點是：</h3>
+<ol>
+<li>前綴匹配：Trie 可以非常快速地進行前綴匹配，這使得它在許多字符串檢索的應用中非常有用。例如，你可以使用 Trie 在一個大型字典中快速查詢以特定前綴開始的單詞。</li>
+<li><strong>空間效率</strong>：儘管 Trie 在存儲字符串集合時可能需要較多的內存，但當字符串共享相同前綴時，Trie 可以有效地壓縮存儲空間，減少重複數據的存儲。</li>
+<li>插入和查詢效率：Trie 的插入和查詢操作的時間複雜度都是 O(m)，其中 m 是字符串的平均長度。這使得 Trie 在需要高效的插入和查詢操作的情況下非常有用。</li>
+</ol>
+<p>Trie 的基本結構由節點和指向子節點的指針組成。每個節點包含一個字符和一個指向下一級節點的指針數組（通常是一個數組，索引對應於字符集中的字符）。<br>
+此外，每個節點還可以<strong>包含其他有關字符串的訊息</strong>，例如計數器或標記，以滿足特定的應用需求。</p>
+<h3 id="基本的插入和查詢操作">基本的插入和查詢操作</h3>
+<ol>
+<li>
+<p>Trie 的插入操作非常簡單，只需按照字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符，則創建相應的節點。當達到字符串的結尾時，可以在終止節點中標記該字符串的結束。</p>
+</li>
+<li>
+<p>Trie 的查詢操作也很簡單，只需按照要查詢的字符串的每個字符在 Trie 中進行遞歸查找。如果遇到缺少的字符或到達了 Trie 的結尾，則可以確定該字符串不在 Trie 中。否則，繼續遞歸查找直到字符串的結尾。</p>
+</li>
+</ol>
+<p>除了基本的插入和查詢操作，Trie 還可以進行前綴匹配、模式匹配和字典排序等操作。</p>
+<p>總之，Trie 是一種非常有用的資料結構，特別適合處理字符串集合和字典應用。<br>
+它提供了高效的插入、查詢和前綴匹配功能，同時具有優秀的空間壓縮性能。</p>
+<h2 id="實作">實作</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TrieNode</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">constructor</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">children</span> <span style="color:#f92672">=</span> {};
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">isEndOfWord</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Trie</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">constructor</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">root</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TrieNode</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">word</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">current</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">root</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">word</span>.<span style="color:#a6e22e">length</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">word</span>[<span style="color:#a6e22e">i</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">children</span>[<span style="color:#66d9ef">char</span>]) {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">children</span>[<span style="color:#66d9ef">char</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">TrieNode</span>();
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">current</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">children</span>[<span style="color:#66d9ef">char</span>];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">isEndOfWord</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">search</span>(<span style="color:#a6e22e">word</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">current</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">root</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">word</span>.<span style="color:#a6e22e">length</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">word</span>[<span style="color:#a6e22e">i</span>];
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">children</span>[<span style="color:#66d9ef">char</span>]) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;<span style="color:#75715e">// 字符不存在，該字符串不在 Trie 中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">current</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">children</span>[<span style="color:#66d9ef">char</span>];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">isEndOfWord</span>;<span style="color:#75715e">// 判斷是否為一個完整的單詞
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">startsWith</span>(<span style="color:#a6e22e">prefix</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">current</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">root</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">prefix</span>.<span style="color:#a6e22e">length</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">prefix</span>[<span style="color:#a6e22e">i</span>];
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">children</span>[<span style="color:#66d9ef">char</span>]) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>; <span style="color:#75715e">// 字符不存在，該前綴不在 Trie 中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">current</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">current</span>.<span style="color:#a6e22e">children</span>[<span style="color:#66d9ef">char</span>];
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>; <span style="color:#75715e">// 所有前綴字符都存在於 Trie 中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用示例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">trie</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Trie</span>();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#e6db74">&#34;apple&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#e6db74">&#34;banana&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">insert</span>(<span style="color:#e6db74">&#34;cat&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">trie</span>));
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">{&#34;root&#34;:{&#34;children&#34;:{
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">&#34;a&#34;:{&#34;children&#34;:{&#34;p&#34;:{&#34;children&#34;:{&#34;p&#34;:{&#34;children&#34;:{&#34;l&#34;:{&#34;children&#34;:{&#34;e&#34;:{&#34;children&#34;:{},&#34;isEndOfWord&#34;:true}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false},
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">&#34;b&#34;:{&#34;children&#34;:{&#34;a&#34;:{&#34;children&#34;:{&#34;n&#34;:{&#34;children&#34;:{&#34;a&#34;:{&#34;children&#34;:{&#34;n&#34;:{&#34;children&#34;:{&#34;a&#34;:{&#34;children&#34;:{},&#34;isEndOfWord&#34;:true}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false},
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">&#34;c&#34;:{&#34;children&#34;:{&#34;a&#34;:{&#34;children&#34;:{&#34;t&#34;:{&#34;children&#34;:{},&#34;isEndOfWord&#34;:true}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false}},&#34;isEndOfWord&#34;:false}}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">search</span>(<span style="color:#e6db74">&#34;apple&#34;</span>)); <span style="color:#75715e">// true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">search</span>(<span style="color:#e6db74">&#34;banana&#34;</span>)); <span style="color:#75715e">// true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">search</span>(<span style="color:#e6db74">&#34;cat&#34;</span>)); <span style="color:#75715e">// true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">search</span>(<span style="color:#e6db74">&#34;dog&#34;</span>)); <span style="color:#75715e">// false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">startsWith</span>(<span style="color:#e6db74">&#34;app&#34;</span>)); <span style="color:#75715e">// true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">startsWith</span>(<span style="color:#e6db74">&#34;ban&#34;</span>)); <span style="color:#75715e">// true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">startsWith</span>(<span style="color:#e6db74">&#34;ca&#34;</span>)); <span style="color:#75715e">// true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">trie</span>.<span style="color:#a6e22e">startsWith</span>(<span style="color:#e6db74">&#34;do&#34;</span>)); <span style="color:#75715e">// false
+</span></span></span></code></pre></div><h3 id="說明">說明</h3>
+<ul>
+<li>
+<p>在 insert 方法中，我們從根節點開始遍歷 Trie。對於要插入的每個字符，我們檢查它是否已經在當前節點的子節點中存在。<br>
+如果不存在，我們創建一個新的節點並將其添加到子節點中。然後，我們將當前節點移至新創建的節點，繼續處理下一個字符。<br>
+當處理完所有字符後，我們將最後一個字符的 isEndOfWord 屬性設置為 true，以標記字符串的結束。</p>
+</li>
+<li>
+<p>search 方法用於檢查給定的字符串是否存在於 Trie 中。我們從根節點開始遍歷 Trie，對於字符串的每個字符，我們檢查它是否存在於當前節點的子節點中。<br>
+如果遍歷完所有字符後，最後一個節點的 isEndOfWord 屬性為 true，則表示該字符串存在於 Trie 中。</p>
+</li>
+<li>
+<p>startsWith 方法用於檢查是否存在以給定前綴開頭的字符串。過程與 search 方法類似，我們遍歷前綴的每個字符，檢查它們是否存在於當前節點的子節點中。<br>
+如果遍歷完所有前綴字符後，所有字符都存在於 Trie 中，則表示該前綴存在。</p>
+</li>
+</ul>
+<h2 id="總結">總結</h2>
+<ol>
+<li>Trie 來自於英文單詞「retrieval」，用於高效地存儲和檢索字符串集合。</li>
+<li>每個節點代表一個字符，以及從根節點到葉節點的路徑形成一個字符串。同時，共享相同前綴的字符串共用相同的前綴節點。</li>
+<li>關於 Trie 的優點：前綴匹配、空間效率，以及插入和查詢效率。</li>
+<li>您對 Trie 節點的組成以及 Trie 插入和查詢操作的描述。</li>
+<li>Trie 確實可以進行前綴匹配、模式匹配和字典排序等高級操作。</li>
+<li>是一種非常有用的資料結構，特別適合處理字符串集合和字典應用，具有高效的插入、查詢和前綴匹配功能，同時具有優秀的空間壓縮性能。</li>
+</ol>
+<p><strong>最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/data-structure/">Data structure</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fdata-structure%2ftrie%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/data-structure/a-list-of-learning-data-structures/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">當你想要學習資料結構時，以下是一些建議的學習列表</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
