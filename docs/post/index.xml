@@ -7,11 +7,11 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Thu, 15 Jun 2023 22:01:04 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>二元樹（二叉樹）的後序遍歷（Postorder Traversal）</title>
-        <link>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/</link>
+        <title>資料結構：二元樹（二叉樹）的後序遍歷（Postorder Traversal）</title>
+        <link>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/</link>
         <pubDate>Thu, 15 Jun 2023 22:01:04 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/</guid>
+        <guid>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%BE%8C%E5%BA%8F%E9%81%8D%E6%AD%B7postorder-traversal/</guid>
         <description>&lt;h2 id=&#34;主題&#34;&gt;主題&lt;/h2&gt;
 &lt;p&gt;後序遍歷（Postorder Traversal）是二叉樹遍歷的一種方式。&lt;br&gt;
 其中節點的順序是先訪問左子樹，然後訪問右子樹，最後訪問根節點。&lt;/p&gt;
@@ -121,11 +121,11 @@
 </description>
         </item>
         <item>
-        <title>二元樹（二叉樹）的前序遍歷（Preorder Traversal）</title>
-        <link>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/</link>
+        <title>資料結構：二元樹（二叉樹）的前序遍歷（Preorder Traversal）</title>
+        <link>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/</link>
         <pubDate>Thu, 15 Jun 2023 16:18:30 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/</guid>
+        <guid>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E5%89%8D%E5%BA%8F%E9%81%8D%E6%AD%B7preorder-traversal/</guid>
         <description>&lt;h2 id=&#34;前序遍歷preorder-traversal&#34;&gt;前序遍歷（Preorder Traversal）&lt;/h2&gt;
 &lt;p&gt;前序遍歷（Preorder traversal）是一種二叉樹遍歷的方式。&lt;/p&gt;
 &lt;p&gt;在前序遍歷中，首先訪問根節點，然後遞歸地遍歷左子樹，最後遞歸地遍歷右子樹。具體步驟如下：&lt;/p&gt;
@@ -213,11 +213,11 @@
 </description>
         </item>
         <item>
-        <title>常見的二元樹（二叉樹）遍歷方式</title>
-        <link>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</link>
+        <title>資料結構：常見的二元樹（二叉樹）遍歷方式</title>
+        <link>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</link>
         <pubDate>Thu, 15 Jun 2023 11:14:41 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</guid>
+        <guid>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</guid>
         <description>&lt;h2 id=&#34;二元樹&#34;&gt;二元樹&lt;/h2&gt;
 &lt;p&gt;二元樹是一種常見的資料結構，由節點和指向左右子節點的指標組成。&lt;br&gt;
 遍歷二元樹是指按照一定的順序訪問二元樹中的所有節點。&lt;br&gt;
@@ -254,11 +254,11 @@
 </description>
         </item>
         <item>
-        <title>二元樹（二叉樹）的中序遍歷（In-order traversal）</title>
-        <link>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/</link>
+        <title>資料結構：二元樹（二叉樹）的中序遍歷（In-order traversal）</title>
+        <link>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/</link>
         <pubDate>Thu, 15 Jun 2023 10:16:59 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/06/%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/</guid>
+        <guid>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E7%9A%84%E4%B8%AD%E5%BA%8F%E9%81%8D%E6%AD%B7in-order-traversal/</guid>
         <description>&lt;h2 id=&#34;中序遍歷&#34;&gt;中序遍歷&lt;/h2&gt;
 &lt;p&gt;中序遍歷（In-order traversal）是一種遍歷二叉樹的方法，其順序為先遍歷左子樹，然後訪問根節點，最後遍歷右子樹。&lt;/p&gt;
 &lt;p&gt;下面是中序遍歷的詳細過程：&lt;/p&gt;

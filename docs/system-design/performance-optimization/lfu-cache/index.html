@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='介紹 LFU（Least Frequently Used）快取是一種用於緩存（cache）中數據替換的算法。
+它的基本思想是，當緩存空間不足時，優先移除那些最少被使用的數據，以便為新的數據騰出空間。
+LFU快取跟其他替換算法（如LRU）不同，它不僅考慮數據的訪問頻率，還考慮了每個數據的實際使用次數。每當數據被訪問時，其相應的使用計數器會增加。當緩存空間不足時，LFU快取將選擇使用計數器值最小的數據進行替換。
+以下是LFU快取的基本操作流程：
+初始化：設定緩存的最大容量和空的緩存數據結構。 存儲數據：當數據要存入緩存時，首先檢查數據是否已存在於緩存中。如果是，則增加相應的使用計數器值；如果不是，則將數據添加到緩存中並將其使用計數器初始化為1。 訪問數據：當數據被訪問時，相應的使用計數器增加1。 替換數據：當緩存空間不足時，找到使用計數器值最小的數據進行替換。如果有多個數據具有相同的最小使用計數器值，則選擇最早被存儲的那個進行替換。 更新緩存：如果緩存中的數據發生變化（新增、訪問或替換），需要相應地更新緩存數據結構。 LFU快取的優點是能有效地保留那些被頻繁訪問的數據，並且在緩存空間不足時優先替換那些較少使用的數據，從而提高緩存的效率。然而，LFU快取也有一些限制，例如計數器可能受到訪問模式的影響，並且需要額外的存儲空間來維護使用計數器。因此，在實際應用中，需要仔細考慮數據訪問模式以及性能和存儲要求等因素，選擇最適合的緩存替換算法。
+實作 class Node { constructor(key, value) { this.key = key; this.value = value; this.frequency = 1; this.prev = null; this.next = null; } } class DLinkedList { constructor() { // 建立兩個 node，分別為 head 與 tail this.head = new Node(null, null); this.tail = new Node(null, null); // head 的 next 指標指向 tail this.head.next = this.tail; // tail 的 prev 指標指向 head this.'>
+<title>效能優化：LFU Cache (Least Frequently Used Cache)</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/system-design/performance-optimization/lfu-cache/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='效能優化：LFU Cache (Least Frequently Used Cache)'>
+<meta property='og:description' content='介紹 LFU（Least Frequently Used）快取是一種用於緩存（cache）中數據替換的算法。
+它的基本思想是，當緩存空間不足時，優先移除那些最少被使用的數據，以便為新的數據騰出空間。
+LFU快取跟其他替換算法（如LRU）不同，它不僅考慮數據的訪問頻率，還考慮了每個數據的實際使用次數。每當數據被訪問時，其相應的使用計數器會增加。當緩存空間不足時，LFU快取將選擇使用計數器值最小的數據進行替換。
+以下是LFU快取的基本操作流程：
+初始化：設定緩存的最大容量和空的緩存數據結構。 存儲數據：當數據要存入緩存時，首先檢查數據是否已存在於緩存中。如果是，則增加相應的使用計數器值；如果不是，則將數據添加到緩存中並將其使用計數器初始化為1。 訪問數據：當數據被訪問時，相應的使用計數器增加1。 替換數據：當緩存空間不足時，找到使用計數器值最小的數據進行替換。如果有多個數據具有相同的最小使用計數器值，則選擇最早被存儲的那個進行替換。 更新緩存：如果緩存中的數據發生變化（新增、訪問或替換），需要相應地更新緩存數據結構。 LFU快取的優點是能有效地保留那些被頻繁訪問的數據，並且在緩存空間不足時優先替換那些較少使用的數據，從而提高緩存的效率。然而，LFU快取也有一些限制，例如計數器可能受到訪問模式的影響，並且需要額外的存儲空間來維護使用計數器。因此，在實際應用中，需要仔細考慮數據訪問模式以及性能和存儲要求等因素，選擇最適合的緩存替換算法。
+實作 class Node { constructor(key, value) { this.key = key; this.value = value; this.frequency = 1; this.prev = null; this.next = null; } } class DLinkedList { constructor() { // 建立兩個 node，分別為 head 與 tail this.head = new Node(null, null); this.tail = new Node(null, null); // head 的 next 指標指向 tail this.head.next = this.tail; // tail 的 prev 指標指向 head this.'>
+<meta property='og:url' content='https://yue-jenny.github.io/system-design/performance-optimization/lfu-cache/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='System-Design' /><meta property='article:tag' content='System Design' /><meta property='article:tag' content='Performance Optimization' /><meta property='article:published_time' content='2023-06-23T14:42:23&#43;08:00'/><meta property='article:modified_time' content='2023-06-23T14:42:23&#43;08:00'/>
+<meta name="twitter:title" content="效能優化：LFU Cache (Least Frequently Used Cache)">
+<meta name="twitter:description" content="介紹 LFU（Least Frequently Used）快取是一種用於緩存（cache）中數據替換的算法。
+它的基本思想是，當緩存空間不足時，優先移除那些最少被使用的數據，以便為新的數據騰出空間。
+LFU快取跟其他替換算法（如LRU）不同，它不僅考慮數據的訪問頻率，還考慮了每個數據的實際使用次數。每當數據被訪問時，其相應的使用計數器會增加。當緩存空間不足時，LFU快取將選擇使用計數器值最小的數據進行替換。
+以下是LFU快取的基本操作流程：
+初始化：設定緩存的最大容量和空的緩存數據結構。 存儲數據：當數據要存入緩存時，首先檢查數據是否已存在於緩存中。如果是，則增加相應的使用計數器值；如果不是，則將數據添加到緩存中並將其使用計數器初始化為1。 訪問數據：當數據被訪問時，相應的使用計數器增加1。 替換數據：當緩存空間不足時，找到使用計數器值最小的數據進行替換。如果有多個數據具有相同的最小使用計數器值，則選擇最早被存儲的那個進行替換。 更新緩存：如果緩存中的數據發生變化（新增、訪問或替換），需要相應地更新緩存數據結構。 LFU快取的優點是能有效地保留那些被頻繁訪問的數據，並且在緩存空間不足時優先替換那些較少使用的數據，從而提高緩存的效率。然而，LFU快取也有一些限制，例如計數器可能受到訪問模式的影響，並且需要額外的存儲空間來維護使用計數器。因此，在實際應用中，需要仔細考慮數據訪問模式以及性能和存儲要求等因素，選擇最適合的緩存替換算法。
+實作 class Node { constructor(key, value) { this.key = key; this.value = value; this.frequency = 1; this.prev = null; this.next = null; } } class DLinkedList { constructor() { // 建立兩個 node，分別為 head 與 tail this.head = new Node(null, null); this.tail = new Node(null, null); // head 的 next 指標指向 tail this.head.next = this.tail; // tail 的 prev 指標指向 head this.">
+<link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/sea_hu957e28357e69ed5691794c4cadc2dc7b_134542_300x0_resize_box_3.png" width="300"
+                            height="225" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🐳</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🐳 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#介紹">介紹</a></li>
+    <li><a href="#實作">實作</a></li>
+    <li><a href="#總結">總結</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/system-design/" >
+                System Design
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/system-design/performance-optimization/lfu-cache/">效能優化：LFU Cache (Least Frequently Used Cache)</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 23, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    3 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="介紹">介紹</h2>
+<p>LFU（Least Frequently Used）快取是一種用於緩存（cache）中數據替換的算法。</p>
+<p>它的基本思想是，<strong>當緩存空間不足時，優先移除那些最少被使用的數據</strong>，以便為新的數據騰出空間。</p>
+<p>LFU快取跟其他替換算法（如LRU）不同，它不僅考慮數據的訪問頻率，還考慮了每個數據的實際使用次數。每當數據被訪問時，其相應的使用計數器會增加。當緩存空間不足時，LFU快取將選擇使用計數器值最小的數據進行替換。</p>
+<p>以下是LFU快取的基本操作流程：</p>
+<ol>
+<li>初始化：設定緩存的最大容量和空的緩存數據結構。</li>
+<li>存儲數據：當數據要存入緩存時，首先檢查數據<strong>是否已存在於緩存中。如果是，則增加相應的使用計數器值</strong>；如果不是，則將數據添加到緩存中並將其使用計數器初始化為1。</li>
+<li>訪問數據：當數據<strong>被訪問</strong>時，相應的使用<strong>計數器增加1</strong>。</li>
+<li>替換數據：當緩存<strong>空間不足</strong>時，<strong>找到使用計數器值最小的數據進行替換</strong>。如果有多個數據具有相同的最小使用計數器值，則選擇最早被存儲的那個進行替換。</li>
+<li>更新緩存：如果緩存中的數據發生變化（新增、訪問或替換），需要相應地更新緩存數據結構。</li>
+</ol>
+<p>LFU快取的優點是<strong>能有效地保留那些被頻繁訪問的數據</strong>，並且在緩存空間不足時優先替換那些較少使用的數據，從而提高緩存的效率。然而，LFU快取也有一些限制，例如<strong>計數器可能受到訪問模式的影響，並且需要額外的存儲空間來維護使用計數器</strong>。因此，在實際應用中，需要仔細考慮數據訪問模式以及性能和存儲要求等因素，選擇最適合的緩存替換算法。</p>
+<h2 id="實作">實作</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">constructor</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">key</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">key</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequency</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DLinkedList</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">constructor</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 建立兩個 node，分別為 head 與 tail
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">head</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Node</span>(<span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Node</span>(<span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// head 的 next 指標指向 tail
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">head</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// tail 的 prev 指標指向 head
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span>.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">head</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">removeNode</span>(<span style="color:#a6e22e">node</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 前一個 node (node.prev) 的 next 指標指向下一個 node (node.next)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">prev</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">next</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 下一個 node (node.next)的 prev 指標指向前一個 node (node.prev)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">next</span>.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">prev</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">addNode</span>(<span style="color:#a6e22e">node</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// node 的 next 指標指向 tail
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// node 的 prev 指標指向 tail 的前一個 node (tail.prev)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span>.<span style="color:#a6e22e">prev</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// tail 的前一個 node (tail.prev) 的 next 指標指向 node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span>.<span style="color:#a6e22e">prev</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// tail 的 prev 指標指向 node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span>.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">removeHead</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">node</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">head</span>.<span style="color:#a6e22e">next</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">removeNode</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">key</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">isEmpty</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">head</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">tail</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LFUCache</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">constructor</span>(<span style="color:#a6e22e">capacity</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">capacity</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">capacity</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">currentSize</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leastFrequency</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">cache</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Map</span>();  <span style="color:#75715e">// store { key : Node }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Map</span>();  <span style="color:#75715e">// store { frequency : DLinkedList }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">key</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">key</span>)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">node</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">key</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">updateFrequency</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">put</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">capacity</span> <span style="color:#f92672">===</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">key</span>)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">node</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">key</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">updateFrequency</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 目前快取數量已經到達最大容量，所以要刪除『最小頻率』且『最舊』的快取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">currentSize</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">capacity</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">leastFrequentList</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">get</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leastFrequency</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">deletedKey</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">leastFrequentList</span>.<span style="color:#a6e22e">removeHead</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">cache</span>.<span style="color:#66d9ef">delete</span>(<span style="color:#a6e22e">deletedKey</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">currentSize</span><span style="color:#f92672">--</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 要建立新的快取，先建立 Node，再來存入 cache 中。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 再來則是存入頻率為 1 的的 frequencyList。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 若沒有頻率為 1 的，建立一個。若有，則新增一個 node。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 並且要將最小頻率設定為 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 還要將目前的快取數量加上 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">node</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Node</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">value</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">cache</span>.<span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">has</span>(<span style="color:#ae81ff">1</span>)) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">set</span>(<span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">DLinkedList</span>());
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">get</span>(<span style="color:#ae81ff">1</span>).<span style="color:#a6e22e">addNode</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leastFrequency</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">currentSize</span><span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param {*} node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * updateFrequency 方法的工作流程如下：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * - 接受一個節點作為參數，這個節點代表一個緩存項。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * - 查找該節點當前的訪問頻率，並找到該頻率對應的雙向鍊表（我們在 frequencyList 中為每個頻率都儲存了一個雙向鍊表，鍊表中的每個節點都是該頻率下的緩存項）。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * - 將這個節點從當前訪問頻率的雙向鍊表中移除。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * - 檢查移除節點後，當前頻率的鍊表是否為空。如果為空，並且該頻率恰好是當前的最小頻率，那麼將最小頻率加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     *   這是因為我們剛剛移除了頻率最低的節點，所以最低頻率需要增加。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * - 將節點的訪問頻率加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * - 將節點加入到新的頻率對應的雙向鍊表中。如果新的頻率還沒有對應的鍊表，那麼建立一個新的鍊表。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 這個方法的主要作用是維護緩存中的訪問頻率資訊，確保我們能夠正確地追蹤和更新每個緩存項的訪問頻率，並且在需要時能夠找到當前訪問頻率最低的緩存項。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 這是實現 LFU 緩存算法的關鍵部分。 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">updateFrequency</span>(<span style="color:#a6e22e">node</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">oldFrequency</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">frequency</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">oldList</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">oldFrequency</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">oldList</span>.<span style="color:#a6e22e">removeNode</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 檢查移除節點後，當前頻率的鍊表是否為空。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 如果為空，並且該頻率恰好是當前的最小頻率，那麼將最小頻率加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 表示 leastFrequency 已經不是最小頻率，往上加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 如果我們將最小頻率增加 1，確實可能會出現沒有對應的 frequencyList 的情況。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 然而，這並不會產生問題，因為 leastFrequency 僅在需要刪除最少使用的節點時（也就是當 put 操作的時候，緩存容量已滿）才會被用到。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 而在這種情況下，由於有新的節點進入，必然會有新的 frequencyList 被創建。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">oldFrequency</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leastFrequency</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">oldList</span>.<span style="color:#a6e22e">isEmpty</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leastFrequency</span><span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 將節點的訪問頻率加 1。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">frequency</span><span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果新的頻率還沒有對應的鍊表，那麼建立一個新的鍊表。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">frequency</span>)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">frequency</span>, <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">DLinkedList</span>());
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 將節點加入到新的頻率對應的雙向鍊表中。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">frequencyList</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">frequency</span>).<span style="color:#a6e22e">addNode</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">lfuCache</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">LFUCache</span>(<span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#39;1&#39;</span>, <span style="color:#e6db74">&#39;1&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#39;2&#39;</span>, <span style="color:#e6db74">&#39;2&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Output: 1&#39;</span>, <span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;1&#39;</span>)); <span style="color:#75715e">// Output: 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#39;3&#39;</span>, <span style="color:#e6db74">&#39;3&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Output: -1&#39;</span>, <span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;2&#39;</span>)); <span style="color:#75715e">// Output: -1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Output: 3&#39;</span>, <span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;3&#39;</span>)); <span style="color:#75715e">// Output: 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#39;4&#39;</span>, <span style="color:#e6db74">&#39;4&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Output: -1&#39;</span>, <span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;1&#39;</span>)); <span style="color:#75715e">// Output: 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Output: 3&#39;</span>, <span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;3&#39;</span>)); <span style="color:#75715e">// Output: 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;Output: 4&#39;</span>, <span style="color:#a6e22e">lfuCache</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#39;4&#39;</span>)); <span style="color:#75715e">// Output: 4
+</span></span></span></code></pre></div><h2 id="總結">總結</h2>
+<p>LFU確實是一種以<strong>使用頻率</strong>作為判斷標準的緩存替換算法，當緩存空間不足時，它將移除最少被使用的數據。<br>
+這種方法可以保證在空間有限的情況下，最常被使用的數據能夠保留在緩存中。然而該算法也有其限制，如計數器可能受到訪問模式的影響，並且需要額外的存儲空間來維護使用計數器。</p>
+<p>所以在實際應用中，需要根據數據訪問模式、性能需求、存儲空間等因素來選擇最適合的緩存替換算法，可能是LFU，也可能是其他如<strong>LRU（Least Recently Used）</strong>、**FIFO（First In, First Out）**等算法。</p>
+<p><strong>最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/system-design/">System Design</a>
+        
+            <a href="/tags/performance-optimization/">Performance Optimization</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fsystem-design%2fperformance-optimization%2flfu-cache%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

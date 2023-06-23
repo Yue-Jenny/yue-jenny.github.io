@@ -7,11 +7,11 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Thu, 15 Jun 2023 11:14:41 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/%E9%81%8D%E6%AD%B7/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>常見的二元樹（二叉樹）遍歷方式</title>
-        <link>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</link>
+        <title>資料結構：常見的二元樹（二叉樹）遍歷方式</title>
+        <link>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</link>
         <pubDate>Thu, 15 Jun 2023 11:14:41 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/2023/06/%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</guid>
+        <guid>https://yue-jenny.github.io/2023/06/%E8%B3%87%E6%96%99%E7%B5%90%E6%A7%8B%E5%B8%B8%E8%A6%8B%E7%9A%84%E4%BA%8C%E5%85%83%E6%A8%B9%E4%BA%8C%E5%8F%89%E6%A8%B9%E9%81%8D%E6%AD%B7%E6%96%B9%E5%BC%8F/</guid>
         <description>&lt;h2 id=&#34;二元樹&#34;&gt;二元樹&lt;/h2&gt;
 &lt;p&gt;二元樹是一種常見的資料結構，由節點和指向左右子節點的指標組成。&lt;br&gt;
 遍歷二元樹是指按照一定的順序訪問二元樹中的所有節點。&lt;br&gt;

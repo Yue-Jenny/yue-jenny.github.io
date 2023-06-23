@@ -7,11 +7,11 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Fri, 23 Jun 2023 14:42:23 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/system-design/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>LFU Cache (Least Frequently Used Cache)</title>
-        <link>https://yue-jenny.github.io/system-design/lfu-cache/</link>
+        <title>效能優化：LFU Cache (Least Frequently Used Cache)</title>
+        <link>https://yue-jenny.github.io/system-design/performance-optimization/lfu-cache/</link>
         <pubDate>Fri, 23 Jun 2023 14:42:23 +0800</pubDate>
         
-        <guid>https://yue-jenny.github.io/system-design/lfu-cache/</guid>
+        <guid>https://yue-jenny.github.io/system-design/performance-optimization/lfu-cache/</guid>
         <description>&lt;h2 id=&#34;介紹&#34;&gt;介紹&lt;/h2&gt;
 &lt;p&gt;LFU（Least Frequently Used）快取是一種用於緩存（cache）中數據替換的算法。&lt;/p&gt;
 &lt;p&gt;它的基本思想是，&lt;strong&gt;當緩存空間不足時，優先移除那些最少被使用的數據&lt;/strong&gt;，以便為新的數據騰出空間。&lt;/p&gt;
