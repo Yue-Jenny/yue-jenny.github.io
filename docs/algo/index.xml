@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Algoes on Jenny blog</title>
+        <link>https://yue-jenny.github.io/algo/</link>
+        <description>Recent content in Algoes on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Mon, 26 Jun 2023 17:12:26 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/algo/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>拜占庭問題 Byzantine Problem</title>
+        <link>https://yue-jenny.github.io/algo/byzantine-problem/</link>
+        <pubDate>Mon, 26 Jun 2023 17:12:26 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/algo/byzantine-problem/</guid>
+        <description>&lt;h2 id=&#34;拜占庭問題-byzantine-problem&#34;&gt;&lt;strong&gt;拜占庭問題 Byzantine Problem&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;拜占庭問題源自電腦科學，尤其是分散式系統的領域。此問題是命名來自於拜占庭將軍的想像問題，&lt;strong&gt;這些將軍被敵人包圍，他們必須達成共識以確定下一步的行動：攻擊或撤退。&lt;strong&gt;他們的&lt;/strong&gt;唯一通訊方式是通過傳遞消息&lt;/strong&gt;，但問題在於，其中&lt;strong&gt;可能有叛徒傳遞假消息，導致非叛徒將軍無法達成共識。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在電腦科學中，這類似於一個分散式系統中的節點必須達成共識，即使有些節點可能故障或行為異常。這種情況可能會導致系統的一部分接受一種結果，而另一部分接受另一種結果，進而無法達成共識。&lt;/p&gt;
+&lt;p&gt;解決拜占庭問題的一種方法是使用&lt;strong&gt;拜占庭容錯（Byzantine Fault Tolerance, BFT）演算法&lt;/strong&gt;。BFT演算法旨在**處理系統中的故障節點，以達到整個系統的共識。**最知名的BFT演算法是拜占庭將軍問題的原始解答 - &lt;strong&gt;羅馬軍團演算法&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;然而，這些算法通常&lt;strong&gt;需要多數的正常節點來達到共識，並且在節點數量大時效率降低。&lt;strong&gt;因此，一種比較現代且廣泛使用的方法是&lt;/strong&gt;使用區塊鏈技術，例如比特幣使用的工作量證明（Proof of Work, PoW）和以太坊等平台使用的權益證明（Proof of Stake, PoS）&lt;/strong&gt;。這些協議能夠在大規模網路中達成共識，並且對抗拜占庭節點。&lt;/p&gt;
+&lt;h3 id=&#34;工作證明proof-of-workpow&#34;&gt;工作證明（Proof of Work，PoW）&lt;/h3&gt;
+&lt;p&gt;工作證明（Proof of Work，PoW）是一種在區塊鏈技術中常用的共識機制。它的目的是確保在新增區塊到區塊鏈上時需要進行一定的計算工作，以驗證該區塊的有效性。Proof of Work 最早是由比特幣的白皮書提出，並成為許多其他加密貨幣所採用的共識機制。&lt;/p&gt;
+&lt;p&gt;在Proof of Work中，節點（或礦工）需要解決一個複雜的數學問題，稱為工作證明。這個問題通常是&lt;strong&gt;一個哈希函數的輸入，並要求找到特定的輸出&lt;/strong&gt;，滿足特定的條件。這個問題的解決過程需要進行大量的計算，而且是具有隨機性的。解決問題的節點被稱為礦工，並且他們需要提供工作證明來證明他們完成了計算工作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;一旦一個節點找到了正確的工作證明，它就可以將該區塊添加到區塊鏈上&lt;/strong&gt;。其他節點可以輕鬆地驗證這個工作證明的有效性，只需將該證明應用於相同的數學問題上即可驗證其正確性。通過這種方式，工作證明確保了節點必須投入一定的計算資源才能添加新的區塊，從而降低了對惡意行為者的攻擊可能性。&lt;/p&gt;
+&lt;p&gt;Proof of Work機制的&lt;strong&gt;一個重要特點是競爭性&lt;/strong&gt;。因為節點們需要解決同一個問題，所以他們之間會進行競爭，以便第一個找到正確的工作證明並添加區塊到區塊鏈上。這也就**意味著礦工必須擁有更多的計算資源（如計算能力和能源）**才能有更高的概率成為下一個添加區塊的節點。&lt;/p&gt;
+&lt;p&gt;儘管Proof of Work是一個有效且廣泛使用的共識機制，但它也存在一些問題。首先，它需要大量的計算能力和能源消耗，這導致了高昂的運營成本。&lt;/p&gt;
+&lt;p&gt;其次，Proof of Work機制也可能引發礦工的中心化問題，因為那些擁有更多計算資源的節點有更高的概率獲得獎勵，這使得礦池（多個礦工共同合作挖礦）形成，有可能導致某些節點集中控制了整個區塊鏈網絡。&lt;/p&gt;
+&lt;p&gt;為了解決這些問題，一些新的共識機制如&lt;strong&gt;Proof of Stake（PoS）&lt;strong&gt;已經被提出並得到應用。PoS機制&lt;/strong&gt;通過節點持有的加密貨幣數量來決定他們添加新區塊的權益，從而減少了計算能力和能源的消耗，並有助於達到更高的去中心化程度。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;權益證明-proof-of-stake-pos&#34;&gt;&lt;strong&gt;權益證明 Proof-Of-Stake, PoS&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;Proof of Stake（PoS）是一種區塊鏈共識機制，與Proof of Work（PoW）相對應。在PoS機制中，&lt;strong&gt;節點被選為下一個區塊的添加者，並且他們的選擇是基於他們所持有的加密貨幣的數量&lt;/strong&gt;，而不是計算能力。&lt;/p&gt;
+&lt;p&gt;在PoS機制中，&lt;strong&gt;持有加密貨幣的節點被稱為權益者（stakers）&lt;/strong&gt;。每個權益者都有機會被選為下一個區塊的添加者，並獲得相應的獎勵。權益者的機會被選中的概率與他們持有的加密貨幣數量成正比，也就是說，持有更多貨幣的節點有更高的概率獲得獎勵。&lt;/p&gt;
+&lt;p&gt;與PoW不同，PoS機制不需要節點進行大量的計算工作。取而代之的是，節點需要在網絡上鎖定一定數量的加密貨幣作為抵押品。這種抵押品的數量反映了權益者在區塊鏈網絡中的參與程度和利益，並且可以作為選擇下一個區塊添加者的依據。&lt;/p&gt;
+&lt;p&gt;PoS機制的&lt;strong&gt;優勢之一是節能和環保&lt;/strong&gt;。由於不需要進行大量的計算工作，PoS消耗的能源較少，這對於環境友好型區塊鏈項目尤其重要。此外，PoS機制減少了中心化的風險，因為節點被選中的概率與他們持有的貨幣數量成正比，而不是與計算能力相關。&lt;/p&gt;
+&lt;p&gt;然而，PoS機制也存在一些挑戰和風險。一個主**要的挑戰是所謂的&amp;quot;Nothing at Stake&amp;quot;問題，即節點可以同時參與多個分支，並在分支間進行雙重花費攻擊。**這是因為在PoS機制中，選擇分支的成本相對較低，而且沒有額外的計算資源需求。&lt;strong&gt;為了解決這個問題，一些PoS區塊鏈項目採取了額外的機制，如罰款或貨幣鎖定期，來防止節點進行惡意行為。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;總的來說，PoS機制提供了一種替代PoW的共識機制，並且具有節能、環保和降低中心化風險的潛力。然而，每種共識機制都有其優點和局限性，適用的具體情況取決於項目的目標、需求和環境條件。&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.samsonhoi.com/386/blockchain-proof-of-stake&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;區塊鏈 Blockchain – 共識機制之權益證明 Proof-Of-Stake - Samson&amp;rsquo;s Blog&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;nothing-at-stake攻擊無損攻擊&#34;&gt;Nothing-at-Stake攻擊（無損攻擊）&lt;/h4&gt;
+&lt;p&gt;Nothing-at-Stake攻擊（無損攻擊）是一種可能出現在Proof of Stake（PoS）共識機制中的攻擊方式。該攻擊利用了PoS機制的特性，使得節點可以在分叉的區塊鏈上同時參與多個分支，而不需要承擔任何成本或風險。&lt;/p&gt;
+&lt;p&gt;在PoS機制中，**權益者（stakers）需要在網絡上鎖定一定數量的加密貨幣作為抵押品，以獲得權益。**當選擇下一個區塊的添加者時，通常是根據權益者所持有的加密貨幣數量來進行選擇。這意味著持有更多貨幣的節點有更高的概率獲得獎勵並添加新的區塊。&lt;/p&gt;
+&lt;p&gt;在Nothing-at-Stake攻擊中，一個權益者可以同時在分叉的區塊鏈上創建多個分支，並在每個分支上添加區塊，而不需要承擔任何成本。這是因為在PoS機制中，選擇分支的成本相對較低，並且節點不需要進行大量的計算工作。因此，一個權益者可以在多個分支上同時參與，並將自己的資源分散到不同的分支中。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;這種攻擊的結果是導致分叉的區塊鏈上存在多個有效的分支，並且權益者可以在每個分支上添加區塊。這會導致區塊鏈的確定性和一致性問題，因為不同的節點可能看到不同的區塊鏈狀態。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Nothing-at-Stake攻擊的解決辦法是**引入額外的機制來防止權益者進行這種攻擊。這些機制可能包括罰款機制或貨幣鎖定期。&lt;strong&gt;罰款機制可以使得權益者在&lt;/strong&gt;同時參與多個分支時面臨損失，**從而降低了進行攻擊的動機。貨幣鎖定期則要求在權益者切換到新的分支之前需要等待一段時間，這樣可以使得分支間的選擇更加明確，並增加攻擊的成本和風險。&lt;/p&gt;
+&lt;p&gt;總結來說，Nothing-at-Stake攻擊是一種利用PoS機制特性的攻擊方式，使得權益者可以在分叉的區塊鏈上同時參與多個分支而不承擔成本。這種攻擊可能導致確定性和一致性問題。為了解決這個問題，需要引入額外的機制來增加攻擊的成本和風險。&lt;/p&gt;
+&lt;h3 id=&#34;拜占庭容錯byzantine-fault-tolerance-bft演算法&#34;&gt;拜占庭容錯（Byzantine Fault Tolerance, BFT）演算法&lt;/h3&gt;
+&lt;p&gt;拜占庭容錯（Byzantine Fault Tolerance, BFT）是一種在分散式計算領域中的演算法，旨在保護系統免於所謂的&lt;strong&gt;拜占庭故障（即使是在有故障或惡意節點的情況下也能達成共識）&lt;/strong&gt;。一個具有拜占庭容錯的系統可以繼續運行，即使一部分節點無法回應，回應錯誤，或者回應惡意信息。&lt;/p&gt;
+&lt;p&gt;BFT演算法通常需要一個協議，來確保所有節點在故障或惡意的干擾下也能達成共識。最為人所知的BFT演算法是&lt;strong&gt;羅馬軍團演算法（the Byzantine Generals&amp;rsquo; Algorithm）&lt;/strong&gt;。該演算法&lt;strong&gt;需要所有節點都能互相通訊，並且只有當超過三分之二的節點是誠實的（即，不是拜占庭節點），系統才能達成共識。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;舉例來說，假設有一個由 4 個節點的系統，其中 1 個是拜占庭節點。在這種情況下，即使拜占庭節點嘗試分散系統的一致性，其他 3 個誠實的節點仍然可以透過他們的協議達成共識。即使有一個節點返回錯誤或惡意的信息，只要有超過一半的節點能達成共識，系統就能繼續運行。&lt;/p&gt;
+&lt;p&gt;然而，該演算法在&lt;strong&gt;面對大規模系統時可能效率不高&lt;/strong&gt;，因為每個節點都必須與其他所有節點通訊。為了解決這一問題，研究人員開發了多種改進的BFT演算法，例如&lt;strong&gt;實用拜占庭容錯（Practical Byzantine Fault Tolerance，PBFT）&lt;strong&gt;等等，這些都是為了&lt;/strong&gt;提高在面對拜占庭故障時的效率和效能&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;拜占庭容錯（Byzantine Fault Tolerance, BFT）是一種在分散式計算中使用的容錯機制，它可以抵禦包括拜占庭故障在內的各種系統故障。&lt;/p&gt;
+&lt;p&gt;所謂的拜占庭故障，指的是在分散式系統中，一部分節點可能不僅發生故障，而且可能會表現出任意的、不可預期的行為，包括傳送錯誤的訊息、拒絕傳送訊息，或者是試圖欺騙系統。由於這種故障的特性，拜占庭容錯的問題被認為是最難的容錯問題之一。&lt;/p&gt;
+&lt;p&gt;實現拜占庭容錯的演算法需要能夠確保，即使在一部分節點發生拜占庭故障的情況下，系統中的其他節點也能達成共識並繼續正確的運作。換句話說，即使有節點嘗試散播錯誤的訊息或者試圖破壞系統，只要有足夠多的節點仍然運作正常，那麼整個系統就能繼續運作並提供正確的服務。&lt;/p&gt;
+&lt;p&gt;實現拜占庭容錯的演算法有許多，其中最著名的可能是&lt;strong&gt;實用拜占庭容錯（Practical Byzantine Fault Tolerance, PBFT）演算法。PBFT透過一種稱為&amp;quot;三階段握手&amp;quot;的過程，確保了系統中的所有節點都能達成共識&lt;/strong&gt;。此外，還有很多其他的演算法，例如 Federated Byzantine Agreement（聯盟拜占庭協議）等等。&lt;/p&gt;
+&lt;p&gt;拜占庭容錯是分散式系統設計的一個重要環節，尤其是在區塊鏈和分散式資料庫等領域。通過實現拜占庭容錯，系統設計者可以確保他們的系統在面對各種故障和攻擊時，都能保持穩定和正確的運作。&lt;/p&gt;
+&lt;h4 id=&#34;實用拜占庭容錯practical-byzantine-fault-tolerancepbft&#34;&gt;實用拜占庭容錯（Practical Byzantine Fault Tolerance，PBFT）&lt;/h4&gt;
+&lt;p&gt;實用拜占庭容錯（Practical Byzantine Fault Tolerance，PBFT）是一種共識算法，旨在解決分散式系統中可能存在的拜占庭錯誤問題。拜占庭錯誤是指在分散式系統中的節點之間存在著任意形式的錯誤行為，&lt;strong&gt;例如節點故障、節點篡改或惡意行為&lt;/strong&gt;等。&lt;/p&gt;
+&lt;p&gt;PBFT的目標是在&lt;strong&gt;存在最多f個拜占庭錯誤的情況下，達成一致並保護系統的正確性和安全性&lt;/strong&gt;。它基於共識算法，要求系統中的所有節點通過相互之間的通訊達成一致的結論，即使在存在拜占庭錯誤的情況下也能保證正確性。&lt;/p&gt;
+&lt;p&gt;PBFT的運作原理如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;角色&lt;/strong&gt;：系統中的節點分為&lt;strong&gt;主節點（primary）&lt;strong&gt;和&lt;/strong&gt;副本節點（replica）&lt;/strong&gt;。主節點負責提議和領導共識過程，而副本節點則驗證和接受主節點的提議。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;預准備階段（Pre-prepare phase）&lt;/strong&gt;：主節點向所有副本節點發送預准備消息，包含提議的內容。副本節點驗證預准備消息的合法性，確認提議內容的有效性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;准備階段（Prepare phase）&lt;/strong&gt;：當副本節點驗證預准備消息後，將回覆一個確認消息（prepare message）給其他節點，表示該提議是有效的。這些確認消息由主節點收集並廣播給所有節點。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提議階段（Commit phase）&lt;/strong&gt;：當主節點收到足夠的確認消息，確保有足夠多的節點同意該提議，它就會向副本節點發送確認消息（commit message），要求副本節點執行該提議。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;執行階段（Execute phase）&lt;/strong&gt;：副本節點收到足夠的確認消息後，執行該提議的操作，並將執行結果傳播給其他節點。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;完成階段（Reply phase）&lt;/strong&gt;：主節點收到足夠的執行結果後，將結果回覆給客戶端。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;PBFT通過共識階段的多次循環來確保系統的安全性和正確性。它&lt;strong&gt;需要2f + 1個節點來容忍最多f個拜占庭錯誤，並保證系統的正常運行&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;PBFT具有良好的容錯性和安全性，但也存在一些限制。例如，&lt;strong&gt;它需要大量的網絡通訊，尤其在節點數量很多時，通訊開銷會變得很高&lt;/strong&gt;。此外，當存在惡意行為的節點時，PBFT的性能可能會受到影響。&lt;/p&gt;
+&lt;p&gt;總的來說，PBFT是一種實用的共識算法，適用於需要高度安全性和容錯性的分散式系統，例如區塊鏈和分布式資料庫。它通過多階段的共識過程確保系統的一致性和正確性，同時能夠容忍一定數量的拜占庭錯誤。&lt;/p&gt;
+&lt;p&gt;想知道更詳細，推薦可以看&lt;a class=&#34;link&#34; href=&#34;https://medium.com/taipei-ethereum-meetup/intro-to-pbft-31187f255e68&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;【若想搞懂區塊鏈就不能忽視的經典：PBFT】&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;參考資料-&#34;&gt;參考資料 👐&lt;/h2&gt;
+&lt;p&gt;這個主題的延伸可探討的問題包括：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如何提高拜占庭容錯演算法的效率？&lt;/li&gt;
+&lt;li&gt;工作量證明與權益證明在實際應用中的優劣比較？&lt;/li&gt;
+&lt;li&gt;現有的拜占庭容錯演算法是否足夠應對實際運作中的分散式系統？&lt;/li&gt;
+&lt;li&gt;為什麼某些分散式系統選擇使用拜占庭容錯，而其他則不？&lt;/li&gt;
+&lt;li&gt;如何確保在面對更複雜的拜占庭攻擊時，分散式系統的安全性？&lt;/li&gt;
+&lt;li&gt;如何減少達成共識所需的能源消耗，特別是在使用工作量證明這種需要大量計算的方法時？&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

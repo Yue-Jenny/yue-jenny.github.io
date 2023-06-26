@@ -3,12 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-06-23T14:42:23+08:00</lastmod>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/algo/</loc>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/algo/</loc>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/byzantine-problem/</loc>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/categories/</loc>
-    <lastmod>2023-06-23T14:42:23+08:00</lastmod>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E5%95%8F%E9%A1%8C/</loc>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/algo/byzantine-problem/</loc>
+    <lastmod>2023-06-26T17:12:26+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
@@ -28,11 +58,6 @@
     <priority>0.8</priority>
   </url><url>
     <loc>https://yue-jenny.github.io/system-design/</loc>
-    <lastmod>2023-06-23T14:42:23+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2023-06-23T14:42:23+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
