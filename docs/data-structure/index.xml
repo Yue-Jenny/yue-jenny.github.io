@@ -101,7 +101,12 @@
 &lt;h3 id=&#34;哈夫曼樹huffman-tree&#34;&gt;哈夫曼樹（Huffman Tree）&lt;/h3&gt;
 &lt;p&gt;一種用於&lt;strong&gt;無損數據壓縮的特殊二叉樹&lt;/strong&gt;，將頻率較高的字符編碼為較短的位元串。&lt;/p&gt;
 &lt;p&gt;隨著技術的發展和需求的變化，還出現了其他種類的樹型結構，如AVL樹、Splay樹、Trie樹等，每種結構都針對不同的場景和需求進行了優化和改進。這些樹的演進史反映了對於高效查找和存儲的不斷追求和優化。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;參考&#34;&gt;參考&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class=&#34;link&#34; href=&#34;https://zhuanlan.zhihu.com/p/27700617&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;平衡二叉樹、B樹、B+樹、B*樹理解其中一種你就都明白了&lt;/a&gt;
+&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </description>
         </item>
         <item>
