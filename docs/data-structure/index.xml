@@ -6,7 +6,105 @@
         <description>Recent content in Data-structures on Jenny blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 27 Jun 2023 07:15:40 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/data-structure/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 27 Jun 2023 15:46:47 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/data-structure/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>資料結構：樹的分類</title>
+        <link>https://yue-jenny.github.io/data-structure/classification-of-trees/</link>
+        <pubDate>Tue, 27 Jun 2023 15:46:47 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/data-structure/classification-of-trees/</guid>
+        <description>&lt;h2 id=&#34;樹的分類&#34;&gt;樹的分類&lt;/h2&gt;
+&lt;p&gt;樹（Tree）作為一種常見的資料結構，隨著時間的推移，出現了多種不同的樹型結構，每一種都具有特定的優點和應用場景。以下是樹的演進史中一些重要的樹型結構：&lt;/p&gt;
+&lt;h3 id=&#34;二叉樹binary-tree&#34;&gt;&lt;strong&gt;二叉樹（Binary Tree）&lt;/strong&gt;&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;二叉樹是最簡單且最基本的樹型結構。&lt;/li&gt;
+&lt;li&gt;每個節點最多有兩個子節點，分別稱為左子節點和右子節點。&lt;/li&gt;
+&lt;li&gt;二叉樹具有簡單的結構和易於實現的特點，但在某些情況下可能&lt;strong&gt;出現不平衡的情況&lt;/strong&gt;，影響查找效率。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;二叉搜索樹binary-search-tree&#34;&gt;&lt;strong&gt;二叉搜索樹（Binary Search Tree）&lt;/strong&gt;&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;二叉搜索樹在二叉樹的基礎上進一步定義了鍵的有序性。&lt;/li&gt;
+&lt;li&gt;對於任意節點，其左子樹中的所有鍵都小於節點的鍵，而右子樹中的所有鍵都大於節點的鍵。&lt;/li&gt;
+&lt;li&gt;這使得二叉搜索樹能夠快速進行查找、插入和刪除操作。然而，如果插入或刪除操作不當，可能導致樹的不平衡，影響性能。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;平衡樹balanced-tree&#34;&gt;&lt;strong&gt;平衡樹（Balanced Tree）&lt;/strong&gt;&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;為了解決二叉搜索樹可能出現的不平衡問題&lt;/strong&gt;，出現了多種平衡樹結構。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;其中最經典的是&lt;strong&gt;紅黑樹&lt;/strong&gt;（Red-Black Tree），它通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。紅黑樹具有良好的平衡性和高效的查找、插入和刪除操作，被廣泛應用於各種應用中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;平衡樹（Balanced Tree）是一種廣泛的樹型資料結構，其中包括了許多種類的樹，如 AVL 樹、紅黑樹、B 樹、B+ 樹、B* 樹、2-3 樹等。&lt;br&gt;
+這些樹都有共同的性質：在進行插入或刪除操作時，能維持樹的平衡，也就是說，任意兩個葉節點之間的最長路徑和最短路徑的長度差是有限的。這樣的性質確保了在進行搜尋、插入、刪除等操作時，時間複雜度能維持在對數級別，提高了操作效率。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;AVL 樹&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的&lt;strong&gt;平衡因子&lt;/strong&gt;（左子樹高度減去右子樹高度）在每次插入或刪除操作後進行調整，以確保樹保持平衡。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;紅黑樹（Red-Black Tree）&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;B樹（B-Tree, Balanced Sort Tree）&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;B樹是一種&lt;strong&gt;多路平衡搜索樹(查找路徑不止兩個)，特別適合處理大量的數據和磁盤存儲&lt;/strong&gt;。B樹的特點是每個節點可以&lt;strong&gt;有多個子節點，並且可以容納多個鍵&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;B樹通過調整節點的大小和節點的分裂合併策略，保持了樹的平衡性，同時提供了高效的插入、刪除和查找操作。&lt;/li&gt;
+&lt;li&gt;B樹廣泛應用於&lt;strong&gt;文件系統和數據庫&lt;/strong&gt;等場景。&lt;/li&gt;
+&lt;li&gt;B樹相對平衡二叉樹在節點空間的利用率上進行改進，B樹在每個節點保存更多的數據，減少了樹的高度，從而提升了查找的性能，在數據庫應用中，B樹的&lt;strong&gt;每個節點存儲的數據量大約為4K&lt;/strong&gt;, 這是因為考慮到&lt;strong&gt;磁盤數據存儲是採用塊的形式存儲的&lt;/strong&gt;，每個塊的大小為4K，每次對磁盤進行IO數據讀取時，同一個磁盤塊的數據會被一次性讀取出來，所以每一次磁盤IO都可以讀取到B樹中一個節點的全部數據。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一種特殊的 B 樹：2-3 樹&lt;/strong&gt;
+&lt;ol&gt;
+&lt;li&gt;2-3 樹是&lt;strong&gt;一種特殊的 B 樹&lt;/strong&gt;，其每個節點可以存儲 1 或 2 個值並且具有 2 或 3 個孩子節點，故名為 2-3 樹。&lt;/li&gt;
+&lt;li&gt;當一個節點的元素數量超過 2 個（即 3 個）時，則進行一次分裂，將中間的元素推送至父節點，並將原節點分裂為兩個節點。&lt;/li&gt;
+&lt;li&gt;由於 2-3 樹在插入和刪除操作時會進行動態調整，以確保所有葉子節點的深度保持一致，因此 2-3 樹是一種自平衡樹。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;B+樹（B+ Tree）&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;B+樹是在B樹的基礎上又一次的改進，其主要對兩個方面進行了提升，一方面是查詢的穩定性，另外一方面是在數據排序方面更友好。&lt;/li&gt;
+&lt;li&gt;B+樹是在B樹基礎上進一步優化和擴展的一種結構。&lt;/li&gt;
+&lt;li&gt;與B樹不同，B+樹將鍵值&lt;strong&gt;只存儲在葉子節點&lt;/strong&gt;，內部節點只存儲鍵值的索引。這樣的設計使得B+樹具有&lt;strong&gt;更高的查找效率&lt;/strong&gt;和更好的節點利用率。B+樹常用於關聯數據庫中的索引結構，能夠提供高效的範圍查詢和排序操作。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;B+樹和B樹的對比&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;B+樹查詢速度更穩定：B+所有關鍵字數據地址都存在葉子節點上，所以&lt;strong&gt;每次查找的次數都相同所以查詢速度要比B樹更穩定&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;B+樹天然具備排序功能： B+樹所有的&lt;strong&gt;葉子節點數據構成了一個有序鍊錶&lt;/strong&gt;，在查詢大小區間的數據時候更方便，數據緊密性很高，緩存的命中率也會比B樹高。&lt;/li&gt;
+&lt;li&gt;B+樹全節點遍歷更快： &lt;strong&gt;B+樹遍歷整棵樹只需要遍歷所有的葉子節點即可&lt;/strong&gt;，而不需要像B樹一樣需要對每一層進行遍歷，這有利於數據庫做全表掃描。&lt;/li&gt;
+&lt;li&gt;B樹相對於B+樹的優點是，&lt;strong&gt;如果經常訪問的數據離根節點很近&lt;/strong&gt;，而B樹的非葉子節點本身存有關鍵字和數據，&lt;strong&gt;所以在查詢這種數據檢索的時候會要比B+樹快。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;B* 樹&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;B* 樹又是對B+數的再一次改進，在&lt;strong&gt;B+樹&lt;/strong&gt;的構建過程中，為了保持樹的平衡，&lt;strong&gt;節點的合併拆分是比較耗費時間的&lt;/strong&gt;，所以B* 樹就是在如何減少構建中節點合併和拆分的次數，從而提升樹的數據插入、刪除性能。&lt;/li&gt;
+&lt;li&gt;B* 樹是 B 樹的一種變體，它和 B 樹相似，但在結構和調整規則上稍有不同。&lt;/li&gt;
+&lt;li&gt;在 B* 樹中，非根和非葉子節點至少有 2/3 的子節點，這比 B 樹的一半多。此外，B* 樹在插入和刪除操作上也做了優化：在插入時，如果當前節點的子節點已經滿了，則會嘗試將數據轉移到相鄰的兄弟節點，只有當轉移無法完成時，才會分裂節點；在刪除時，如果該節點的子節點數少於最小值，則會嘗試從相鄰的兄弟節點借數據，只有當借用無法完成時，才會合併節點。這些優化使得 B* 樹的磁盤 I/O 操作相對較少，提高了效率。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;堆heap&#34;&gt;堆（Heap）&lt;/h3&gt;
+&lt;p&gt;一種特殊的樹結構，常用於&lt;strong&gt;實現優先級佇列&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;字典樹trie&#34;&gt;字典樹（Trie）&lt;/h3&gt;
+&lt;p&gt;一種用於有效儲存和&lt;strong&gt;檢索字符串&lt;/strong&gt;的樹結構，也稱為前綴樹（Prefix Tree）。&lt;/p&gt;
+&lt;h3 id=&#34;哈夫曼樹huffman-tree&#34;&gt;哈夫曼樹（Huffman Tree）&lt;/h3&gt;
+&lt;p&gt;一種用於&lt;strong&gt;無損數據壓縮的特殊二叉樹&lt;/strong&gt;，將頻率較高的字符編碼為較短的位元串。&lt;/p&gt;
+&lt;p&gt;隨著技術的發展和需求的變化，還出現了其他種類的樹型結構，如AVL樹、Splay樹、Trie樹等，每種結構都針對不同的場景和需求進行了優化和改進。這些樹的演進史反映了對於高效查找和存儲的不斷追求和優化。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>資料結構：平衡樹 (Balanced Tree) - AVL Tree</title>
         <link>https://yue-jenny.github.io/data-structure/balance-tree-avl-tree/</link>
         <pubDate>Tue, 27 Jun 2023 07:15:40 +0800</pubDate>

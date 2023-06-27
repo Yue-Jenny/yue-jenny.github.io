@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='樹的分類 樹（Tree）作為一種常見的資料結構，隨著時間的推移，出現了多種不同的樹型結構，每一種都具有特定的優點和應用場景。以下是樹的演進史中一些重要的樹型結構：
+二叉樹（Binary Tree） 二叉樹是最簡單且最基本的樹型結構。 每個節點最多有兩個子節點，分別稱為左子節點和右子節點。 二叉樹具有簡單的結構和易於實現的特點，但在某些情況下可能出現不平衡的情況，影響查找效率。 二叉搜索樹（Binary Search Tree） 二叉搜索樹在二叉樹的基礎上進一步定義了鍵的有序性。 對於任意節點，其左子樹中的所有鍵都小於節點的鍵，而右子樹中的所有鍵都大於節點的鍵。 這使得二叉搜索樹能夠快速進行查找、插入和刪除操作。然而，如果插入或刪除操作不當，可能導致樹的不平衡，影響性能。 平衡樹（Balanced Tree） 為了解決二叉搜索樹可能出現的不平衡問題，出現了多種平衡樹結構。
+其中最經典的是紅黑樹（Red-Black Tree），它通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。紅黑樹具有良好的平衡性和高效的查找、插入和刪除操作，被廣泛應用於各種應用中。
+平衡樹（Balanced Tree）是一種廣泛的樹型資料結構，其中包括了許多種類的樹，如 AVL 樹、紅黑樹、B 樹、B&#43; 樹、B* 樹、2-3 樹等。
+這些樹都有共同的性質：在進行插入或刪除操作時，能維持樹的平衡，也就是說，任意兩個葉節點之間的最長路徑和最短路徑的長度差是有限的。這樣的性質確保了在進行搜尋、插入、刪除等操作時，時間複雜度能維持在對數級別，提高了操作效率。
+AVL 樹
+AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子（左子樹高度減去右子樹高度）在每次插入或刪除操作後進行調整，以確保樹保持平衡。 紅黑樹（Red-Black Tree）
+通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。 B樹（B-Tree, Balanced Sort Tree）
+B樹是一種多路平衡搜索樹(查找路徑不止兩個)，特別適合處理大量的數據和磁盤存儲。B樹的特點是每個節點可以有多個子節點，並且可以容納多個鍵。 B樹通過調整節點的大小和節點的分裂合併策略，保持了樹的平衡性，同時提供了高效的插入、刪除和查找操作。 B樹廣泛應用於文件系統和數據庫等場景。 B樹相對平衡二叉樹在節點空間的利用率上進行改進，B樹在每個節點保存更多的數據，減少了樹的高度，從而提升了查找的性能，在數據庫應用中，B樹的每個節點存儲的數據量大約為4K, 這是因為考慮到磁盤數據存儲是採用塊的形式存儲的，每個塊的大小為4K，每次對磁盤進行IO數據讀取時，同一個磁盤塊的數據會被一次性讀取出來，所以每一次磁盤IO都可以讀取到B樹中一個節點的全部數據。 一種特殊的 B 樹：2-3 樹 2-3 樹是一種特殊的 B 樹，其每個節點可以存儲 1 或 2 個值並且具有 2 或 3 個孩子節點，故名為 2-3 樹。 當一個節點的元素數量超過 2 個（即 3 個）時，則進行一次分裂，將中間的元素推送至父節點，並將原節點分裂為兩個節點。 由於 2-3 樹在插入和刪除操作時會進行動態調整，以確保所有葉子節點的深度保持一致，因此 2-3 樹是一種自平衡樹。 B&#43;樹（B&#43; Tree）'>
+<title>資料結構：樹的分類</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/data-structure/classification-of-trees/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='資料結構：樹的分類'>
+<meta property='og:description' content='樹的分類 樹（Tree）作為一種常見的資料結構，隨著時間的推移，出現了多種不同的樹型結構，每一種都具有特定的優點和應用場景。以下是樹的演進史中一些重要的樹型結構：
+二叉樹（Binary Tree） 二叉樹是最簡單且最基本的樹型結構。 每個節點最多有兩個子節點，分別稱為左子節點和右子節點。 二叉樹具有簡單的結構和易於實現的特點，但在某些情況下可能出現不平衡的情況，影響查找效率。 二叉搜索樹（Binary Search Tree） 二叉搜索樹在二叉樹的基礎上進一步定義了鍵的有序性。 對於任意節點，其左子樹中的所有鍵都小於節點的鍵，而右子樹中的所有鍵都大於節點的鍵。 這使得二叉搜索樹能夠快速進行查找、插入和刪除操作。然而，如果插入或刪除操作不當，可能導致樹的不平衡，影響性能。 平衡樹（Balanced Tree） 為了解決二叉搜索樹可能出現的不平衡問題，出現了多種平衡樹結構。
+其中最經典的是紅黑樹（Red-Black Tree），它通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。紅黑樹具有良好的平衡性和高效的查找、插入和刪除操作，被廣泛應用於各種應用中。
+平衡樹（Balanced Tree）是一種廣泛的樹型資料結構，其中包括了許多種類的樹，如 AVL 樹、紅黑樹、B 樹、B&#43; 樹、B* 樹、2-3 樹等。
+這些樹都有共同的性質：在進行插入或刪除操作時，能維持樹的平衡，也就是說，任意兩個葉節點之間的最長路徑和最短路徑的長度差是有限的。這樣的性質確保了在進行搜尋、插入、刪除等操作時，時間複雜度能維持在對數級別，提高了操作效率。
+AVL 樹
+AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子（左子樹高度減去右子樹高度）在每次插入或刪除操作後進行調整，以確保樹保持平衡。 紅黑樹（Red-Black Tree）
+通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。 B樹（B-Tree, Balanced Sort Tree）
+B樹是一種多路平衡搜索樹(查找路徑不止兩個)，特別適合處理大量的數據和磁盤存儲。B樹的特點是每個節點可以有多個子節點，並且可以容納多個鍵。 B樹通過調整節點的大小和節點的分裂合併策略，保持了樹的平衡性，同時提供了高效的插入、刪除和查找操作。 B樹廣泛應用於文件系統和數據庫等場景。 B樹相對平衡二叉樹在節點空間的利用率上進行改進，B樹在每個節點保存更多的數據，減少了樹的高度，從而提升了查找的性能，在數據庫應用中，B樹的每個節點存儲的數據量大約為4K, 這是因為考慮到磁盤數據存儲是採用塊的形式存儲的，每個塊的大小為4K，每次對磁盤進行IO數據讀取時，同一個磁盤塊的數據會被一次性讀取出來，所以每一次磁盤IO都可以讀取到B樹中一個節點的全部數據。 一種特殊的 B 樹：2-3 樹 2-3 樹是一種特殊的 B 樹，其每個節點可以存儲 1 或 2 個值並且具有 2 或 3 個孩子節點，故名為 2-3 樹。 當一個節點的元素數量超過 2 個（即 3 個）時，則進行一次分裂，將中間的元素推送至父節點，並將原節點分裂為兩個節點。 由於 2-3 樹在插入和刪除操作時會進行動態調整，以確保所有葉子節點的深度保持一致，因此 2-3 樹是一種自平衡樹。 B&#43;樹（B&#43; Tree）'>
+<meta property='og:url' content='https://yue-jenny.github.io/data-structure/classification-of-trees/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Data-Structure' /><meta property='article:tag' content='Data structure' /><meta property='article:published_time' content='2023-06-27T15:46:47&#43;08:00'/><meta property='article:modified_time' content='2023-06-27T15:46:47&#43;08:00'/>
+<meta name="twitter:title" content="資料結構：樹的分類">
+<meta name="twitter:description" content="樹的分類 樹（Tree）作為一種常見的資料結構，隨著時間的推移，出現了多種不同的樹型結構，每一種都具有特定的優點和應用場景。以下是樹的演進史中一些重要的樹型結構：
+二叉樹（Binary Tree） 二叉樹是最簡單且最基本的樹型結構。 每個節點最多有兩個子節點，分別稱為左子節點和右子節點。 二叉樹具有簡單的結構和易於實現的特點，但在某些情況下可能出現不平衡的情況，影響查找效率。 二叉搜索樹（Binary Search Tree） 二叉搜索樹在二叉樹的基礎上進一步定義了鍵的有序性。 對於任意節點，其左子樹中的所有鍵都小於節點的鍵，而右子樹中的所有鍵都大於節點的鍵。 這使得二叉搜索樹能夠快速進行查找、插入和刪除操作。然而，如果插入或刪除操作不當，可能導致樹的不平衡，影響性能。 平衡樹（Balanced Tree） 為了解決二叉搜索樹可能出現的不平衡問題，出現了多種平衡樹結構。
+其中最經典的是紅黑樹（Red-Black Tree），它通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。紅黑樹具有良好的平衡性和高效的查找、插入和刪除操作，被廣泛應用於各種應用中。
+平衡樹（Balanced Tree）是一種廣泛的樹型資料結構，其中包括了許多種類的樹，如 AVL 樹、紅黑樹、B 樹、B&#43; 樹、B* 樹、2-3 樹等。
+這些樹都有共同的性質：在進行插入或刪除操作時，能維持樹的平衡，也就是說，任意兩個葉節點之間的最長路徑和最短路徑的長度差是有限的。這樣的性質確保了在進行搜尋、插入、刪除等操作時，時間複雜度能維持在對數級別，提高了操作效率。
+AVL 樹
+AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子（左子樹高度減去右子樹高度）在每次插入或刪除操作後進行調整，以確保樹保持平衡。 紅黑樹（Red-Black Tree）
+通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。 B樹（B-Tree, Balanced Sort Tree）
+B樹是一種多路平衡搜索樹(查找路徑不止兩個)，特別適合處理大量的數據和磁盤存儲。B樹的特點是每個節點可以有多個子節點，並且可以容納多個鍵。 B樹通過調整節點的大小和節點的分裂合併策略，保持了樹的平衡性，同時提供了高效的插入、刪除和查找操作。 B樹廣泛應用於文件系統和數據庫等場景。 B樹相對平衡二叉樹在節點空間的利用率上進行改進，B樹在每個節點保存更多的數據，減少了樹的高度，從而提升了查找的性能，在數據庫應用中，B樹的每個節點存儲的數據量大約為4K, 這是因為考慮到磁盤數據存儲是採用塊的形式存儲的，每個塊的大小為4K，每次對磁盤進行IO數據讀取時，同一個磁盤塊的數據會被一次性讀取出來，所以每一次磁盤IO都可以讀取到B樹中一個節點的全部數據。 一種特殊的 B 樹：2-3 樹 2-3 樹是一種特殊的 B 樹，其每個節點可以存儲 1 或 2 個值並且具有 2 或 3 個孩子節點，故名為 2-3 樹。 當一個節點的元素數量超過 2 個（即 3 個）時，則進行一次分裂，將中間的元素推送至父節點，並將原節點分裂為兩個節點。 由於 2-3 樹在插入和刪除操作時會進行動態調整，以確保所有葉子節點的深度保持一致，因此 2-3 樹是一種自平衡樹。 B&#43;樹（B&#43; Tree）">
+<link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/sea_hu957e28357e69ed5691794c4cadc2dc7b_134542_300x0_resize_box_3.png" width="300"
+                            height="225" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🐳</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🐳 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#樹的分類">樹的分類</a>
+      <ul>
+        <li><a href="#二叉樹binary-tree"><strong>二叉樹（Binary Tree）</strong></a></li>
+        <li><a href="#二叉搜索樹binary-search-tree"><strong>二叉搜索樹（Binary Search Tree）</strong></a></li>
+        <li><a href="#平衡樹balanced-tree"><strong>平衡樹（Balanced Tree）</strong></a></li>
+        <li><a href="#堆heap">堆（Heap）</a></li>
+        <li><a href="#字典樹trie">字典樹（Trie）</a></li>
+        <li><a href="#哈夫曼樹huffman-tree">哈夫曼樹（Huffman Tree）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/data-structure/" >
+                Data structure
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/data-structure/classification-of-trees/">資料結構：樹的分類</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 27, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="樹的分類">樹的分類</h2>
+<p>樹（Tree）作為一種常見的資料結構，隨著時間的推移，出現了多種不同的樹型結構，每一種都具有特定的優點和應用場景。以下是樹的演進史中一些重要的樹型結構：</p>
+<h3 id="二叉樹binary-tree"><strong>二叉樹（Binary Tree）</strong></h3>
+<ol>
+<li>二叉樹是最簡單且最基本的樹型結構。</li>
+<li>每個節點最多有兩個子節點，分別稱為左子節點和右子節點。</li>
+<li>二叉樹具有簡單的結構和易於實現的特點，但在某些情況下可能<strong>出現不平衡的情況</strong>，影響查找效率。</li>
+</ol>
+<h3 id="二叉搜索樹binary-search-tree"><strong>二叉搜索樹（Binary Search Tree）</strong></h3>
+<ol>
+<li>二叉搜索樹在二叉樹的基礎上進一步定義了鍵的有序性。</li>
+<li>對於任意節點，其左子樹中的所有鍵都小於節點的鍵，而右子樹中的所有鍵都大於節點的鍵。</li>
+<li>這使得二叉搜索樹能夠快速進行查找、插入和刪除操作。然而，如果插入或刪除操作不當，可能導致樹的不平衡，影響性能。</li>
+</ol>
+<h3 id="平衡樹balanced-tree"><strong>平衡樹（Balanced Tree）</strong></h3>
+<ol>
+<li>
+<p><strong>為了解決二叉搜索樹可能出現的不平衡問題</strong>，出現了多種平衡樹結構。</p>
+</li>
+<li>
+<p>其中最經典的是<strong>紅黑樹</strong>（Red-Black Tree），它通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。紅黑樹具有良好的平衡性和高效的查找、插入和刪除操作，被廣泛應用於各種應用中。</p>
+</li>
+<li>
+<p>平衡樹（Balanced Tree）是一種廣泛的樹型資料結構，其中包括了許多種類的樹，如 AVL 樹、紅黑樹、B 樹、B+ 樹、B* 樹、2-3 樹等。<br>
+這些樹都有共同的性質：在進行插入或刪除操作時，能維持樹的平衡，也就是說，任意兩個葉節點之間的最長路徑和最短路徑的長度差是有限的。這樣的性質確保了在進行搜尋、插入、刪除等操作時，時間複雜度能維持在對數級別，提高了操作效率。</p>
+<ol>
+<li>
+<p><strong>AVL 樹</strong></p>
+<ol>
+<li>AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的<strong>平衡因子</strong>（左子樹高度減去右子樹高度）在每次插入或刪除操作後進行調整，以確保樹保持平衡。</li>
+</ol>
+</li>
+<li>
+<p><strong>紅黑樹（Red-Black Tree）</strong></p>
+<ol>
+<li>通過在二叉搜索樹的基礎上增加了額外的紅黑色屬性，保持了樹的平衡性。</li>
+</ol>
+</li>
+<li>
+<p><strong>B樹（B-Tree, Balanced Sort Tree）</strong></p>
+<ol>
+<li>B樹是一種<strong>多路平衡搜索樹(查找路徑不止兩個)，特別適合處理大量的數據和磁盤存儲</strong>。B樹的特點是每個節點可以<strong>有多個子節點，並且可以容納多個鍵</strong>。</li>
+<li>B樹通過調整節點的大小和節點的分裂合併策略，保持了樹的平衡性，同時提供了高效的插入、刪除和查找操作。</li>
+<li>B樹廣泛應用於<strong>文件系統和數據庫</strong>等場景。</li>
+<li>B樹相對平衡二叉樹在節點空間的利用率上進行改進，B樹在每個節點保存更多的數據，減少了樹的高度，從而提升了查找的性能，在數據庫應用中，B樹的<strong>每個節點存儲的數據量大約為4K</strong>, 這是因為考慮到<strong>磁盤數據存儲是採用塊的形式存儲的</strong>，每個塊的大小為4K，每次對磁盤進行IO數據讀取時，同一個磁盤塊的數據會被一次性讀取出來，所以每一次磁盤IO都可以讀取到B樹中一個節點的全部數據。</li>
+<li><strong>一種特殊的 B 樹：2-3 樹</strong>
+<ol>
+<li>2-3 樹是<strong>一種特殊的 B 樹</strong>，其每個節點可以存儲 1 或 2 個值並且具有 2 或 3 個孩子節點，故名為 2-3 樹。</li>
+<li>當一個節點的元素數量超過 2 個（即 3 個）時，則進行一次分裂，將中間的元素推送至父節點，並將原節點分裂為兩個節點。</li>
+<li>由於 2-3 樹在插入和刪除操作時會進行動態調整，以確保所有葉子節點的深度保持一致，因此 2-3 樹是一種自平衡樹。</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>B+樹（B+ Tree）</strong></p>
+<ol>
+<li>B+樹是在B樹的基礎上又一次的改進，其主要對兩個方面進行了提升，一方面是查詢的穩定性，另外一方面是在數據排序方面更友好。</li>
+<li>B+樹是在B樹基礎上進一步優化和擴展的一種結構。</li>
+<li>與B樹不同，B+樹將鍵值<strong>只存儲在葉子節點</strong>，內部節點只存儲鍵值的索引。這樣的設計使得B+樹具有<strong>更高的查找效率</strong>和更好的節點利用率。B+樹常用於關聯數據庫中的索引結構，能夠提供高效的範圍查詢和排序操作。</li>
+</ol>
+<blockquote>
+<p>B+樹和B樹的對比</p>
+</blockquote>
+<ul>
+<li>B+樹查詢速度更穩定：B+所有關鍵字數據地址都存在葉子節點上，所以<strong>每次查找的次數都相同所以查詢速度要比B樹更穩定</strong>。</li>
+<li>B+樹天然具備排序功能： B+樹所有的<strong>葉子節點數據構成了一個有序鍊錶</strong>，在查詢大小區間的數據時候更方便，數據緊密性很高，緩存的命中率也會比B樹高。</li>
+<li>B+樹全節點遍歷更快： <strong>B+樹遍歷整棵樹只需要遍歷所有的葉子節點即可</strong>，而不需要像B樹一樣需要對每一層進行遍歷，這有利於數據庫做全表掃描。</li>
+<li>B樹相對於B+樹的優點是，<strong>如果經常訪問的數據離根節點很近</strong>，而B樹的非葉子節點本身存有關鍵字和數據，<strong>所以在查詢這種數據檢索的時候會要比B+樹快。</strong></li>
+</ul>
+</li>
+<li>
+<p>B* 樹</p>
+<ol>
+<li>B* 樹又是對B+數的再一次改進，在<strong>B+樹</strong>的構建過程中，為了保持樹的平衡，<strong>節點的合併拆分是比較耗費時間的</strong>，所以B* 樹就是在如何減少構建中節點合併和拆分的次數，從而提升樹的數據插入、刪除性能。</li>
+<li>B* 樹是 B 樹的一種變體，它和 B 樹相似，但在結構和調整規則上稍有不同。</li>
+<li>在 B* 樹中，非根和非葉子節點至少有 2/3 的子節點，這比 B 樹的一半多。此外，B* 樹在插入和刪除操作上也做了優化：在插入時，如果當前節點的子節點已經滿了，則會嘗試將數據轉移到相鄰的兄弟節點，只有當轉移無法完成時，才會分裂節點；在刪除時，如果該節點的子節點數少於最小值，則會嘗試從相鄰的兄弟節點借數據，只有當借用無法完成時，才會合併節點。這些優化使得 B* 樹的磁盤 I/O 操作相對較少，提高了效率。</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="堆heap">堆（Heap）</h3>
+<p>一種特殊的樹結構，常用於<strong>實現優先級佇列</strong>。</p>
+<h3 id="字典樹trie">字典樹（Trie）</h3>
+<p>一種用於有效儲存和<strong>檢索字符串</strong>的樹結構，也稱為前綴樹（Prefix Tree）。</p>
+<h3 id="哈夫曼樹huffman-tree">哈夫曼樹（Huffman Tree）</h3>
+<p>一種用於<strong>無損數據壓縮的特殊二叉樹</strong>，將頻率較高的字符編碼為較短的位元串。</p>
+<p>隨著技術的發展和需求的變化，還出現了其他種類的樹型結構，如AVL樹、Splay樹、Trie樹等，每種結構都針對不同的場景和需求進行了優化和改進。這些樹的演進史反映了對於高效查找和存儲的不斷追求和優化。</p>
+<p><strong>最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/data-structure/">Data structure</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fdata-structure%2fclassification-of-trees%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/data-structure/balance-tree-avl-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">資料結構：平衡樹 (Balanced Tree) - AVL Tree</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/data-structure/trie/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">資料結構：字典樹或前綴樹 Trie</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/data-structure/a-list-of-learning-data-structures/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">當你想要學習資料結構時，以下是一些建議的學習列表</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
