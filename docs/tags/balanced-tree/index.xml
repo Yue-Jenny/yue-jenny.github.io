@@ -12,10 +12,9 @@
         <pubDate>Tue, 27 Jun 2023 07:15:40 +0800</pubDate>
         
         <guid>https://yue-jenny.github.io/data-structure/balance-tree-avl-tree/</guid>
-        <description>&lt;h2 id=&#34;平衡樹&#34;&gt;平衡樹&lt;/h2&gt;
-&lt;p&gt;平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。&lt;/p&gt;
-&lt;h2 id=&#34;avl樹&#34;&gt;AVL樹&lt;/h2&gt;
-&lt;p&gt;AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的&lt;strong&gt;平衡因子&lt;/strong&gt;(&lt;strong&gt;左子樹高度減去右子樹高度&lt;/strong&gt;)在每次插入或刪除操作後進行調整，以確保樹保持平衡。&lt;/p&gt;
+        <description>&lt;h2 id=&#34;avl樹&#34;&gt;AVL樹&lt;/h2&gt;
+&lt;p&gt;AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的&lt;strong&gt;平衡因子&lt;/strong&gt;(&lt;strong&gt;左子樹高度減去右子樹高度&lt;/strong&gt;)。&lt;br&gt;
+在每次插入或刪除操作後進行調整，以確保樹保持平衡。&lt;/p&gt;
 &lt;p&gt;AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。&lt;br&gt;
 它的平衡性通過維護每個節點的&lt;strong&gt;平衡因子（Balance Factor）&lt;strong&gt;來確保，該平衡因子表示&lt;/strong&gt;左子樹高度減去右子樹高度的差值&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。&lt;br&gt;

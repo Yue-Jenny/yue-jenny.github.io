@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='平衡樹 平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。
-AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)在每次插入或刪除操作後進行調整，以確保樹保持平衡。
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)。
+在每次插入或刪除操作後進行調整，以確保樹保持平衡。
 AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。
 它的平衡性通過維護每個節點的平衡因子（Balance Factor）來確保，該平衡因子表示左子樹高度減去右子樹高度的差值。
 當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。
@@ -11,14 +11,14 @@ AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種�
 以下是 AVL 樹進行平衡的規則 AVL 樹在插入或刪除節點後，可能會失去平衡，也就是某些節點的左子樹和右子樹的高度差超過 1。為了維護 AVL 樹的平衡性，我們需要進行旋轉操作。
 左旋轉（Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多 2 層或以上時，我們進行左旋轉操作。 作法：左旋轉可以將該節點的右子樹提升為新的根節點，同時將原根節點降低為新根節點的左子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 右旋轉（Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多 2 層或以上時，我們進行右旋轉操作。 作法：右旋轉可以將該節點的左子樹提升為新的根節點，同時將原根節點降低為新根節點的右子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 左右旋轉（Left-Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多，且該節點的左子樹的右子樹比左子樹的左子樹高度多時，我們進行左右旋轉操作。 作法：先對該節點的左子節點進行左旋轉，然後對原節點進行右旋轉。 右左旋轉（Right-Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多，且該節點的右子樹的左子樹比右子樹的右子樹高度多時，我們進行右左旋轉操作。 作法：先對該節點的右子節點進行右旋轉，然後對原節點進行左旋轉。 這些旋轉操作可以調整 AVL 樹的結構，使其保持平衡。在進行插入或刪除操作後，我們需要檢查節點的平衡因子，即左子樹高度減去右子樹高度。
 如果平衡因子大於 1，表示左子樹高於右子樹，則需要進行右旋轉或左右旋轉； 如果平衡因子小於 -1，表示右子樹高於左子樹，則需要進行左旋轉或右左旋轉。 通過這些旋轉操作，我們可以保持 AVL 樹的平衡性。
-實作 class AVLNode { constructor(value) { this.'>
+實作 class AVLNode { constructor(value) { this.value = value; this.'>
 <title>資料結構：平衡樹 (Balanced Tree) - AVL Tree</title>
 
 <link rel='canonical' href='https://yue-jenny.github.io/data-structure/balance-tree-avl-tree/'>
 
 <link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='資料結構：平衡樹 (Balanced Tree) - AVL Tree'>
-<meta property='og:description' content='平衡樹 平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。
-AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)在每次插入或刪除操作後進行調整，以確保樹保持平衡。
+<meta property='og:description' content='AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)。
+在每次插入或刪除操作後進行調整，以確保樹保持平衡。
 AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。
 它的平衡性通過維護每個節點的平衡因子（Balance Factor）來確保，該平衡因子表示左子樹高度減去右子樹高度的差值。
 當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。
@@ -27,13 +27,13 @@ AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種�
 以下是 AVL 樹進行平衡的規則 AVL 樹在插入或刪除節點後，可能會失去平衡，也就是某些節點的左子樹和右子樹的高度差超過 1。為了維護 AVL 樹的平衡性，我們需要進行旋轉操作。
 左旋轉（Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多 2 層或以上時，我們進行左旋轉操作。 作法：左旋轉可以將該節點的右子樹提升為新的根節點，同時將原根節點降低為新根節點的左子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 右旋轉（Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多 2 層或以上時，我們進行右旋轉操作。 作法：右旋轉可以將該節點的左子樹提升為新的根節點，同時將原根節點降低為新根節點的右子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 左右旋轉（Left-Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多，且該節點的左子樹的右子樹比左子樹的左子樹高度多時，我們進行左右旋轉操作。 作法：先對該節點的左子節點進行左旋轉，然後對原節點進行右旋轉。 右左旋轉（Right-Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多，且該節點的右子樹的左子樹比右子樹的右子樹高度多時，我們進行右左旋轉操作。 作法：先對該節點的右子節點進行右旋轉，然後對原節點進行左旋轉。 這些旋轉操作可以調整 AVL 樹的結構，使其保持平衡。在進行插入或刪除操作後，我們需要檢查節點的平衡因子，即左子樹高度減去右子樹高度。
 如果平衡因子大於 1，表示左子樹高於右子樹，則需要進行右旋轉或左右旋轉； 如果平衡因子小於 -1，表示右子樹高於左子樹，則需要進行左旋轉或右左旋轉。 通過這些旋轉操作，我們可以保持 AVL 樹的平衡性。
-實作 class AVLNode { constructor(value) { this.'>
+實作 class AVLNode { constructor(value) { this.value = value; this.'>
 <meta property='og:url' content='https://yue-jenny.github.io/data-structure/balance-tree-avl-tree/'>
 <meta property='og:site_name' content='Jenny blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Data-Structure' /><meta property='article:tag' content='Data structure' /><meta property='article:tag' content='Balanced Tree' /><meta property='article:tag' content='AVL Tree' /><meta property='article:published_time' content='2023-06-27T07:15:40&#43;08:00'/><meta property='article:modified_time' content='2023-06-27T07:15:40&#43;08:00'/>
 <meta name="twitter:title" content="資料結構：平衡樹 (Balanced Tree) - AVL Tree">
-<meta name="twitter:description" content="平衡樹 平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。
-AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)在每次插入或刪除操作後進行調整，以確保樹保持平衡。
+<meta name="twitter:description" content="AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)。
+在每次插入或刪除操作後進行調整，以確保樹保持平衡。
 AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。
 它的平衡性通過維護每個節點的平衡因子（Balance Factor）來確保，該平衡因子表示左子樹高度減去右子樹高度的差值。
 當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。
@@ -42,7 +42,7 @@ AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種�
 以下是 AVL 樹進行平衡的規則 AVL 樹在插入或刪除節點後，可能會失去平衡，也就是某些節點的左子樹和右子樹的高度差超過 1。為了維護 AVL 樹的平衡性，我們需要進行旋轉操作。
 左旋轉（Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多 2 層或以上時，我們進行左旋轉操作。 作法：左旋轉可以將該節點的右子樹提升為新的根節點，同時將原根節點降低為新根節點的左子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 右旋轉（Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多 2 層或以上時，我們進行右旋轉操作。 作法：右旋轉可以將該節點的左子樹提升為新的根節點，同時將原根節點降低為新根節點的右子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 左右旋轉（Left-Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多，且該節點的左子樹的右子樹比左子樹的左子樹高度多時，我們進行左右旋轉操作。 作法：先對該節點的左子節點進行左旋轉，然後對原節點進行右旋轉。 右左旋轉（Right-Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多，且該節點的右子樹的左子樹比右子樹的右子樹高度多時，我們進行右左旋轉操作。 作法：先對該節點的右子節點進行右旋轉，然後對原節點進行左旋轉。 這些旋轉操作可以調整 AVL 樹的結構，使其保持平衡。在進行插入或刪除操作後，我們需要檢查節點的平衡因子，即左子樹高度減去右子樹高度。
 如果平衡因子大於 1，表示左子樹高於右子樹，則需要進行右旋轉或左右旋轉； 如果平衡因子小於 -1，表示右子樹高於左子樹，則需要進行左旋轉或右左旋轉。 通過這些旋轉操作，我們可以保持 AVL 樹的平衡性。
-實作 class AVLNode { constructor(value) { this.">
+實作 class AVLNode { constructor(value) { this.value = value; this.">
 <link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
 
 
@@ -276,7 +276,6 @@ AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種�
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#平衡樹">平衡樹</a></li>
     <li><a href="#avl樹">AVL樹</a>
       <ul>
         <li><a href="#以下是-avl-樹進行平衡的規則">以下是 AVL 樹進行平衡的規則</a></li>
@@ -363,10 +362,9 @@ AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種�
     <section class="article-content">
     
     
-    <h2 id="平衡樹">平衡樹</h2>
-<p>平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。</p>
-<h2 id="avl樹">AVL樹</h2>
-<p>AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的<strong>平衡因子</strong>(<strong>左子樹高度減去右子樹高度</strong>)在每次插入或刪除操作後進行調整，以確保樹保持平衡。</p>
+    <h2 id="avl樹">AVL樹</h2>
+<p>AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的<strong>平衡因子</strong>(<strong>左子樹高度減去右子樹高度</strong>)。<br>
+在每次插入或刪除操作後進行調整，以確保樹保持平衡。</p>
 <p>AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。<br>
 它的平衡性通過維護每個節點的<strong>平衡因子（Balance Factor）<strong>來確保，該平衡因子表示</strong>左子樹高度減去右子樹高度的差值</strong>。</p>
 <p>當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。<br>
