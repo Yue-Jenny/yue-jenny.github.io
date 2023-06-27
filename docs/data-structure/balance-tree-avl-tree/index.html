@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='平衡樹 平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。
+AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)在每次插入或刪除操作後進行調整，以確保樹保持平衡。
+AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。
+它的平衡性通過維護每個節點的平衡因子（Balance Factor）來確保，該平衡因子表示左子樹高度減去右子樹高度的差值。
+當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。
+在這種情況下，需要通過旋轉操作來恢復平衡。旋轉操作分為左旋和右旋兩種：
+左旋：當某個節點的右子樹高度過高時，進行左旋操作可以降低右子樹高度，同時提升該節點的左子樹高度。 右旋：當某個節點的左子樹高度過高時，進行右旋操作可以降低左子樹高度，同時提升該節點的右子樹高度。 這些旋轉操作的目的是保持樹的平衡，使得樹的高度始終保持在O(log n)的範圍內。儘管AVL樹提供了較嚴格的平衡性，但相對而言，它需要更多的旋轉操作，因此插入和刪除的成本較高。
+以下是 AVL 樹進行平衡的規則 AVL 樹在插入或刪除節點後，可能會失去平衡，也就是某些節點的左子樹和右子樹的高度差超過 1。為了維護 AVL 樹的平衡性，我們需要進行旋轉操作。
+左旋轉（Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多 2 層或以上時，我們進行左旋轉操作。 作法：左旋轉可以將該節點的右子樹提升為新的根節點，同時將原根節點降低為新根節點的左子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 右旋轉（Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多 2 層或以上時，我們進行右旋轉操作。 作法：右旋轉可以將該節點的左子樹提升為新的根節點，同時將原根節點降低為新根節點的右子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 左右旋轉（Left-Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多，且該節點的左子樹的右子樹比左子樹的左子樹高度多時，我們進行左右旋轉操作。 作法：先對該節點的左子節點進行左旋轉，然後對原節點進行右旋轉。 右左旋轉（Right-Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多，且該節點的右子樹的左子樹比右子樹的右子樹高度多時，我們進行右左旋轉操作。 作法：先對該節點的右子節點進行右旋轉，然後對原節點進行左旋轉。 這些旋轉操作可以調整 AVL 樹的結構，使其保持平衡。在進行插入或刪除操作後，我們需要檢查節點的平衡因子，即左子樹高度減去右子樹高度。
+如果平衡因子大於 1，表示左子樹高於右子樹，則需要進行右旋轉或左右旋轉； 如果平衡因子小於 -1，表示右子樹高於左子樹，則需要進行左旋轉或右左旋轉。 通過這些旋轉操作，我們可以保持 AVL 樹的平衡性。
+實作 class AVLNode { constructor(value) { this.'>
+<title>資料結構：平衡樹 (Balanced Tree) - AVL Tree</title>
+
+<link rel='canonical' href='https://yue-jenny.github.io/data-structure/balance-tree-avl-tree/'>
+
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='資料結構：平衡樹 (Balanced Tree) - AVL Tree'>
+<meta property='og:description' content='平衡樹 平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。
+AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)在每次插入或刪除操作後進行調整，以確保樹保持平衡。
+AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。
+它的平衡性通過維護每個節點的平衡因子（Balance Factor）來確保，該平衡因子表示左子樹高度減去右子樹高度的差值。
+當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。
+在這種情況下，需要通過旋轉操作來恢復平衡。旋轉操作分為左旋和右旋兩種：
+左旋：當某個節點的右子樹高度過高時，進行左旋操作可以降低右子樹高度，同時提升該節點的左子樹高度。 右旋：當某個節點的左子樹高度過高時，進行右旋操作可以降低左子樹高度，同時提升該節點的右子樹高度。 這些旋轉操作的目的是保持樹的平衡，使得樹的高度始終保持在O(log n)的範圍內。儘管AVL樹提供了較嚴格的平衡性，但相對而言，它需要更多的旋轉操作，因此插入和刪除的成本較高。
+以下是 AVL 樹進行平衡的規則 AVL 樹在插入或刪除節點後，可能會失去平衡，也就是某些節點的左子樹和右子樹的高度差超過 1。為了維護 AVL 樹的平衡性，我們需要進行旋轉操作。
+左旋轉（Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多 2 層或以上時，我們進行左旋轉操作。 作法：左旋轉可以將該節點的右子樹提升為新的根節點，同時將原根節點降低為新根節點的左子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 右旋轉（Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多 2 層或以上時，我們進行右旋轉操作。 作法：右旋轉可以將該節點的左子樹提升為新的根節點，同時將原根節點降低為新根節點的右子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 左右旋轉（Left-Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多，且該節點的左子樹的右子樹比左子樹的左子樹高度多時，我們進行左右旋轉操作。 作法：先對該節點的左子節點進行左旋轉，然後對原節點進行右旋轉。 右左旋轉（Right-Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多，且該節點的右子樹的左子樹比右子樹的右子樹高度多時，我們進行右左旋轉操作。 作法：先對該節點的右子節點進行右旋轉，然後對原節點進行左旋轉。 這些旋轉操作可以調整 AVL 樹的結構，使其保持平衡。在進行插入或刪除操作後，我們需要檢查節點的平衡因子，即左子樹高度減去右子樹高度。
+如果平衡因子大於 1，表示左子樹高於右子樹，則需要進行右旋轉或左右旋轉； 如果平衡因子小於 -1，表示右子樹高於左子樹，則需要進行左旋轉或右左旋轉。 通過這些旋轉操作，我們可以保持 AVL 樹的平衡性。
+實作 class AVLNode { constructor(value) { this.'>
+<meta property='og:url' content='https://yue-jenny.github.io/data-structure/balance-tree-avl-tree/'>
+<meta property='og:site_name' content='Jenny blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Data-Structure' /><meta property='article:tag' content='Data structure' /><meta property='article:tag' content='Balanced Tree' /><meta property='article:tag' content='AVL Tree' /><meta property='article:published_time' content='2023-06-27T07:15:40&#43;08:00'/><meta property='article:modified_time' content='2023-06-27T07:15:40&#43;08:00'/>
+<meta name="twitter:title" content="資料結構：平衡樹 (Balanced Tree) - AVL Tree">
+<meta name="twitter:description" content="平衡樹 平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。
+AVL樹 AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的平衡因子(左子樹高度減去右子樹高度)在每次插入或刪除操作後進行調整，以確保樹保持平衡。
+AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。
+它的平衡性通過維護每個節點的平衡因子（Balance Factor）來確保，該平衡因子表示左子樹高度減去右子樹高度的差值。
+當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。
+在這種情況下，需要通過旋轉操作來恢復平衡。旋轉操作分為左旋和右旋兩種：
+左旋：當某個節點的右子樹高度過高時，進行左旋操作可以降低右子樹高度，同時提升該節點的左子樹高度。 右旋：當某個節點的左子樹高度過高時，進行右旋操作可以降低左子樹高度，同時提升該節點的右子樹高度。 這些旋轉操作的目的是保持樹的平衡，使得樹的高度始終保持在O(log n)的範圍內。儘管AVL樹提供了較嚴格的平衡性，但相對而言，它需要更多的旋轉操作，因此插入和刪除的成本較高。
+以下是 AVL 樹進行平衡的規則 AVL 樹在插入或刪除節點後，可能會失去平衡，也就是某些節點的左子樹和右子樹的高度差超過 1。為了維護 AVL 樹的平衡性，我們需要進行旋轉操作。
+左旋轉（Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多 2 層或以上時，我們進行左旋轉操作。 作法：左旋轉可以將該節點的右子樹提升為新的根節點，同時將原根節點降低為新根節點的左子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 右旋轉（Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多 2 層或以上時，我們進行右旋轉操作。 作法：右旋轉可以將該節點的左子樹提升為新的根節點，同時將原根節點降低為新根節點的右子樹。這樣可以保持左子樹和右子樹的高度差不超過 1。 左右旋轉（Left-Right Rotation）： 條件：當一個節點的左子樹比右子樹高度多，且該節點的左子樹的右子樹比左子樹的左子樹高度多時，我們進行左右旋轉操作。 作法：先對該節點的左子節點進行左旋轉，然後對原節點進行右旋轉。 右左旋轉（Right-Left Rotation）： 條件：當一個節點的右子樹比左子樹高度多，且該節點的右子樹的左子樹比右子樹的右子樹高度多時，我們進行右左旋轉操作。 作法：先對該節點的右子節點進行右旋轉，然後對原節點進行左旋轉。 這些旋轉操作可以調整 AVL 樹的結構，使其保持平衡。在進行插入或刪除操作後，我們需要檢查節點的平衡因子，即左子樹高度減去右子樹高度。
+如果平衡因子大於 1，表示左子樹高於右子樹，則需要進行右旋轉或左右旋轉； 如果平衡因子小於 -1，表示右子樹高於左子樹，則需要進行左旋轉或右左旋轉。 通過這些旋轉操作，我們可以保持 AVL 樹的平衡性。
+實作 class AVLNode { constructor(value) { this.">
+<link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
+
+
+<style>
+    :root {
+        --article-font-family: "Literata", var(--base-font-family);
+    }
+</style>
+
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Literata:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/sea_hu957e28357e69ed5691794c4cadc2dc7b_134542_300x0_resize_box_3.png" width="300"
+                            height="225" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🐳</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Jenny blog</a></h1>
+            <h2 class="site-description">🐳 I will share what I have learned.</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Yue-Jenny'
+                        target="_blank"
+                        title="github"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#平衡樹">平衡樹</a></li>
+    <li><a href="#avl樹">AVL樹</a>
+      <ul>
+        <li><a href="#以下是-avl-樹進行平衡的規則">以下是 AVL 樹進行平衡的規則</a></li>
+      </ul>
+    </li>
+    <li><a href="#實作">實作</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/data-structure/" >
+                Data structure
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/data-structure/balance-tree-avl-tree/">資料結構：平衡樹 (Balanced Tree) - AVL Tree</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jun 27, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    2 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="平衡樹">平衡樹</h2>
+<p>平衡樹（Balanced Tree）是一種在資料結構中用於儲存和組織資料的二元樹（Binary Tree），其特點是保持樹的平衡，以確保在插入、刪除和查詢等操作上有較好的效率。</p>
+<h2 id="avl樹">AVL樹</h2>
+<p>AVL樹是最早提出的自平衡二元搜尋樹。它通過維護每個節點的<strong>平衡因子</strong>(<strong>左子樹高度減去右子樹高度</strong>)在每次插入或刪除操作後進行調整，以確保樹保持平衡。</p>
+<p>AVL 樹由 Georgy Adelson-Velsky 和 Evgenii Landis 於 1962 年提出的一種自平衡二元搜尋樹。<br>
+它的平衡性通過維護每個節點的<strong>平衡因子（Balance Factor）<strong>來確保，該平衡因子表示</strong>左子樹高度減去右子樹高度的差值</strong>。</p>
+<p>當在AVL樹中進行插入或刪除操作時，可能會破壞樹的平衡。<br>
+在這種情況下，需要<strong>通過旋轉操作來恢復平衡</strong>。旋轉操作分為左旋和右旋兩種：</p>
+<ul>
+<li><strong>左旋</strong>：當某個節點的<strong>右子樹高度過高</strong>時，進行左旋操作可以降低右子樹高度，同時提升該節點的左子樹高度。</li>
+<li><strong>右旋</strong>：當某個節點的<strong>左子樹高度過高</strong>時，進行右旋操作可以降低左子樹高度，同時提升該節點的右子樹高度。</li>
+</ul>
+<p>這些旋轉操作的目的是保持樹的平衡，使得樹的高度始終保持在O(log n)的範圍內。儘管AVL樹提供了較嚴格的平衡性，但相對而言，它需要更多的旋轉操作，因此插入和刪除的成本較高。</p>
+<h3 id="以下是-avl-樹進行平衡的規則">以下是 AVL 樹進行平衡的規則</h3>
+<p>AVL 樹在插入或刪除節點後，可能會<strong>失去平衡</strong>，也就是某些節點的<strong>左子樹和右子樹的高度差超過 1</strong>。為了維護 AVL 樹的平衡性，我們需要進行旋轉操作。</p>
+<ol>
+<li>左旋轉（Left Rotation）：
+<ol>
+<li>條件：當一個節點的<strong>右子樹比左子樹高度多 2 層或以上時</strong>，我們進行左旋轉操作。</li>
+<li>作法：左旋轉可以將<strong>該節點的右子樹提升為新的根節點</strong>，同時將<strong>原根節點</strong>降低為新根節點的<strong>左子樹</strong>。這樣可以保持左子樹和右子樹的高度差不超過 1。</li>
+</ol>
+</li>
+<li>右旋轉（Right Rotation）：
+<ol>
+<li>條件：當一個節點的<strong>左子樹比右子樹高度多 2 層或以上時</strong>，我們進行右旋轉操作。</li>
+<li>作法：右旋轉可以將<strong>該節點的左子樹提升為新的根節點</strong>，同時將<strong>原根節點</strong>降低為新根節點的<strong>右子樹</strong>。這樣可以保持左子樹和右子樹的高度差不超過 1。</li>
+</ol>
+</li>
+<li>左右旋轉（Left-Right Rotation）：
+<ol>
+<li>條件：當一個節點的左子樹比右子樹高度多，且該節點的左子樹的右子樹比左子樹的左子樹高度多時，我們進行左右旋轉操作。</li>
+<li>作法：先對<strong>該節點的左子節點</strong>進行<strong>左旋轉</strong>，然後對<strong>原節點</strong>進行<strong>右旋轉</strong>。</li>
+</ol>
+</li>
+<li>右左旋轉（Right-Left Rotation）：
+<ol>
+<li>條件：當一個節點的右子樹比左子樹高度多，且該節點的右子樹的左子樹比右子樹的右子樹高度多時，我們進行右左旋轉操作。</li>
+<li>作法：先對<strong>該節點的右子節點</strong>進行<strong>右旋轉</strong>，然後對<strong>原節點</strong>進行<strong>左旋轉</strong>。</li>
+</ol>
+</li>
+</ol>
+<p>這些旋轉操作可以調整 AVL 樹的結構，使其保持平衡。在進行插入或刪除操作後，我們需要檢查節點的<strong>平衡因子，即左子樹高度減去右子樹高度</strong>。</p>
+<ol>
+<li>如果平衡因子<strong>大於 1</strong>，表示左子樹高於右子樹，則需要進行<strong>右旋轉</strong>或<strong>左右旋轉</strong>；</li>
+<li>如果平衡因子<strong>小於 -1</strong>，表示右子樹高於左子樹，則需要進行<strong>左旋轉</strong>或<strong>右左旋轉</strong>。</li>
+</ol>
+<p>通過這些旋轉操作，我們可以保持 AVL 樹的平衡性。</p>
+<h2 id="實作">實作</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AVLNode</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">constructor</span>(<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">left</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">right</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">height</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AVLTree</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">constructor</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">root</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Helper function to get the height of a node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">getHeight</span>(<span style="color:#a6e22e">node</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">node</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">height</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Helper function to update the height of a node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">updateHeight</span>(<span style="color:#a6e22e">node</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">height</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> Math.<span style="color:#a6e22e">max</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getHeight</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span>), <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getHeight</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span>));
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Helper function to perform left rotation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">leftRotate</span>(<span style="color:#a6e22e">z</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">z</span>.<span style="color:#a6e22e">right</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">T2</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">y</span>.<span style="color:#a6e22e">left</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">y</span>.<span style="color:#a6e22e">left</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">z</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">z</span>.<span style="color:#a6e22e">right</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">T2</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">updateHeight</span>(<span style="color:#a6e22e">z</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">updateHeight</span>(<span style="color:#a6e22e">y</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">y</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Helper function to perform right rotation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">rightRotate</span>(<span style="color:#a6e22e">z</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">y</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">z</span>.<span style="color:#a6e22e">left</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">T3</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">y</span>.<span style="color:#a6e22e">right</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">y</span>.<span style="color:#a6e22e">right</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">z</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">z</span>.<span style="color:#a6e22e">left</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">T3</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">updateHeight</span>(<span style="color:#a6e22e">z</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">updateHeight</span>(<span style="color:#a6e22e">y</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">y</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Helper function to get the balance factor of a node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">getBalanceFactor</span>(<span style="color:#a6e22e">node</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">node</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getHeight</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span>) <span style="color:#f92672">-</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getHeight</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Helper function to insert a value into the AVL tree
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">insertHelper</span>(<span style="color:#a6e22e">node</span>, <span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">node</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">AVLNode</span>(<span style="color:#a6e22e">value</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">value</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">insertHelper</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span>, <span style="color:#a6e22e">value</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">value</span> <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">insertHelper</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span>, <span style="color:#a6e22e">value</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// Duplicate values are not allowed in AVL tree
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">node</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">updateHeight</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">balanceFactor</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">getBalanceFactor</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Left Left Case
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">balanceFactor</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span>.<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rightRotate</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Right Right Case
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">balanceFactor</span> <span style="color:#f92672">&lt;</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span>.<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leftRotate</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Left Right Case
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">balanceFactor</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span>.<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leftRotate</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">left</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rightRotate</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Right Left Case
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">balanceFactor</span> <span style="color:#f92672">&lt;</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span>.<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rightRotate</span>(<span style="color:#a6e22e">node</span>.<span style="color:#a6e22e">right</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">leftRotate</span>(<span style="color:#a6e22e">node</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">node</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// Function to insert a value into the AVL tree
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">insert</span>(<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">root</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">insertHelper</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">root</span>, <span style="color:#a6e22e">value</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="參考資料">參考資料</h2>
+<ul>
+<li>👍 大力推薦參考圖文並茂超完整圖解何時該左旋何時該右旋【<a class="link" href="https://chupai.github.io/posts/2007/ds_avl-tree/"  target="_blank" rel="noopener"
+    >JavaScript 學演算法（十五）- AVL-Tree】</a></li>
+</ul>
+<p><strong>最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！</strong></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/data-structure/">Data structure</a>
+        
+            <a href="/tags/balanced-tree/">Balanced Tree</a>
+        
+            <a href="/tags/avl-tree/">AVL Tree</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    <iframe class="LikeCoin" height="235" src="https://button.like.co/in/embed/yuemachi/button?referrer=https%3a%2f%2fyue-jenny.github.io%2fdata-structure%2fbalance-tree-avl-tree%2f" width="100%" frameborder=0></iframe>
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/data-structure/trie/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">資料結構：字典樹或前綴樹 Trie</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/data-structure/a-list-of-learning-data-structures/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">當你想要學習資料結構時，以下是一些建議的學習列表</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    <div id="gitalk-container"></div>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js"></script>
+<script>
+    const gitalk = new Gitalk({
+        clientID: "c5f87718af3306a0e689",
+        clientSecret: "9683329fd3b2586f333ee393f91768ff19010bae",
+        repo: "yue-jenny.github.io",
+        owner: "yue-jenny",
+        admin: ["yue-jenny"],
+        distractionFreeMode: false, 
+        id: md5(location.pathname), 
+    });
+    (function () {
+        if (
+            ["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1
+        ) {
+            document.getElementById("gitalk-container").innerHTML =
+                "Gitalk comments not available by default when the website is previewed locally.";
+            return;
+        }
+        gitalk.render("gitalk-container");
+    })();
+</script>
+
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Jenny blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9479855395021983"
+     crossorigin="anonymous">
+    </script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
