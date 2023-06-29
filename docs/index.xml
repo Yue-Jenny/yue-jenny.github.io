@@ -43,8 +43,9 @@
 		data-flex-basis=&#34;274px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;影片提供了遞推式來解決這個問題，將最後剩下的人表示為f(N, k)，其中N表示最初的人數，k表示每隔多少人殺一個。
-影片解釋了遞推式的計算過程，並提到如果計算結果大於N，則需要減去N，相當於去取餘數。&lt;br&gt;
+&lt;p&gt;影片提供了遞推式來解決這個問題，將最後剩下的人表示為f(N, k)，其中N表示最初的人數，k表示每隔多少人殺一個。&lt;/p&gt;
+&lt;p&gt;他們的&lt;strong&gt;編號不同&lt;/strong&gt;，例如原先的4號現在成了1號，原先的5號現在成了2號，原先的6號現在成了3號。這意味著他們的編號相差3。這個&lt;strong&gt;差值3&lt;/strong&gt;正好對應到&lt;strong&gt;每隔幾人殺一個的k值&lt;/strong&gt;。因此，我們需要&lt;strong&gt;將這個差值加上k&lt;/strong&gt;，這樣新的編號就會與原先的編號相同了。&lt;/p&gt;
+&lt;p&gt;影片解釋了遞推式的計算過程，並提到如果&lt;strong&gt;計算結果大於N，則需要減去N，相當於去取餘數&lt;/strong&gt;。&lt;br&gt;
 &lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/2.png&#34;
 	width=&#34;2000&#34;
 	height=&#34;2000&#34;
@@ -57,7 +58,10 @@
 		data-flex-basis=&#34;240px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;最後給予一個範例呈現。
+&lt;p&gt;最後給予一個範例呈現。&lt;br&gt;
+N = 8，總共 8 個人。&lt;br&gt;
+K = 3，每隔 3 個人殺一個。&lt;br&gt;
+最後生存者是 7 號。&lt;br&gt;
 &lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/3.png&#34;
 	width=&#34;2000&#34;
 	height=&#34;974&#34;
@@ -70,9 +74,95 @@
 		data-flex-basis=&#34;492px&#34;
 	
 &gt;&lt;/p&gt;
+&lt;h2 id=&#34;流程圖&#34;&gt;流程圖&lt;/h2&gt;
+&lt;p&gt;若想要清楚流程圖，大力推薦參考資料&lt;a class=&#34;link&#34; href=&#34;https://www.geeksforgeeks.org/josephus-problem/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;【Josephus Problem - GeeksforGeeks】&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;當 N = 5, K = 1 時候的流程圖。最後生存者是 3 號。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/4.png&#34;
+	width=&#34;660&#34;
+	height=&#34;451&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/4_hu31d6f42ec7f0cc418c14c351680e256b_24962_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/4_hu31d6f42ec7f0cc418c14c351680e256b_24962_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;a&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;146&#34;
+		data-flex-basis=&#34;351px&#34;
+	
+&gt;
+&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/5.png&#34;
+	width=&#34;660&#34;
+	height=&#34;317&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/5_hu7c3181add2b5f60a25ddf88666e4e562_47850_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/5_hu7c3181add2b5f60a25ddf88666e4e562_47850_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;b&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;208&#34;
+		data-flex-basis=&#34;499px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/6.png&#34;
+	width=&#34;660&#34;
+	height=&#34;324&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/6_hu49527eb8c42fc94cee6855581861f788_49020_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/6_hu49527eb8c42fc94cee6855581861f788_49020_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;c&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;203&#34;
+		data-flex-basis=&#34;488px&#34;
+	
+&gt;
+&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/7.png&#34;
+	width=&#34;660&#34;
+	height=&#34;330&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/7_hu3492aeeac8a978c7ed5946bad178aad6_51344_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/7_hu3492aeeac8a978c7ed5946bad178aad6_51344_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;d&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;200&#34;
+		data-flex-basis=&#34;480px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/8.png&#34;
+	width=&#34;660&#34;
+	height=&#34;275&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/8_hu4acdcaf2af295d19bb8cbe3ddb8bd07f_50398_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/8_hu4acdcaf2af295d19bb8cbe3ddb8bd07f_50398_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;e&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;240&#34;
+		data-flex-basis=&#34;576px&#34;
+	
+&gt;
+&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/9.png&#34;
+	width=&#34;660&#34;
+	height=&#34;223&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/9_huba16bbd651534113ad6fe27fd1f0d29a_19810_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/9_huba16bbd651534113ad6fe27fd1f0d29a_19810_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;f&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;295&#34;
+		data-flex-basis=&#34;710px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;h2 id=&#34;實作&#34;&gt;實作&lt;/h2&gt;
-&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.geeksforgeeks.org/josephus-problem/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Josephus Problem - GeeksforGeeks&lt;/a&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// return the position of last man survives
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Josephus&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;n&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;k&lt;/span&gt;) {
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
