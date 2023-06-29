@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>約瑟夫問題 on Jenny blog</title>
+        <link>https://yue-jenny.github.io/tags/%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/</link>
+        <description>Recent content in 約瑟夫問題 on Jenny blog</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Thu, 29 Jun 2023 14:03:21 +0800</lastBuildDate><atom:link href="https://yue-jenny.github.io/tags/%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>約瑟夫問題（Josephus Problem）</title>
+        <link>https://yue-jenny.github.io/algo/josephus-problem/</link>
+        <pubDate>Thu, 29 Jun 2023 14:03:21 +0800</pubDate>
+        
+        <guid>https://yue-jenny.github.io/algo/josephus-problem/</guid>
+        <description>&lt;h2 id=&#34;介紹&#34;&gt;介紹&lt;/h2&gt;
+&lt;p&gt;約瑟夫問題（Josephus Problem）是一個古老的數學問題，其名稱源自於猶太歷史學家弗拉維奧·約瑟夫斯（Flavius Josephus）。這個問題描述了一個關於&lt;strong&gt;生存和順序&lt;/strong&gt;的遊戲。&lt;/p&gt;
+&lt;p&gt;問題的背景是這樣的：假設有N個人（編號從1到N）站成一個圓圈狀。一開始，從第一個人開始按照順時針方向報數，報到第M個人就將其移出圈子，然後再從下一個人開始重新報數，如此重複，直到只剩下一個人為止。&lt;/p&gt;
+&lt;p&gt;問題的&lt;strong&gt;目標是找到最後生存下來的那個人的編號&lt;/strong&gt;。即，如果N=7，M=3，那麼經過一輪報數和移除操作後，順序會變成3，6，2，7，5，1，最後剩下的是4號。&lt;/p&gt;
+&lt;p&gt;約瑟夫問題並不僅限於具體的數字，而是一個普遍的抽象問題，可以用數學方式來解決。解決這個問題的一種&lt;strong&gt;經典方法是使用遞迴（recursion）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;基於遞迴的解法如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果只有一個人（N=1），那麼他就是最後的生存者，回傳他的編號。&lt;/li&gt;
+&lt;li&gt;否則，從第一個人開始報數，並將每個第M個人移除。&lt;/li&gt;
+&lt;li&gt;移除完畢後，從下一個人開始重新遞迴調用這個過程（N-1個人）。&lt;/li&gt;
+&lt;li&gt;將遞迴返回的結果（即下一輪的最後生存者編號）調整到當前的編號對應的位置，然後回傳結果。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;這樣，通過不斷遞迴和移除操作，最後得到的結果就是約瑟夫問題的解。&lt;/p&gt;
+&lt;p&gt;需要注意的是，約瑟夫問題的解並不唯一，它取決於初始的N和M的值。這個問題在數學和計算機科學中都有廣泛的應用，包括&lt;strong&gt;編程、遊戲理論&lt;/strong&gt;等領域。&lt;/p&gt;
+&lt;h2 id=&#34;李永樂老師的講解&#34;&gt;李永樂老師的講解&lt;/h2&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://youtu.be/Yeh1_2GyS5s&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Youtube 影片&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;紀錄&#34;&gt;紀錄&lt;/h3&gt;
+&lt;p&gt;先介紹了當k=2時的基本情況，然後討論了更一般的情況。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/1.png&#34;
+	width=&#34;2000&#34;
+	height=&#34;1746&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/1_hu2be8a60e0ca0930e34d1ff7beb1be820_3347508_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/1_hu2be8a60e0ca0930e34d1ff7beb1be820_3347508_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;114&#34;
+		data-flex-basis=&#34;274px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;影片提供了遞推式來解決這個問題，將最後剩下的人表示為f(N, k)，其中N表示最初的人數，k表示每隔多少人殺一個。
+影片解釋了遞推式的計算過程，並提到如果計算結果大於N，則需要減去N，相當於去取餘數。&lt;br&gt;
+&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/2.png&#34;
+	width=&#34;2000&#34;
+	height=&#34;2000&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/2_huf7ce96ad60e35a79710ae1fbb8e149bd_4102126_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/2_huf7ce96ad60e35a79710ae1fbb8e149bd_4102126_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;100&#34;
+		data-flex-basis=&#34;240px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;最後給予一個範例呈現。
+&lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/3.png&#34;
+	width=&#34;2000&#34;
+	height=&#34;974&#34;
+	srcset=&#34;https://yue-jenny.github.io/algo/josephus-problem/3_hu7c38ddb58d5b81971111b5d67d150bd4_2296646_480x0_resize_box_3.png 480w, https://yue-jenny.github.io/algo/josephus-problem/3_hu7c38ddb58d5b81971111b5d67d150bd4_2296646_1024x0_resize_box_3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;492px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;實作&#34;&gt;實作&lt;/h2&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.geeksforgeeks.org/josephus-problem/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Josephus Problem - GeeksforGeeks&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// return the position of last man survives
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Josephus&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;n&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;k&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ans&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;n&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// update the value of ans
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;ans&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (&lt;span style=&#34;color:#a6e22e&#34;&gt;ans&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;k&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 再進行下一個 i
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;i&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 編號從 1 開始
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ans&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// This code is contributed by sarveshc111.
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;n&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 總人數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;k&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 每次報數的數字
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;lastSurvivor&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Josephus&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;n&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;k&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;最後生存者的編號是：&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;lastSurvivor&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;最後，如果你覺得我的分享對你有幫助，請給予我一個愛心，並且分享這篇文章，這將是對我最大的鼓勵！&lt;/strong&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
