@@ -16,11 +16,11 @@
 問題與限制 然而，線段樹也有一些限制和注意事項。首先，它需要較多的內存空間來存儲統計信息，因此在處理大型數據集時可能會面臨內存限制的問題。此外，線段樹的建構過程較為複雜，並且對於動態更新的情況，可能需要進行結構調整，增加了一定的複雜度。
 結論 總體而言，線段樹是一種強大的數據結構，可以高效地處理區間操作的問題。在算法競賽和一些需要快速解決區間查詢的應用中，線段樹是一個重要的工具。
 以下是使用 JavaScript 實現線段樹的基本範例碼： class SegmentTree { constructor(nums) { this.nums = nums; this.tree = new Array(nums.length * 4); // 建立線段樹陣列 this.buildTree(0, 0, nums.length - 1); } // 建立線段樹 buildTree(node, start, end) { if (start === end) { this.tree[node] = this.nums[start]; } else { const mid = Math.'>
-<title>線段樹 Segment Tree</title>
+<title>資料結構：線段樹 Segment Tree</title>
 
 <link rel='canonical' href='https://yue-jenny.github.io/data-structure/segment-tree/'>
 
-<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='線段樹 Segment Tree'>
+<link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='資料結構：線段樹 Segment Tree'>
 <meta property='og:description' content='介紹 線段樹（Segment Tree）是一種常見的資料結構，用於解決區間查詢（range query）的問題。
 它主要用於處理數列或數組的區間操作，如區間求和、區間最大值、區間最小值等。
 線段樹的基本思想是將原始的數據按照一定的方式分割成若干個區間，並在每個區間上存儲相應的信息，如區間的總和、最大值、最小值等。這樣，在需要查詢某個區間的統計信息時，可以通過合併相應區間的信息快速計算得到。
@@ -39,7 +39,7 @@
 <meta property='og:url' content='https://yue-jenny.github.io/data-structure/segment-tree/'>
 <meta property='og:site_name' content='Jenny blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Data-Structure' /><meta property='article:tag' content='Data structure' /><meta property='article:tag' content='Segment Tree' /><meta property='article:tag' content='線段樹' /><meta property='article:published_time' content='2023-06-30T18:43:13&#43;08:00'/><meta property='article:modified_time' content='2023-06-30T18:43:13&#43;08:00'/>
-<meta name="twitter:title" content="線段樹 Segment Tree">
+<meta name="twitter:title" content="資料結構：線段樹 Segment Tree">
 <meta name="twitter:description" content="介紹 線段樹（Segment Tree）是一種常見的資料結構，用於解決區間查詢（range query）的問題。
 它主要用於處理數列或數組的區間操作，如區間求和、區間最大值、區間最小值等。
 線段樹的基本思想是將原始的數據按照一定的方式分割成若干個區間，並在每個區間上存儲相應的信息，如區間的總和、最大值、最小值等。這樣，在需要查詢某個區間的統計信息時，可以通過合併相應區間的信息快速計算得到。
@@ -324,7 +324,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/data-structure/segment-tree/">線段樹 Segment Tree</a>
+            <a href="/data-structure/segment-tree/">資料結構：線段樹 Segment Tree</a>
         </h2>
     
         
