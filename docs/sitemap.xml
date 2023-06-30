@@ -3,7 +3,47 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://yue-jenny.github.io/</loc>
-    <lastmod>2023-06-29T14:03:21+08:00</lastmod>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/data-structure/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/categories/data-structure/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/data-structure/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/segment-tree/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/tags/%E7%B7%9A%E6%AE%B5%E6%A8%B9/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://yue-jenny.github.io/data-structure/segment-tree/</loc>
+    <lastmod>2023-06-30T18:43:13+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
@@ -17,17 +57,7 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
-    <loc>https://yue-jenny.github.io/categories/</loc>
-    <lastmod>2023-06-29T14:03:21+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
     <loc>https://yue-jenny.github.io/tags/josephus-problem/</loc>
-    <lastmod>2023-06-29T14:03:21+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/</loc>
     <lastmod>2023-06-29T14:03:21+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -39,21 +69,6 @@
   </url><url>
     <loc>https://yue-jenny.github.io/algo/josephus-problem/</loc>
     <lastmod>2023-06-29T14:03:21+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/tags/data-structure/</loc>
-    <lastmod>2023-06-27T15:46:47+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/categories/data-structure/</loc>
-    <lastmod>2023-06-27T15:46:47+08:00</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url><url>
-    <loc>https://yue-jenny.github.io/data-structure/</loc>
-    <lastmod>2023-06-27T15:46:47+08:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url><url>
