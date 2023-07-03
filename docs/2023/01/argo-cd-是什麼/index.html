@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Argo CD 是什麼? 前言 這部分會分享 Argo CD 的中心思想、架構與功能。
-Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考
-getting started guide user oriented documentation Developer oriented documentation the upgrade guide How it works? 🔩 GitOps pattern Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.
-Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態
-Argo CD 的 kubernetes manifest 可用以下幾種方式建立:'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Argo CD 是什麼? Argo CD是一個用於持續交付（Continuous Delivery）的工具，用於自動化應用程序的部署、更新和操作。
+它是基於Kubernetes的開源項目，旨在幫助團隊更有效地管理和交付應用程序。
+Argo CD允許開發人員和運維團隊使用 GitOps 模型來管理基礎設施和應用程序的狀態。
+GitOps是一種軟體開發實踐，它將Git作為單一可信源來管理應用程序的狀態和配置。
+透過將應用程序的狀態描述為Git存儲庫中的一組聲明，Argo CD可以根據這些聲明自動驅動應用程序的部署和更新。
+前言 這部分會分享 Argo CD 的中心思想、架構與功能。
+中心思想 GitOps pattern Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 Argo CD 作為 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態！
+可用以下幾種方式建立 Argo CD 的 kubernetes manifest
+kustomize applications helm charts jsonnet files Plain directory of YAML/json manifests Any custom config management tool configured as a config management plugin Argo CD architecture 架構圖 有哪些 Components？ API Server'>
 <title>Argo CD 是什麼?</title>
 
 <link rel='canonical' href='https://yue-jenny.github.io/2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/'>
 
 <link rel="stylesheet" href="/scss/style.min.5be32ca3f6e1a997c75795c4359147cc6d4fbd34948c0acd51e31d237033978a.css"><meta property='og:title' content='Argo CD 是什麼?'>
-<meta property='og:description' content='Argo CD 是什麼? 前言 這部分會分享 Argo CD 的中心思想、架構與功能。
-Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考
-getting started guide user oriented documentation Developer oriented documentation the upgrade guide How it works? 🔩 GitOps pattern Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.
-Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態
-Argo CD 的 kubernetes manifest 可用以下幾種方式建立:'>
+<meta property='og:description' content='Argo CD 是什麼? Argo CD是一個用於持續交付（Continuous Delivery）的工具，用於自動化應用程序的部署、更新和操作。
+它是基於Kubernetes的開源項目，旨在幫助團隊更有效地管理和交付應用程序。
+Argo CD允許開發人員和運維團隊使用 GitOps 模型來管理基礎設施和應用程序的狀態。
+GitOps是一種軟體開發實踐，它將Git作為單一可信源來管理應用程序的狀態和配置。
+透過將應用程序的狀態描述為Git存儲庫中的一組聲明，Argo CD可以根據這些聲明自動驅動應用程序的部署和更新。
+前言 這部分會分享 Argo CD 的中心思想、架構與功能。
+中心思想 GitOps pattern Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 Argo CD 作為 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態！
+可用以下幾種方式建立 Argo CD 的 kubernetes manifest
+kustomize applications helm charts jsonnet files Plain directory of YAML/json manifests Any custom config management tool configured as a config management plugin Argo CD architecture 架構圖 有哪些 Components？ API Server'>
 <meta property='og:url' content='https://yue-jenny.github.io/2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/'>
 <meta property='og:site_name' content='Jenny blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='CI/CD' /><meta property='article:tag' content='Argo CD' /><meta property='article:published_time' content='2023-01-05T10:56:11&#43;08:00'/><meta property='article:modified_time' content='2023-01-06T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="Argo CD 是什麼?">
-<meta name="twitter:description" content="Argo CD 是什麼? 前言 這部分會分享 Argo CD 的中心思想、架構與功能。
-Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考
-getting started guide user oriented documentation Developer oriented documentation the upgrade guide How it works? 🔩 GitOps pattern Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.
-Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態
-Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
+<meta name="twitter:description" content="Argo CD 是什麼? Argo CD是一個用於持續交付（Continuous Delivery）的工具，用於自動化應用程序的部署、更新和操作。
+它是基於Kubernetes的開源項目，旨在幫助團隊更有效地管理和交付應用程序。
+Argo CD允許開發人員和運維團隊使用 GitOps 模型來管理基礎設施和應用程序的狀態。
+GitOps是一種軟體開發實踐，它將Git作為單一可信源來管理應用程序的狀態和配置。
+透過將應用程序的狀態描述為Git存儲庫中的一組聲明，Argo CD可以根據這些聲明自動驅動應用程序的部署和更新。
+前言 這部分會分享 Argo CD 的中心思想、架構與功能。
+中心思想 GitOps pattern Argo CD 遵循 GitOps 模式，即以 Git repositories 作為唯一識別 application 狀態的來源 Argo CD 作為 kubernetes controller Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較現在狀態與目標狀態！
+可用以下幾種方式建立 Argo CD 的 kubernetes manifest
+kustomize applications helm charts jsonnet files Plain directory of YAML/json manifests Any custom config management tool configured as a config management plugin Argo CD architecture 架構圖 有哪些 Components？ API Server">
 <link rel="shortcut icon" href="/rsz_krystian-tambur-k7rz8wtfaba-unsplash.jpg" />
 
 
@@ -258,14 +270,17 @@ Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#argo-cd-是什麼">Argo CD 是什麼?</a>
+    <li><a href="#argo-cd-是什麼">Argo CD 是什麼?</a></li>
+    <li><a href="#前言">前言</a>
       <ul>
-        <li><a href="#前言">前言</a></li>
-        <li><a href="#how-it-works-">How it works? 🔩</a></li>
+        <li><a href="#中心思想-gitops-pattern">中心思想 GitOps pattern</a></li>
+        <li><a href="#argo-cd-作為-kubernetes-controller">Argo CD 作為 kubernetes controller</a></li>
+        <li><a href="#argo-cd-architecture">Argo CD architecture</a></li>
+        <li><a href="#features">Features</a></li>
       </ul>
     </li>
-    <li><a href="#心得-">心得 💭</a></li>
-    <li><a href="#參考資料-">參考資料 👐</a></li>
+    <li><a href="#心得">心得</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
   </ul>
 </nav>
         </div>
@@ -350,34 +365,24 @@ Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
     
     
     <h2 id="argo-cd-是什麼">Argo CD 是什麼?</h2>
-<h3 id="前言">前言</h3>
+<p>Argo CD是一個用於持續交付（Continuous Delivery）的工具，用於自動化應用程序的部署、更新和操作。<br>
+它是基於Kubernetes的開源項目，旨在幫助團隊更有效地管理和交付應用程序。</p>
+<p>Argo CD允許開發人員和運維團隊使用 <strong>GitOps 模型</strong>來管理基礎設施和應用程序的狀態。</p>
+<p>GitOps是一種軟體開發實踐，它<strong>將Git作為單一可信源</strong>來管理應用程序的狀態和配置。</p>
+<p>透過將應用程序的狀態描述為Git存儲庫中的一組聲明，Argo CD可以根據這些聲明自動驅動應用程序的部署和更新。</p>
+<h2 id="前言">前言</h2>
 <p>這部分會分享 Argo CD 的<code>中心思想</code>、<code>架構</code>與<code>功能</code>。</p>
-<p>Argo CD 知識量很龐大，附上其他參考資料給有興趣的人參考</p>
-<ul>
-<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/getting_started/"  target="_blank" rel="noopener"
-    >getting started guide</a></li>
-<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/user-guide/"  target="_blank" rel="noopener"
-    >user oriented documentation</a></li>
-<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/developer-guide/"  target="_blank" rel="noopener"
-    >Developer oriented documentation</a></li>
-<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/overview/"  target="_blank" rel="noopener"
-    >the upgrade guide</a></li>
-</ul>
-<h3 id="how-it-works-">How it works? 🔩</h3>
-<h4 id="gitops-pattern">GitOps pattern</h4>
-<blockquote>
-<p>Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.</p>
-</blockquote>
+<h3 id="中心思想-gitops-pattern">中心思想 GitOps pattern</h3>
 <ul>
 <li>Argo CD 遵循 GitOps 模式，即<strong>以 Git repositories 作為唯一識別 application 狀態的來源</strong></li>
 </ul>
-<h4 id="kubernetes-controller">kubernetes controller</h4>
+<h3 id="argo-cd-作為-kubernetes-controller">Argo CD 作為 kubernetes controller</h3>
 <ul>
 <li>
-<p>Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並比較<code>現在狀態</code>與<code>目標狀態</code></p>
+<p>Argo CD 作為 kubernetes controller，持續偵測運行中的 application，並<strong>比較現在狀態與目標狀態</strong>！</p>
 </li>
 <li>
-<p>Argo CD 的 kubernetes manifest 可用以下幾種方式建立:</p>
+<p>可用以下幾種方式建立 Argo CD 的 kubernetes manifest</p>
 <ul>
 <li><a class="link" href="https://kustomize.io/"  target="_blank" rel="noopener"
     >kustomize</a> applications</li>
@@ -390,13 +395,9 @@ Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
 </ul>
 </li>
 </ul>
-<h4 id="architecture">architecture</h4>
-<ul>
-<li>Argo CD architecture
-<ul>
-<li>
-<p>架構圖
-<img src="/2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/argocd_architecture.webp"
+<h3 id="argo-cd-architecture">Argo CD architecture</h3>
+<h4 id="架構圖">架構圖</h4>
+<p><img src="/2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/argocd_architecture.webp"
 	width="743"
 	height="708"
 	srcset="/2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/argocd_architecture_hu7301e8d492990cc775fb267fdb3a75d6_47024_480x0_resize_q75_h2_box_2.webp 480w, /2023/01/argo-cd-%E6%98%AF%E4%BB%80%E9%BA%BC/argocd_architecture_hu7301e8d492990cc775fb267fdb3a75d6_47024_1024x0_resize_q75_h2_box_2.webp 1024w"
@@ -410,10 +411,8 @@ Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
 		data-flex-basis="251px"
 	
 ></p>
-</li>
-<li>
-<p><a class="link" href="https://argo-cd.readthedocs.io/en/stable/operator-manual/architecture/"  target="_blank" rel="noopener"
-    >Components</a></p>
+<h4 id="有哪些-componentshttpsargo-cdreadthedocsioenstableoperator-manualarchitecture"><a class="link" href="https://argo-cd.readthedocs.io/en/stable/operator-manual/architecture/"  target="_blank" rel="noopener"
+    >有哪些 Components？</a></h4>
 <ul>
 <li>
 <p>API Server</p>
@@ -450,7 +449,7 @@ Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
 <ul>
 <li>屬於 <code>Kubernetes controller</code>
 <ul>
-<li>👉 更多關於 <a class="link" href="https://kubernetes.io/docs/concepts/architecture/controller/"  target="_blank" rel="noopener"
+<li>更多關於 <a class="link" href="https://kubernetes.io/docs/concepts/architecture/controller/"  target="_blank" rel="noopener"
     >Kubernetes controller</a></li>
 </ul>
 </li>
@@ -459,34 +458,63 @@ Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="features">Features</h4>
+<h3 id="features">Features</h3>
+<p>根據提供的功能，可以將其分為以下幾項：</p>
+<ol>
+<li>部署和管理功能：</li>
+</ol>
 <ul>
-<li>支援的功能繁多，列出一部分。每一版或者會有些不同，建議可參考 🔔 <a class="link" href="https://argo-cd.readthedocs.io/en/stable/#features"  target="_blank" rel="noopener"
-    >官方文件</a> 🔔
+<li>自動部署應用程序到指定的目標環境</li>
+<li>支持多個配置管理/模板工具（Kustomize、Helm、Jsonnet、純YAML）</li>
+<li>能夠管理和部署到多個集群</li>
+</ul>
+<ol start="2">
+<li>身份驗證和安全功能：</li>
+</ol>
 <ul>
-<li>自動部屬到特性目標環境</li>
-<li>支援多種 templating 工具  (Kustomize, Helm, Jsonnet, plain-YAML)</li>
-<li>能管理多種 clusters</li>
-<li>SSO 整合 (OIDC, OAuth2, LDAP, SAML 2.0, GitHub, GitLab, Microsoft, LinkedIn)</li>
-<li>多租戶與 RBAC 政策</li>
-<li>&hellip;等</li>
+<li>SSO集成（OIDC、OAuth2、LDAP、SAML 2.0、GitHub、GitLab、Microsoft、LinkedIn）</li>
+<li>多租戶和RBAC策略用於授權</li>
 </ul>
-</li>
+<ol start="3">
+<li>回滾和配置管理功能：</li>
+</ol>
+<ul>
+<li>回滾/任意回滾到Git存儲庫中提交的任何應用程序配置</li>
+<li>應用程序資源的健康狀態分析</li>
+<li>自動配置漂移檢測和可視化</li>
+<li>自動或手動將應用程序同步到所需狀態</li>
 </ul>
-<h2 id="心得-">心得 💭</h2>
+<ol start="4">
+<li>用戶界面和集成功能：</li>
+</ol>
+<ul>
+<li>提供實時應用程序活動的Web UI</li>
+<li>命令行界面（CLI）用於自動化和CI集成</li>
+<li>Webhook集成（GitHub、BitBucket、GitLab）</li>
+<li>用於自動化的訪問令牌(Access token)</li>
+</ul>
+<ol start="5">
+<li>應用程序升級和監控功能：</li>
+</ol>
+<ul>
+<li>支持 PreSync、Sync、PostSync 鉤子以支持複雜的應用程序升級（例如藍/綠和金絲雀升級）</li>
+<li>應用程序事件和API調用的軌跡</li>
+<li>Prometheus metrics</li>
+<li>可覆蓋 Helm 參數的參數覆蓋</li>
+</ul>
+<p>支援的功能繁多，列出一部分。每一版或者會有些不同，建議可參考<a class="link" href="https://argo-cd.readthedocs.io/en/stable/#features"  target="_blank" rel="noopener"
+    >官方文件</a></p>
+<p>這些功能可幫助團隊實現自動化部署、安全驗證、配置管理、回滾、監控等在持續交付環境中必要的任務。</p>
+<h2 id="心得">心得</h2>
 <ul>
 <li>
 <p>Argo CD 在 March 26, 2020 被 CNCF 列入，CNCF 的專案們整合程度越來越高，相信未來的多數公司的 CICD、監控、Log、角色權限控管、資料庫等會以 CNCF 專案為主。</p>
 </li>
 <li>
-<p>若想知道如何在 docker desktop 建立 Argo CD，請參考文章 👉 <a class="link" href="../argocd-on-docker-desktop/" >使用 Docker Desktop 運行 Argo CD</a></p>
+<p>若想知道如何在 docker desktop 建立 Argo CD，請參考文章<a class="link" href="../argocd-on-docker-desktop/" >【使用 Docker Desktop 運行 Argo CD】</a></p>
 </li>
 </ul>
-<h2 id="參考資料-">參考資料 👐</h2>
+<h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/"  target="_blank" rel="noopener"
     >Argo CD</a></li>
@@ -494,8 +522,16 @@ Argo CD 的 kubernetes manifest 可用以下幾種方式建立:">
     >Argo CD Components</a></li>
 <li><a class="link" href="https://kubernetes.io/docs/concepts/architecture/controller/"  target="_blank" rel="noopener"
     >Kubernetes Controllers</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/getting_started/"  target="_blank" rel="noopener"
+    >getting started guide</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/user-guide/"  target="_blank" rel="noopener"
+    >user oriented documentation</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/developer-guide/"  target="_blank" rel="noopener"
+    >Developer oriented documentation</a></li>
+<li><a class="link" href="https://argo-cd.readthedocs.io/en/stable/operator-manual/upgrading/overview/"  target="_blank" rel="noopener"
+    >the upgrade guide</a></li>
 </ul>
-<p><strong>🍀 最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵! ✨ ✨ ✨</strong></p>
+<p><strong>最後，若喜歡我的分享，可以免費幫我按讚，是對我最大的鼓勵!</strong></p>
 
 </section>
 
