@@ -207,10 +207,14 @@
         <guid>https://yue-jenny.github.io/algo/josephus-problem/</guid>
         <description>&lt;h2 id=&#34;介紹&#34;&gt;介紹&lt;/h2&gt;
 &lt;p&gt;約瑟夫問題（Josephus Problem）是一個古老的數學問題，其名稱源自於猶太歷史學家弗拉維奧·約瑟夫斯（Flavius Josephus）。這個問題描述了一個關於&lt;strong&gt;生存和順序&lt;/strong&gt;的遊戲。&lt;/p&gt;
-&lt;p&gt;問題的背景是這樣的：假設有N個人（編號從1到N）站成一個圓圈狀。一開始，從第一個人開始按照順時針方向報數，報到第M個人就將其移出圈子，然後再從下一個人開始重新報數，如此重複，直到只剩下一個人為止。&lt;/p&gt;
-&lt;p&gt;問題的&lt;strong&gt;目標是找到最後生存下來的那個人的編號&lt;/strong&gt;。即，如果N=7，M=3，那麼經過一輪報數和移除操作後，順序會變成3，6，2，7，5，1，最後剩下的是4號。&lt;/p&gt;
-&lt;p&gt;約瑟夫問題並不僅限於具體的數字，而是一個普遍的抽象問題，可以用數學方式來解決。解決這個問題的一種&lt;strong&gt;經典方法是使用遞迴（recursion）&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;基於遞迴的解法如下：&lt;/p&gt;
+&lt;h3 id=&#34;問題的背景是這樣的&#34;&gt;問題的背景是這樣的：&lt;/h3&gt;
+&lt;p&gt;假設有N個人（編號從1到N）站成一個圓圈狀。一開始，從第一個人開始按照順時針方向報數，報到第M個人就將其移出圈子，然後再從下一個人開始重新報數，如此重複，直到只剩下一個人為止。&lt;/p&gt;
+&lt;h3 id=&#34;問題的目標&#34;&gt;問題的目標&lt;/h3&gt;
+&lt;p&gt;目標是找到最後生存下來的那個人的編號**。&lt;br&gt;
+即，如果 N = 7，M = 3，那麼經過一輪報數和移除操作後，順序會變成3，6，2，7，5，1，最後剩下的是4號。&lt;/p&gt;
+&lt;h3 id=&#34;約瑟夫問題並不僅限於具體的數字而是一個普遍的抽象問題可以用數學方式來解決&#34;&gt;約瑟夫問題並不僅限於具體的數字，而是一個普遍的抽象問題，可以用數學方式來解決。&lt;/h3&gt;
+&lt;p&gt;解決這個問題的一種&lt;strong&gt;經典方法是使用遞迴（recursion）&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;基於遞迴的解法如下&#34;&gt;基於遞迴的解法如下：&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;如果只有一個人（N=1），那麼他就是最後的生存者，回傳他的編號。&lt;/li&gt;
 &lt;li&gt;否則，從第一個人開始報數，並將每個第M個人移除。&lt;/li&gt;
@@ -218,7 +222,9 @@
 &lt;li&gt;將遞迴返回的結果（即下一輪的最後生存者編號）調整到當前的編號對應的位置，然後回傳結果。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;這樣，通過不斷遞迴和移除操作，最後得到的結果就是約瑟夫問題的解。&lt;/p&gt;
-&lt;p&gt;需要注意的是，約瑟夫問題的解並不唯一，它取決於初始的N和M的值。這個問題在數學和計算機科學中都有廣泛的應用，包括&lt;strong&gt;編程、遊戲理論&lt;/strong&gt;等領域。&lt;/p&gt;
+&lt;h3 id=&#34;需要注意的是&#34;&gt;需要注意的是，&lt;/h3&gt;
+&lt;p&gt;約瑟夫問題的解並不唯一，它取決於初始的 N 和 M 的值。&lt;br&gt;
+這個問題在數學和計算機科學中都有廣泛的應用，包括&lt;strong&gt;編程、遊戲理論&lt;/strong&gt;等領域。&lt;/p&gt;
 &lt;h2 id=&#34;李永樂老師的講解&#34;&gt;李永樂老師的講解&lt;/h2&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://youtu.be/Yeh1_2GyS5s&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Youtube 影片&lt;/a&gt;&lt;/p&gt;
@@ -237,7 +243,10 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;影片提供了遞推式來解決這個問題，將最後剩下的人表示為f(N, k)，其中N表示最初的人數，k表示每隔多少人殺一個。&lt;/p&gt;
-&lt;p&gt;他們的&lt;strong&gt;編號不同&lt;/strong&gt;，例如原先的4號現在成了1號，原先的5號現在成了2號，原先的6號現在成了3號。這意味著他們的編號相差3。這個&lt;strong&gt;差值3&lt;/strong&gt;正好對應到&lt;strong&gt;每隔幾人殺一個的k值&lt;/strong&gt;。因此，我們需要&lt;strong&gt;將這個差值加上k&lt;/strong&gt;，這樣新的編號就會與原先的編號相同了。&lt;/p&gt;
+&lt;p&gt;他們的&lt;strong&gt;編號不同&lt;/strong&gt;，例如原先的 4 號現在成了 1 號，原先的 5 號現在成了 2 號，原先的 6 號現在成了 3 號。&lt;br&gt;
+這意味著他們的編號相差3。&lt;br&gt;
+這個&lt;strong&gt;差值3&lt;/strong&gt;正好對應到&lt;strong&gt;每隔幾人殺一個的k值&lt;/strong&gt;。&lt;br&gt;
+因此，我們需要&lt;strong&gt;將這個差值加上k&lt;/strong&gt;，這樣新的編號就會與原先的編號相同了。&lt;/p&gt;
 &lt;p&gt;影片解釋了遞推式的計算過程，並提到如果&lt;strong&gt;計算結果大於N，則需要減去N，相當於去取餘數&lt;/strong&gt;。&lt;br&gt;
 &lt;img src=&#34;https://yue-jenny.github.io/algo/josephus-problem/2.png&#34;
 	width=&#34;2000&#34;
